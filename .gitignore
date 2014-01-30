@@ -1,0 +1,5 @@
+# Eclipse project management
+*.metadata
+*.settings
+bobs-island/Debug
+
