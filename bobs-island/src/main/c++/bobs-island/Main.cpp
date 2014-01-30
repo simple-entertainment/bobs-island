@@ -15,7 +15,6 @@
  * <http://www.gnu.org/licenses/>.
  */
 #include <fstream>
-#include <memory>
 
 #include <simplicity/API.h>
 //#include <simplicity/bullet/API.h>
@@ -39,13 +38,10 @@ int main(int argc, char** argv)
 	// Windowing
 	/////////////////////////
 	unique_ptr<Engine> windowingEngine(new FreeGLUTEngine("Bob's Island"));
-	Simplicity::addEngine(move(windowingEngine));
 
 	// World Representations
 	/////////////////////////
-	unique_ptr<Graph> world(new SimpleTree);
-	Graph* rawWorld = world.get();
-	Simplicity::addWorldRepresentation(move(world));
+	unique_ptr<Graph> world(new QuadTree(1, Square(64.0f), QuadTree::Plane::XZ));
 
 	// Models
 	/////////////////////////
@@ -56,17 +52,25 @@ int main(int argc, char** argv)
 	/////////////////////////
 	unique_ptr<Entity> bob(new Entity);
 
+	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
+						Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	unique_ptr<BobControl> bobControl(new BobControl(*world.get()));
+	bobControl->setEntity(bob.get());
+
+	unique_ptr<Model> cameraBounds(new Square(32.0f));
+	cameraBounds->setCategory(Categories::BOUNDS);
+
 	// Scripting
 	/////////////////////////
 	unique_ptr<Engine> scriptingEngine(new ScriptingEngine);
-	Simplicity::addEngine(move(scriptingEngine));
 
 	// Physics
 	/////////////////////////
 	/*unique_ptr<PhysicsFactory> physicsFactory(new BulletPhysicsFactory);
 	PhysicsFactory::setInstance(move(physicsFactory));
-	unique_ptr<Engine> physicsEngine(new BulletEngine(Vector3(0.0f, 0.0f, 0.0f)));
-	Simplicity::addEngine(move(physicsEngine));*/
+
+	unique_ptr<Engine> physicsEngine(new BulletEngine(Vector3(0.0f, 0.0f, 0.0f)));*/
 
 	// Rendering
 	/////////////////////////
@@ -86,6 +90,8 @@ int main(int argc, char** argv)
 	// Camera
 	unique_ptr<Camera> camera(new OpenGLCamera);
 	camera->setPerspective(60.0f, 4.0f / 3.0f);
+	// Position is relative to Bob.
+	MathFunctions::translate(camera->getTransformation(), Vector3(0.0f, 1.11f, -0.21f));
 
 	// Light
 	unique_ptr<Light> light(new OpenGLLight("theOnly"));
@@ -99,8 +105,7 @@ int main(int argc, char** argv)
 	renderingEngine->addRenderer(move(renderer));
 	renderingEngine->setCamera(move(bob.get()));
 	renderingEngine->setClearingColour(Vector4(0.0f, 0.5f, 0.75f, 1.0f));
-	renderingEngine->setGraph(rawWorld);
-	Simplicity::addEngine(move(renderingEngine));
+	renderingEngine->setGraph(world.get());
 
 	// The Island!
 	/////////////////////////
@@ -128,17 +133,13 @@ int main(int argc, char** argv)
 	}
 	IslandFactory::createIsland(radius, profile);
 
-	// Bob Components!
+	// Assemble Bob!
 	/////////////////////////
-	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
-						Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	MathFunctions::translate(camera->getTransformation(), Vector3(0.0f, 1.11f, -0.21f));
-	unique_ptr<BobControl> bobControl(new BobControl);
-	bobControl->setEntity(bob.get());
+	MathFunctions::setTranslation(bob->getTransformation(), Vector3(0.0f, 0.0f, radius - 1.0f));
 	bob->addUniqueComponent(move(bobBody));
 	bob->addUniqueComponent(move(bobControl));
 	bob->addUniqueComponent(move(camera));
-	MathFunctions::setTranslation(bob->getTransformation(), Vector3(0.0f, 0.0f, radius - 1.0f));
+	bob->addUniqueComponent(move(cameraBounds)); // Yes, this is odd...
 
 	// A Box!
 	/////////////////////////
@@ -158,6 +159,15 @@ int main(int argc, char** argv)
 
 	box->addUniqueComponent(move(boxModel));
 	box->addUniqueComponent(move(boxBody));*/
+
+	// Add everything!
+	/////////////////////////
+	Simplicity::addEngine(move(windowingEngine));
+	Simplicity::addEngine(move(scriptingEngine));
+	//Simplicity::addEngine(move(physicsEngine));
+	Simplicity::addEngine(move(renderingEngine));
+
+	Simplicity::addWorldRepresentation(move(world));
 
 	Simplicity::addEntity(move(bob));
 	//Simplicity::addEntity(move(box));

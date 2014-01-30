@@ -16,15 +16,19 @@
  */
 #include <functional>
 
+//#include <the-island/API.h>
+
 #include "BobControl.h"
 
 using namespace boost;
 using namespace simplicity;
+//using namespace theisland;
 
 namespace bobsisland
 {
-	BobControl::BobControl() :
+	BobControl::BobControl(const simplicity::Graph& world) :
 		buttonStates(),
+		world(world),
 		x(-1),
 		y(-1)
 	{
@@ -42,22 +46,26 @@ namespace bobsisland
 	{
 		if (buttonStates[Keyboard::Button::W] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(), Vector4(0.0f, 0.0f, -0.1f, 1.0f));
+			MathFunctions::translate(getEntity()->getTransformation(),
+					Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::A] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(), Vector4(-0.1f, 0.0f, 0.0f, 1.0f));
+			MathFunctions::translate(getEntity()->getTransformation(),
+					Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::S] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(), Vector4(0.0f, 0.0f, 0.1f, 1.0f));
+			MathFunctions::translate(getEntity()->getTransformation(),
+					Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::D] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(), Vector4(0.1f, 0.0f, 0.0f, 1.0f));
+			MathFunctions::translate(getEntity()->getTransformation(),
+					Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		updateY();
@@ -90,9 +98,10 @@ namespace bobsisland
 		{
 			int deltaX = event->x - x;
 			int deltaY = event->y - y;
-			MathFunctions::rotate(getEntity()->getTransformation(), deltaX * -0.01f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-			MathFunctions::rotate(getEntity()->getComponent<Camera>()->getTransformation(), deltaY * -0.01f,
-					Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			MathFunctions::rotate(getEntity()->getTransformation(), deltaX * -Simplicity::getDeltaTime() * 0.1f,
+					Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+			MathFunctions::rotate(getEntity()->getComponent<Camera>()->getTransformation(),
+					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		x = event->x;
@@ -102,11 +111,28 @@ namespace bobsisland
 	void BobControl::updateY()
 	{
 		Vector3 position = MathFunctions::getTranslation3(getEntity()->getTransformation());
+		vector<Entity*> entities = world.getEntitiesWithinBounds(Square(0.25f), position);
+
+		for (Entity* entity : entities)
+		{
+			if (entity->getCategory() == 128)
+			{
+				if (updateY(*entity->getComponent<Mesh>(Categories::RENDER)))
+				{
+					return;
+				}
+			}
+		}
+	}
+
+	bool BobControl::updateY(const Mesh& ground)
+	{
+		Vector3 position = MathFunctions::getTranslation3(getEntity()->getTransformation());
 		Vector3 position2d = position;
 		position2d.Y() = 0.0f;
 
-		vector<unsigned int> indices;// = ground.getIndices();
-		vector<Vertex> vertices;// = ground.getVertices();
+		vector<unsigned int> indices = ground.getIndices();
+		vector<Vertex> vertices = ground.getVertices();
 		for (unsigned int triangleIndex = 0; triangleIndex < indices.size(); triangleIndex += 3)
 		{
 			Vector3 triangle2d0 = vertices[triangleIndex].position;
@@ -131,8 +157,10 @@ namespace bobsisland
 
 				MathFunctions::setTranslation(getEntity()->getTransformation(), position);
 
-				break;
+				return true;
 			}
 		}
+
+		return false;
 	}
 }

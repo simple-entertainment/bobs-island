@@ -24,7 +24,7 @@ namespace bobsisland
 	class BobControl : public simplicity::Script
 	{
 		public:
-			BobControl();
+			BobControl(const simplicity::Graph& world);
 
 			void destroy();
 
@@ -36,14 +36,18 @@ namespace bobsisland
 
 			void onMouseMove(boost::any message);
 
-			void updateY();
-
 		private:
 			std::map<simplicity::Keyboard::Button, simplicity::Button::State> buttonStates;
+
+			const simplicity::Graph& world;
 
 			int x;
 
 			int y;
+
+			void updateY();
+
+			bool updateY(const simplicity::Mesh& ground);
 	};
 }
 
