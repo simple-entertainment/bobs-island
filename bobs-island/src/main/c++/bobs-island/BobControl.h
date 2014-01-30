@@ -24,7 +24,7 @@ namespace bobsisland
 	class BobControl : public simplicity::Script
 	{
 		public:
-			BobControl(const simplicity::Mesh& ground);
+			BobControl();
 
 			void destroy();
 
@@ -40,8 +40,6 @@ namespace bobsisland
 
 		private:
 			std::map<simplicity::Keyboard::Button, simplicity::Button::State> buttonStates;
-
-			const simplicity::Mesh& ground;
 
 			int x;
 

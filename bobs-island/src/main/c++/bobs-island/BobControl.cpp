@@ -23,9 +23,8 @@ using namespace simplicity;
 
 namespace bobsisland
 {
-	BobControl::BobControl(const Mesh& ground) :
+	BobControl::BobControl() :
 		buttonStates(),
-		ground(ground),
 		x(-1),
 		y(-1)
 	{
@@ -106,8 +105,8 @@ namespace bobsisland
 		Vector3 position2d = position;
 		position2d.Y() = 0.0f;
 
-		vector<unsigned int> indices = ground.getIndices();
-		vector<Vertex> vertices = ground.getVertices();
+		vector<unsigned int> indices;// = ground.getIndices();
+		vector<Vertex> vertices;// = ground.getVertices();
 		for (unsigned int triangleIndex = 0; triangleIndex < indices.size(); triangleIndex += 3)
 		{
 			Vector3 triangle2d0 = vertices[triangleIndex].position;

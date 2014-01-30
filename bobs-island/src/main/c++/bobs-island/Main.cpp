@@ -126,19 +126,19 @@ int main(int argc, char** argv)
 		// Mountains and beaches.
 		profile.push_back(peakHeight * (pow(radius - index, 3) / pow(radius, 3)));
 	}
-	unique_ptr<Entity> island = IslandFactory::createIsland(radius, profile);
+	IslandFactory::createIsland(radius, profile);
 
 	// Bob Components!
 	/////////////////////////
 	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
 						Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	MathFunctions::translate(camera->getTransformation(), Vector3(0.0f, 1.11f, -0.21f));
-	unique_ptr<BobControl> bobControl(new BobControl(*island->getComponent<Mesh>()));
+	unique_ptr<BobControl> bobControl(new BobControl);
 	bobControl->setEntity(bob.get());
 	bob->addUniqueComponent(move(bobBody));
 	bob->addUniqueComponent(move(bobControl));
 	bob->addUniqueComponent(move(camera));
-	MathFunctions::setTranslation(bob->getTransformation(), Vector3(0.0f, 0.0f, 50.0f));
+	MathFunctions::setTranslation(bob->getTransformation(), Vector3(0.0f, 0.0f, radius - 1.0f));
 
 	// A Box!
 	/////////////////////////
@@ -159,7 +159,6 @@ int main(int argc, char** argv)
 	box->addUniqueComponent(move(boxModel));
 	box->addUniqueComponent(move(boxBody));*/
 
-	Simplicity::addEntity(move(island));
 	Simplicity::addEntity(move(bob));
 	//Simplicity::addEntity(move(box));
 
