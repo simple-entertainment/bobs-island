@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 	// Rendering
 	/////////////////////////
 	unique_ptr<OpenGLRenderingEngine> renderingEngine(new OpenGLRenderingEngine);
-	unique_ptr<Renderer> renderer(new SimpleOpenGLRenderer);
+	unique_ptr<Renderer> renderer(new OpenGLRenderer);
 
 	// Shaders
 	ifstream vertexShaderFile("src/main/glsl/my.vs");
