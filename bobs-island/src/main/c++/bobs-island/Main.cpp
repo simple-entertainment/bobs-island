@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 
 	// World Representations
 	/////////////////////////
-	unique_ptr<Graph> world(new QuadTree(1, Square(64.0f), QuadTree::Plane::XZ));
+	unique_ptr<Graph> world(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
 
 	// Models
 	/////////////////////////
@@ -53,7 +53,11 @@ int main(int argc, char** argv)
 	unique_ptr<Entity> bob(new Entity);
 
 	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
-						Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	unique_ptr<Model> bobGunArm = ModelFactory::getInstance().createCylinderMesh(0.05f, 0.75f, 10,
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	MathFunctions::setTranslation(bobGunArm->getTransformation(), Vector3(0.25f, 0.95f, 0.0f));
 
 	unique_ptr<BobControl> bobControl(new BobControl(*world.get()));
 	bobControl->setEntity(bob.get());
@@ -137,6 +141,7 @@ int main(int argc, char** argv)
 	/////////////////////////
 	MathFunctions::setTranslation(bob->getTransformation(), Vector3(0.0f, 0.0f, radius - 1.0f));
 	bob->addUniqueComponent(move(bobBody));
+	bob->addUniqueComponent(move(bobGunArm));
 	bob->addUniqueComponent(move(bobControl));
 	bob->addUniqueComponent(move(camera));
 	bob->addUniqueComponent(move(cameraBounds)); // Yes, this is odd...

@@ -38,6 +38,8 @@ namespace bobsisland
 	{
 		Messages::deregisterRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
 				placeholders::_1));
+		Messages::deregisterRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
+				placeholders::_1));
 		Messages::deregisterRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
 				placeholders::_1));
 	}
@@ -69,6 +71,43 @@ namespace bobsisland
 		}
 
 		updateY();
+
+		Simplicity::updateWorldRepresentations(*getEntity());
+	}
+
+	void BobControl::fireGun()
+	{
+		unique_ptr<Entity> bullet(new Entity);
+		bullet->setTransformation(getEntity()->getTransformation() *
+				getEntity()->getComponents<Mesh>()[1]->getTransformation());
+		MathFunctions::rotate(bullet->getTransformation(), MathConstants::PI * 0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+		unique_ptr<Mesh> mesh = ModelFactory::getInstance().createPyramidMesh(0.1f, 0.5f,
+				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+		unique_ptr<Model> bounds = ModelFunctions::getSquareBoundsXZ(mesh->getVertices());
+
+		unique_ptr<Model> bodyModel(new Box(0.1f, 0.25f, 0.1f));
+
+		Body::Material material;
+		material.mass = 0.2f;
+		material.friction = 0.5f;
+		material.restitution = 0.1f;
+		unique_ptr<Body> body = PhysicsFactory::getInstance().createBody(material, bodyModel.get(),
+				bullet->getTransformation());
+		body->setEntity(bullet.get());
+
+		Vector3 trajectory = MathFunctions::getUp3(bullet->getTransformation());
+		trajectory.normalize();
+		trajectory *= -50.0f;
+		body->applyForce(trajectory, Vector3(0.0f, 0.0f, 0.0f));
+
+		bullet->addUniqueComponent(move(mesh));
+		bullet->addUniqueComponent(move(bounds));
+		bullet->addUniqueComponent(move(body));
+		bullet->addUniqueComponent(move(bodyModel));
+
+		Simplicity::addEntity(move(bullet));
 	}
 
 	void BobControl::init()
@@ -80,6 +119,8 @@ namespace bobsisland
 
 		Messages::registerRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
 				placeholders::_1));
+		Messages::registerRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
+				placeholders::_1));
 		Messages::registerRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
 				placeholders::_1));
 	}
@@ -88,6 +129,15 @@ namespace bobsisland
 	{
 		KeyboardButtonEvent* event = any_cast<KeyboardButtonEvent*>(message);
 		buttonStates[event->button] = event->buttonState;
+	}
+
+	void BobControl::onMouseButton(any message)
+	{
+		MouseButtonEvent* event = any_cast<MouseButtonEvent*>(message);
+		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
+		{
+			fireGun();
+		}
 	}
 
 	void BobControl::onMouseMove(any message)
@@ -102,6 +152,10 @@ namespace bobsisland
 					Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 			MathFunctions::rotate(getEntity()->getComponent<Camera>()->getTransformation(),
 					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			MathFunctions::rotate(getEntity()->getComponents<Mesh>()[1]->getTransformation(),
+					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+			Simplicity::updateWorldRepresentations(*getEntity());
 		}
 
 		x = event->x;

@@ -30,9 +30,13 @@ namespace bobsisland
 
 			void execute();
 
+			void fireGun();
+
 			void init();
 
 			void onKeyboardButton(boost::any message);
+
+			void onMouseButton(boost::any message);
 
 			void onMouseMove(boost::any message);
 
