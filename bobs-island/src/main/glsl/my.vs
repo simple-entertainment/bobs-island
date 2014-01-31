@@ -27,8 +27,8 @@ struct VertexFS
 
 layout (location = 0) in VertexVS vertexVS;
 
-uniform mat4 cameraTransformation;
-uniform mat4 worldTransformation;
+uniform mat4 cameraTransform;
+uniform mat4 worldTransform;
 
 out VertexFS vertexFS;
 
@@ -38,8 +38,8 @@ out VertexFS vertexFS;
 
 void main()
 {
-	vec4 worldPosition4 = worldTransformation * vec4(vertexVS.position, 1.0);
-	vec4 clipPosition4 = cameraTransformation * worldTransformation * vec4(vertexVS.position, 1.0);
+	vec4 worldPosition4 = worldTransform * vec4(vertexVS.position, 1.0);
+	vec4 clipPosition4 = cameraTransform * worldTransform * vec4(vertexVS.position, 1.0);
 
 	vertexFS.clipPosition = clipPosition4.xyz;
 	vertexFS.colour = vertexVS.colour;

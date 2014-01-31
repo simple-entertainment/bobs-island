@@ -48,26 +48,22 @@ namespace bobsisland
 	{
 		if (buttonStates[Keyboard::Button::W] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(),
-					Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			translate(getEntity()->getTransform(), Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::A] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(),
-					Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			translate(getEntity()->getTransform(), Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::S] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(),
-					Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			translate(getEntity()->getTransform(), Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::D] == Button::State::DOWN)
 		{
-			MathFunctions::translate(getEntity()->getTransformation(),
-					Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			translate(getEntity()->getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		updateY();
@@ -78,9 +74,8 @@ namespace bobsisland
 	void BobControl::fireGun()
 	{
 		unique_ptr<Entity> bullet(new Entity);
-		bullet->setTransformation(getEntity()->getTransformation() *
-				getEntity()->getComponents<Mesh>()[1]->getTransformation());
-		MathFunctions::rotate(bullet->getTransformation(), MathConstants::PI * 0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		bullet->setTransform(getEntity()->getTransform() * getEntity()->getComponents<Mesh>()[1]->getTransform());
+		rotate(bullet->getTransform(), MathConstants::PI * 0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 		unique_ptr<Mesh> mesh = ModelFactory::getInstance().createPyramidMesh(0.1f, 0.5f,
 				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -94,10 +89,10 @@ namespace bobsisland
 		material.friction = 0.5f;
 		material.restitution = 0.1f;
 		unique_ptr<Body> body = PhysicsFactory::getInstance().createBody(material, bodyModel.get(),
-				bullet->getTransformation());
+				bullet->getTransform());
 		body->setEntity(bullet.get());
 
-		Vector3 trajectory = MathFunctions::getUp3(bullet->getTransformation());
+		Vector3 trajectory = getUp3(bullet->getTransform());
 		trajectory.normalize();
 		trajectory *= -50.0f;
 		body->applyForce(trajectory, Vector3(0.0f, 0.0f, 0.0f));
@@ -148,11 +143,11 @@ namespace bobsisland
 		{
 			int deltaX = event->x - x;
 			int deltaY = event->y - y;
-			MathFunctions::rotate(getEntity()->getTransformation(), deltaX * -Simplicity::getDeltaTime() * 0.1f,
+			rotate(getEntity()->getTransform(), deltaX * -Simplicity::getDeltaTime() * 0.1f,
 					Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-			MathFunctions::rotate(getEntity()->getComponent<Camera>()->getTransformation(),
+			rotate(getEntity()->getComponent<Camera>()->getTransform(),
 					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-			MathFunctions::rotate(getEntity()->getComponents<Mesh>()[1]->getTransformation(),
+			rotate(getEntity()->getComponents<Mesh>()[1]->getTransform(),
 					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 			Simplicity::updateWorldRepresentations(*getEntity());
@@ -164,7 +159,7 @@ namespace bobsisland
 
 	void BobControl::updateY()
 	{
-		Vector3 position = MathFunctions::getTranslation3(getEntity()->getTransformation());
+		Vector3 position = getPosition3(getEntity()->getTransform());
 		vector<Entity*> entities = world.getEntitiesWithinBounds(Square(0.25f), position);
 
 		for (Entity* entity : entities)
@@ -181,7 +176,7 @@ namespace bobsisland
 
 	bool BobControl::updateY(const Mesh& ground)
 	{
-		Vector3 position = MathFunctions::getTranslation3(getEntity()->getTransformation());
+		Vector3 position = getPosition3(getEntity()->getTransform());
 		Vector3 position2d = position;
 		position2d.Y() = 0.0f;
 
@@ -201,7 +196,7 @@ namespace bobsisland
 			{
 				Vector3 edge0 = vertices[triangleIndex + 1].position - vertices[triangleIndex].position;
 				Vector3 edge1 = vertices[triangleIndex + 2].position - vertices[triangleIndex].position;
-				Vector3 normal = MathFunctions::crossProduct(edge0, edge1);
+				Vector3 normal = crossProduct(edge0, edge1);
 
 				// Solve the equation for the plane (ax + by + cz + d = 0) to find y.
 				float d = dotProduct(normal, vertices[triangleIndex].position) * -1.0f;
@@ -209,7 +204,7 @@ namespace bobsisland
 
 				position.Y() = y + 1.0f; // Add the half extent of Bob's body.
 
-				MathFunctions::setTranslation(getEntity()->getTransformation(), position);
+				setPosition(getEntity()->getTransform(), position);
 
 				return true;
 			}
