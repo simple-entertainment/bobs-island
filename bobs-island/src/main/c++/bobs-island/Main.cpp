@@ -17,7 +17,7 @@
 #include <fstream>
 
 #include <simplicity/API.h>
-//#include <simplicity/bullet/API.h>
+#include <simplicity/bullet/API.h>
 #include <simplicity/freeglut/API.h>
 #include <simplicity/opengl/API.h>
 
@@ -27,7 +27,7 @@
 
 using namespace bobsisland;
 using namespace simplicity;
-//using namespace simplicity::bullet;
+using namespace simplicity::bullet;
 using namespace simplicity::freeglut;
 using namespace simplicity::opengl;
 using namespace std;
@@ -67,10 +67,10 @@ int main(int argc, char** argv)
 
 	// Physics
 	/////////////////////////
-	/*unique_ptr<PhysicsFactory> physicsFactory(new BulletPhysicsFactory);
+	unique_ptr<PhysicsFactory> physicsFactory(new BulletPhysicsFactory);
 	PhysicsFactory::setInstance(move(physicsFactory));
 
-	unique_ptr<Engine> physicsEngine(new BulletEngine(Vector3(0.0f, 0.0f, 0.0f)));*/
+	unique_ptr<Engine> physicsEngine(new BulletEngine(Vector3(0.0f, -10.0f, 0.0f)));
 
 	// Rendering
 	/////////////////////////
@@ -141,36 +141,16 @@ int main(int argc, char** argv)
 	bob->addUniqueComponent(move(camera));
 	bob->addUniqueComponent(move(cameraBounds)); // Yes, this is odd...
 
-	// A Box!
-	/////////////////////////
-	/*unique_ptr<Entity> box(new Entity);
-	MathFunctions::translate(box->getTransformation(), Vector4(0.0f, 50.0f, 0.0f, 1.0f));
-
-	unique_ptr<Model> boxModel =
-			ModelFactory::getInstance().createCubeMesh(5.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	Body::Material material;
-	material.density = 0.0f;
-	material.friction = 0.5f;
-	material.restitution = 0.5f;
-	unique_ptr<Body> boxBody = PhysicsFactory::getInstance().createBody(material, boxModel.get(), Matrix44(), true);
-	boxBody->setEntity(box.get());
-	//boxBody->setMass(0.0f);
-
-	box->addUniqueComponent(move(boxModel));
-	box->addUniqueComponent(move(boxBody));*/
-
 	// Add everything!
 	/////////////////////////
 	Simplicity::addEngine(move(windowingEngine));
 	Simplicity::addEngine(move(scriptingEngine));
-	//Simplicity::addEngine(move(physicsEngine));
+	Simplicity::addEngine(move(physicsEngine));
 	Simplicity::addEngine(move(renderingEngine));
 
 	Simplicity::addWorldRepresentation(move(world));
 
 	Simplicity::addEntity(move(bob));
-	//Simplicity::addEntity(move(box));
 
 	// GO!
 	/////////////////////////
