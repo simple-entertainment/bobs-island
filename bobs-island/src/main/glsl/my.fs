@@ -16,7 +16,7 @@ struct Light
 	float strength;
 };
 
-struct VertexFS
+struct Point
 {
 	vec3 clipPosition;
 	vec4 colour;
@@ -29,20 +29,20 @@ struct VertexFS
 // Functions
 // /////////////////////////
 
-vec4 applyDirectionalLight(VertexFS vertexFS, Light light, vec3 cameraPosition)
+vec4 applyDirectionalLight(Point point, Light light, vec3 cameraPosition)
 {
 	// Add the ambient term.
-	vec4 colour = vertexFS.colour * light.ambient;
+	vec4 colour = point.colour * light.ambient;
 
-	float diffuseFactor = dot(-light.direction, vertexFS.normal);
+	float diffuseFactor = dot(-light.direction, point.normal);
 	if(diffuseFactor > 0.0f)
 	{
 		// Add the diffuse term.
-		colour += diffuseFactor * vertexFS.colour * light.diffuse;
+		colour += diffuseFactor * point.colour * light.diffuse;
 
 		// Add the specular term.
-		vec3 toEye = normalize(cameraPosition - vertexFS.worldPosition);
-        vec3 lightReflect = normalize(reflect(light.direction, vertexFS.normal));
+		vec3 toEye = normalize(cameraPosition - point.worldPosition);
+        vec3 lightReflect = normalize(reflect(light.direction, point.normal));
         float specularFactor = dot(toEye, lightReflect);
 
         specularFactor = pow(specularFactor, light.strength);
@@ -83,7 +83,7 @@ bool near(float a, float b)
 // Variables
 // /////////////////////////
 
-in VertexFS vertexFS;
+in Point point;
 
 uniform vec3 cameraPosition;
 uniform Light theOnlyLight;
@@ -96,32 +96,32 @@ out vec4 colour;
 
 void main()
 {
-	VertexFS vertexFS2 = vertexFS;
+	Point point2 = point;
 
 	// Grass shader.
-	if (near(vertexFS.colour.x, 0.0f) && near(vertexFS.colour.y, 0.5f) && near(vertexFS.colour.z, 0.0f))
+	if (near(point.colour.x, 0.0f) && near(point.colour.y, 0.5f) && near(point.colour.z, 0.0f))
 	{
-		vertexFS2.colour.y = getRandomFloatZeroToOne(vertexFS.worldPosition.xz) * 0.5f + 0.25f;
+		point2.colour.y = getRandomFloatZeroToOne(point.worldPosition.xz) * 0.5f + 0.25f;
 	}
 
 	// Sand shader.
-	if (near(vertexFS.colour.x, 0.83f) && near(vertexFS.colour.y, 0.65f) && near(vertexFS.colour.z, 0.15f))
+	if (near(point.colour.x, 0.83f) && near(point.colour.y, 0.65f) && near(point.colour.z, 0.15f))
 	{
-		if (isGrain(vertexFS.worldPosition.xyz, 0.0f, 100.0f, 0.3f))
+		if (isGrain(point.worldPosition.xyz, 0.0f, 100.0f, 0.3f))
 		{
-			vertexFS2.colour = vec4(0.72f, 0.44f, 0.04f, 1.0f);
+			point2.colour = vec4(0.72f, 0.44f, 0.04f, 1.0f);
 		}
-		if (isGrain(vertexFS.worldPosition.xyz, 1.0f, 100.0f, 0.3f))
+		if (isGrain(point.worldPosition.xyz, 1.0f, 100.0f, 0.3f))
 		{
-			vertexFS2.colour = vec4(0.6f, 0.6f, 0.6f, 1.0f);
+			point2.colour = vec4(0.6f, 0.6f, 0.6f, 1.0f);
 		}
 	}
 
 	// Tree shader.
-	if (near(vertexFS.colour.x, 0.47f) && near(vertexFS.colour.y, 0.24f) && near(vertexFS.colour.z, 0.0f))
+	if (near(point.colour.x, 0.47f) && near(point.colour.y, 0.24f) && near(point.colour.z, 0.0f))
 	{
-		vertexFS2.colour *= getRandomFloatZeroToOne(vertexFS.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
+		point2.colour *= getRandomFloatZeroToOne(point.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
 	}
 
-	colour = applyDirectionalLight(vertexFS2, theOnlyLight, cameraPosition);
+	colour = applyDirectionalLight(point2, theOnlyLight, cameraPosition);
 }

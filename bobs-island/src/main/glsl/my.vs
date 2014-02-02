@@ -4,15 +4,7 @@
 // Structures
 // /////////////////////////
 
-struct VertexVS
-{
-	vec4 colour;
-	vec3 normal;
-	vec3 position;
-	vec2 texCoord;
-};
-
-struct VertexFS
+struct Point
 {
 	vec3 clipPosition;
 	vec4 colour;
@@ -25,12 +17,15 @@ struct VertexFS
 // Variables
 // /////////////////////////
 
-layout (location = 0) in VertexVS vertexVS;
+layout (location = 0) in vec4 colour;
+layout (location = 1) in vec3 normal;
+layout (location = 2) in vec3 position;
+layout (location = 3) in vec2 texCoord;
 
 uniform mat4 cameraTransform;
 uniform mat4 worldTransform;
 
-out VertexFS vertexFS;
+out Point point;
 
 // /////////////////////////
 // Shader
@@ -38,14 +33,14 @@ out VertexFS vertexFS;
 
 void main()
 {
-	vec4 worldPosition4 = worldTransform * vec4(vertexVS.position, 1.0);
-	vec4 clipPosition4 = cameraTransform * worldTransform * vec4(vertexVS.position, 1.0);
+	vec4 worldPosition4 = worldTransform * vec4(position, 1.0);
+	vec4 clipPosition4 = cameraTransform * worldPosition4;
 
-	vertexFS.clipPosition = clipPosition4.xyz;
-	vertexFS.colour = vertexVS.colour;
-	vertexFS.normal = vertexVS.normal;
-	vertexFS.texCoord = vertexVS.texCoord;
-	vertexFS.worldPosition = worldPosition4.xyz;
+	point.clipPosition = clipPosition4.xyz;
+	point.colour = colour;
+	point.normal = normal;
+	point.texCoord = texCoord;
+	point.worldPosition = worldPosition4.xyz;
 
 	gl_Position = clipPosition4;
 }
