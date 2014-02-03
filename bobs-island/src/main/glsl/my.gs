@@ -46,6 +46,7 @@ vec3 flip(
 	float distanceToEffectOrigin,
 	float effectSpeed,
 	float effectTime,
+	bool effectVisibleBeforeFlip,
 	float flipDuration,
 	vec3 flipVertexPosition,
 	vec3 otherVertexAPosition,
@@ -53,7 +54,7 @@ vec3 flip(
 {
 	float flipStartTime = distanceToEffectOrigin / effectSpeed;
 
-	if (effectTime < flipStartTime && false)
+	if (effectTime < flipStartTime && !effectVisibleBeforeFlip)
 	{
 		return otherVertexAPosition;
 	}
@@ -87,6 +88,7 @@ uniform mat4 cameraTransform;
 uniform vec3 effectOrigin;
 uniform float effectSpeed;
 uniform float effectTime;
+uniform bool effectVisibleBeforeFlip;
 
 out Point point1;
 
@@ -121,6 +123,7 @@ void main()
 		maxDistanceToEffectOrigin,
 		effectSpeed,
 		effectTime,
+		effectVisibleBeforeFlip,
 		1.0f,
 		point[flipVertexIndex].worldPosition,
 		point[otherVertexAIndex].worldPosition,

@@ -53,6 +53,8 @@ namespace bobsisland
 		float timeToTravel100m = 100.0f / 5.0f;
 		float timesTravelled100m = floor(Simplicity::getTotalTime() / timeToTravel100m);
 		shader.setVar("effectTime", Simplicity::getTotalTime() - timesTravelled100m * timeToTravel100m);
+
+		shader.setVar("effectVisibleBeforeFlip", timesTravelled100m >= 1.0f);
 	}
 
 	void FlippingEngine::removeEntity(const Entity& /*entity*/)
