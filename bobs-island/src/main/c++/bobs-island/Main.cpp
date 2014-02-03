@@ -112,7 +112,7 @@ int main(int argc, char** argv)
 	renderingEngine->addLight(move(light));
 	renderingEngine->addRenderer(move(renderer));
 	renderingEngine->setCamera(move(bob.get()));
-	renderingEngine->setClearingColour(Vector4(0.0f, 0.5f, 0.75f, 1.0f));
+	renderingEngine->setClearingColor(Vector4(0.0f, 0.5f, 0.75f, 1.0f));
 	renderingEngine->setGraph(world.get());
 
 	// Flipping triangles!

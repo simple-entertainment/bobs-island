@@ -13,7 +13,7 @@ float PI = 3.1416;
 struct Point
 {
 	vec4 clipPosition;
-	vec4 colour;
+	vec4 color;
 	vec3 normal;
 	vec2 texCoord;
 	vec3 worldPosition;
@@ -127,7 +127,7 @@ void main()
 		point[otherVertexBIndex].worldPosition);
 
 	point1.clipPosition = cameraTransform * vec4(flipVertexPosition, 1.0f);
-	point1.colour = point[flipVertexIndex].colour;
+	point1.color = point[flipVertexIndex].color;
 	point1.normal = point[flipVertexIndex].normal;
 	point1.texCoord = point[flipVertexIndex].texCoord;
 	point1.worldPosition = flipVertexPosition;
@@ -136,7 +136,7 @@ void main()
 	EmitVertex();
 
 	point1.clipPosition = point[otherVertexAIndex].clipPosition;
-	point1.colour = point[otherVertexAIndex].colour;
+	point1.color = point[otherVertexAIndex].color;
 	point1.normal = point[otherVertexAIndex].normal;
 	point1.texCoord = point[otherVertexAIndex].texCoord;
 	point1.worldPosition = point[otherVertexAIndex].worldPosition;
@@ -145,7 +145,7 @@ void main()
 	EmitVertex();
 
 	point1.clipPosition = point[otherVertexBIndex].clipPosition;
-	point1.colour = point[otherVertexBIndex].colour;
+	point1.color = point[otherVertexBIndex].color;
 	point1.normal = point[otherVertexBIndex].normal;
 	point1.texCoord = point[otherVertexBIndex].texCoord;
 	point1.worldPosition = point[otherVertexBIndex].worldPosition;
@@ -154,7 +154,7 @@ void main()
 	EmitVertex();
 
 	point1.clipPosition = cameraTransform * vec4(flipVertexPosition, 1.0f);
-	point1.colour = point[flipVertexIndex].colour;
+	point1.color = point[flipVertexIndex].color;
 	point1.normal = point[flipVertexIndex].normal;
 	point1.texCoord = point[flipVertexIndex].texCoord;
 	point1.worldPosition = flipVertexPosition;

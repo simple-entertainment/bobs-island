@@ -7,7 +7,7 @@
 struct Point
 {
 	vec4 clipPosition;
-	vec4 colour;
+	vec4 color;
 	vec3 normal;
 	vec2 texCoord;
 	vec3 worldPosition;
@@ -17,7 +17,7 @@ struct Point
 // Variables
 // /////////////////////////
 
-layout (location = 0) in vec4 colour;
+layout (location = 0) in vec4 color;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec3 position;
 layout (location = 3) in vec2 texCoord;
@@ -37,7 +37,7 @@ void main()
 	vec4 clipPosition = cameraTransform * worldPosition;
 
 	point.clipPosition = clipPosition;
-	point.colour = colour;
+	point.color = color;
 	point.normal = normal;
 	point.texCoord = texCoord;
 	point.worldPosition = worldPosition.xyz;
