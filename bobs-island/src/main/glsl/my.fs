@@ -18,7 +18,7 @@ struct Light
 
 struct Point
 {
-	vec3 clipPosition;
+	vec4 clipPosition;
 	vec4 colour;
 	vec3 normal;
 	vec2 texCoord;
@@ -83,7 +83,7 @@ bool near(float a, float b)
 // Variables
 // /////////////////////////
 
-in Point point;
+in Point point1;
 
 uniform vec3 cameraPosition;
 uniform Light theOnlyLight;
@@ -96,31 +96,31 @@ out vec4 colour;
 
 void main()
 {
-	Point point2 = point;
+	Point point2 = point1;
 
 	// Grass shader.
-	if (near(point.colour.x, 0.0f) && near(point.colour.y, 0.5f) && near(point.colour.z, 0.0f))
+	if (near(point1.colour.x, 0.0f) && near(point1.colour.y, 0.5f) && near(point1.colour.z, 0.0f))
 	{
-		point2.colour.y = getRandomFloatZeroToOne(point.worldPosition.xz) * 0.5f + 0.25f;
+		point2.colour.y = getRandomFloatZeroToOne(point1.worldPosition.xz) * 0.5f + 0.25f;
 	}
 
 	// Sand shader.
-	if (near(point.colour.x, 0.83f) && near(point.colour.y, 0.65f) && near(point.colour.z, 0.15f))
+	if (near(point1.colour.x, 0.83f) && near(point1.colour.y, 0.65f) && near(point1.colour.z, 0.15f))
 	{
-		if (isGrain(point.worldPosition.xyz, 0.0f, 100.0f, 0.3f))
+		if (isGrain(point1.worldPosition.xyz, 0.0f, 100.0f, 0.3f))
 		{
 			point2.colour = vec4(0.72f, 0.44f, 0.04f, 1.0f);
 		}
-		if (isGrain(point.worldPosition.xyz, 1.0f, 100.0f, 0.3f))
+		if (isGrain(point1.worldPosition.xyz, 1.0f, 100.0f, 0.3f))
 		{
 			point2.colour = vec4(0.6f, 0.6f, 0.6f, 1.0f);
 		}
 	}
 
 	// Tree shader.
-	if (near(point.colour.x, 0.47f) && near(point.colour.y, 0.24f) && near(point.colour.z, 0.0f))
+	if (near(point1.colour.x, 0.47f) && near(point1.colour.y, 0.24f) && near(point1.colour.z, 0.0f))
 	{
-		point2.colour *= getRandomFloatZeroToOne(point.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
+		point2.colour *= getRandomFloatZeroToOne(point1.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
 	}
 
 	colour = applyDirectionalLight(point2, theOnlyLight, cameraPosition);

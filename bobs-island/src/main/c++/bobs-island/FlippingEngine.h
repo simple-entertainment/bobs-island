@@ -14,45 +14,35 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef BOBCONTROL_H_
-#define BOBCONTROL_H_
+#ifndef FLIPPINGENGINE_H_
+#define FLIPPINGENGINE_H_
 
 #include <simplicity/API.h>
 
+using namespace simplicity;
+
 namespace bobsisland
 {
-	class BobControl : public simplicity::Script
+	class FlippingEngine : public Engine
 	{
 		public:
-			BobControl(const simplicity::Graph& world);
+			FlippingEngine(Shader& shader);
+
+			void addEntity(Entity& entity);
+
+			void advance();
 
 			void destroy();
 
-			void execute();
-
-			void fireGun();
-
 			void init();
 
-			void onKeyboardButton(const void* message);
+			void onApplyShader(const void* message);
 
-			void onMouseButton(const void* message);
-
-			void onMouseMove(const void* message);
+			void removeEntity(const Entity& entity);
 
 		private:
-			std::map<simplicity::Keyboard::Button, simplicity::Button::State> buttonStates;
-
-			const simplicity::Graph& world;
-
-			int x;
-
-			int y;
-
-			void updateY();
-
-			bool updateY(const simplicity::Mesh& ground);
+			Shader& shader;
 	};
 }
 
-#endif /* BOBCONTROL_H_ */
+#endif /* FLIPPINGENGINE_H_ */

@@ -20,7 +20,6 @@
 
 #include "BobControl.h"
 
-using namespace boost;
 using namespace simplicity;
 //using namespace theisland;
 
@@ -120,24 +119,24 @@ namespace bobsisland
 				placeholders::_1));
 	}
 
-	void BobControl::onKeyboardButton(any message)
+	void BobControl::onKeyboardButton(const void* message)
 	{
-		KeyboardButtonEvent* event = any_cast<KeyboardButtonEvent*>(message);
+		const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message);
 		buttonStates[event->button] = event->buttonState;
 	}
 
-	void BobControl::onMouseButton(any message)
+	void BobControl::onMouseButton(const void* message)
 	{
-		MouseButtonEvent* event = any_cast<MouseButtonEvent*>(message);
+		const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message);
 		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
 		{
 			fireGun();
 		}
 	}
 
-	void BobControl::onMouseMove(any message)
+	void BobControl::onMouseMove(const void* message)
 	{
-		MouseMoveEvent* event = any_cast<MouseMoveEvent*>(message);
+		const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message);
 
 		if (x != -1)
 		{

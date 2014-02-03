@@ -6,7 +6,7 @@
 
 struct Point
 {
-	vec3 clipPosition;
+	vec4 clipPosition;
 	vec4 colour;
 	vec3 normal;
 	vec2 texCoord;
@@ -33,14 +33,14 @@ out Point point;
 
 void main()
 {
-	vec4 worldPosition4 = worldTransform * vec4(position, 1.0);
-	vec4 clipPosition4 = cameraTransform * worldPosition4;
+	vec4 worldPosition = worldTransform * vec4(position, 1.0);
+	vec4 clipPosition = cameraTransform * worldPosition;
 
-	point.clipPosition = clipPosition4.xyz;
+	point.clipPosition = clipPosition;
 	point.colour = colour;
 	point.normal = normal;
 	point.texCoord = texCoord;
-	point.worldPosition = worldPosition4.xyz;
+	point.worldPosition = worldPosition.xyz;
 
-	gl_Position = clipPosition4;
+	gl_Position = clipPosition;
 }

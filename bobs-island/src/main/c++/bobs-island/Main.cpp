@@ -24,6 +24,7 @@
 #include <the-island/API.h>
 
 #include "BobControl.h"
+#include "FlippingEngine.h"
 
 using namespace bobsisland;
 using namespace simplicity;
@@ -83,12 +84,15 @@ int main(int argc, char** argv)
 
 	// Shaders
 	ifstream vertexShaderFile("src/main/glsl/my.vs");
+	ifstream geometryShaderFile("src/main/glsl/my.gs");
 	ifstream fragmentShaderFile("src/main/glsl/my.fs");
 	unique_ptr<OpenGLVertexShader> vertexShader(new OpenGLVertexShader(vertexShaderFile));
+	unique_ptr<OpenGLGeometryShader> geometryShader(new OpenGLGeometryShader(geometryShaderFile));
 	unique_ptr<OpenGLFragmentShader> fragmentShader(new OpenGLFragmentShader(fragmentShaderFile));
 	vertexShaderFile.close();
 	fragmentShaderFile.close();
-	unique_ptr<Shader> shader(new OpenGLShader(move(vertexShader), move(fragmentShader)));
+	unique_ptr<Shader> shader(new OpenGLShader(move(vertexShader), move(geometryShader), move(fragmentShader)));
+	Shader* shaderRaw = shader.get();
 	renderer->setShader(move(shader));
 
 	// Camera
@@ -110,6 +114,10 @@ int main(int argc, char** argv)
 	renderingEngine->setCamera(move(bob.get()));
 	renderingEngine->setClearingColour(Vector4(0.0f, 0.5f, 0.75f, 1.0f));
 	renderingEngine->setGraph(world.get());
+
+	// Flipping triangles!
+	/////////////////////////
+	unique_ptr<Engine> flippingEngine(new FlippingEngine(*shaderRaw));
 
 	// The Island!
 	/////////////////////////
@@ -146,12 +154,52 @@ int main(int argc, char** argv)
 	bob->addUniqueComponent(move(camera));
 	bob->addUniqueComponent(move(cameraBounds)); // Yes, this is odd...
 
+	// Testing 123
+	/////////////////////////
+	/*unique_ptr<FlyingCameraEngine> flyingCameraEngine(new FlyingCameraEngine(*bob.get()));
+	Simplicity::addEngine(move(flyingCameraEngine));
+
+	unique_ptr<Entity> test(new Entity);
+	setPosition(test->getTransform(), Vector3(0.0f, 2.0f, radius - 3.0f));
+
+	unique_ptr<Mesh> cube = ModelFactory::getInstance().createCubeMesh(1.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	Matrix44 relativeTransform;
+	relativeTransform.setIdentity();
+	setPosition(relativeTransform, Vector3(1.0f, 1.0f, 1.0f));
+	unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
+
+	unique_ptr<Mesh> cylinder = ModelFactory::getInstance().createCylinderMesh(0.25f, 10.0f, 5,
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	unique_ptr<Mesh> sphere = ModelFactory::getInstance().createSphereMesh(1.0f, 10, Vector4(1.0f, 0.0f, 0.0f, 1.0f),
+			false);
+
+	unique_ptr<Mesh> triangle = ModelFactory::getInstance().createTriangleMesh(Vector3(0.0f, 1.0f, -5.0f),
+			Vector3(-1.0f, -2.0f, 0.0f), Vector3(1.0f, -2.0f, 0.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	relativeTransform.setIdentity();
+	unique_ptr<Model> triangleMinusCylinder = ModelFunctions::subtract(*triangle, *cylinder, relativeTransform);
+
+	unique_ptr<Model> bounds(new Square(1.0f));
+	bounds->setCategory(Categories::BOUNDS);
+
+	//test->addUniqueComponent(move(cube));
+	//test->addUniqueComponent(move(cubeMinusCube));
+	//test->addUniqueComponent(move(cylinder));
+	test->addUniqueComponent(move(sphere));
+	//test->addUniqueComponent(move(triangle));
+	//test->addUniqueComponent(move(triangleMinusCylinder));
+	test->addUniqueComponent(move(bounds));
+	Simplicity::addEntity(move(test));*/
+
 	// Add everything!
 	/////////////////////////
 	Simplicity::addEngine(move(windowingEngine));
 	Simplicity::addEngine(move(scriptingEngine));
 	Simplicity::addEngine(move(physicsEngine));
 	Simplicity::addEngine(move(renderingEngine));
+	Simplicity::addEngine(move(flippingEngine));
 
 	Simplicity::addWorldRepresentation(move(world));
 
