@@ -25,6 +25,7 @@
 
 #include "BobControl.h"
 #include "FlippingEngine.h"
+#include "SunEngine.h"
 
 using namespace bobsisland;
 using namespace simplicity;
@@ -42,7 +43,8 @@ int main(int argc, char** argv)
 
 	// World Representations
 	/////////////////////////
-	unique_ptr<Graph> world(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
+	unique_ptr<Graph> world0(new SimpleGraph);
+	unique_ptr<Graph> world1(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
 
 	// Models
 	/////////////////////////
@@ -52,6 +54,7 @@ int main(int argc, char** argv)
 	// Bob!
 	/////////////////////////
 	unique_ptr<Entity> bob(new Entity);
+	Entity* rawBob = bob.get();
 
 	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -60,7 +63,7 @@ int main(int argc, char** argv)
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
 
-	unique_ptr<BobControl> bobControl(new BobControl(*world.get()));
+	unique_ptr<BobControl> bobControl(new BobControl(*world1.get()));
 	bobControl->setEntity(bob.get());
 
 	unique_ptr<Model> cameraBounds(new Square(32.0f));
@@ -97,28 +100,54 @@ int main(int argc, char** argv)
 
 	// Camera
 	unique_ptr<Camera> camera(new OpenGLCamera);
+	camera->setFarClippingDistance(2000.0f);
 	camera->setPerspective(60.0f, 4.0f / 3.0f);
 	// Position is relative to Bob.
 	translate(camera->getTransform(), Vector3(0.0f, 1.11f, -0.21f));
 
-	// Light
+	// The Sun
 	unique_ptr<Entity> theSun(new Entity);
-	setPosition(theSun->getTransform(), Vector3(0.0f, 500.0f, 0.0f));
-	unique_ptr<Light> light(new OpenGLLight("theSun"));
-	light->setAmbientComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	light->setAttenuation(Vector3(1.0f, 0.0f, 0.0f));
-	light->setDiffuseComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	light->setDirection(Vector3(0.0f, -1.0f, 0.0f));
-	light->setRange(1000.0f);
-	light->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	light->setStrength(32.0f);
-	theSun->addUniqueComponent(move(light));
 
+	unique_ptr<Light> sunLight(new OpenGLLight("theSun"));
+	sunLight->setAmbientComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	sunLight->setDiffuseComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	sunLight->setRange(1000.0f);
+	sunLight->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	sunLight->setStrength(32.0f);
+
+	unique_ptr<Mesh> sunModel = ModelFactory::getInstance().createSphereMesh(50.0f, 10, Vector4(1.0f, 1.0f, 0.6f));
+	for (unsigned int index = 0; index < sunModel->getVertices().size(); index++)
+	{
+		sunModel->getVertices()[index].normal.negate();
+	}
+
+	theSun->addUniqueComponent(move(sunLight));
+	theSun->addUniqueComponent(move(sunModel));
+
+	// The flashlight
+	unique_ptr<Entity> flash(new Entity);
+
+	unique_ptr<Light> flashLight(new OpenGLLight("flash"));
+	flashLight->setAmbientComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	flashLight->setAttenuation(Vector3(0.5f, 0.05f, 0.0f));
+	flashLight->setDiffuseComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	flashLight->setDirection(Vector3(0.0f, 0.0f, -1.0f));
+	flashLight->setRange(50.0f);
+	flashLight->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	flashLight->setStrength(32.0f);
+
+	// Assemble the rendering engine.
+	/////////////////////////
 	renderingEngine->addLight(*theSun);
+	//renderingEngine->addLight(*flash);
 	renderingEngine->addRenderer(move(renderer));
 	renderingEngine->setCamera(bob.get());
-	renderingEngine->setClearingColor(Vector4(0.0f, 0.5f, 0.75f, 1.0f));
-	renderingEngine->setGraph(world.get());
+	renderingEngine->setGraph(world1.get());
+
+	// The Sun
+	/////////////////////////
+	unique_ptr<Engine> sunEngine(new SunEngine(*theSun, *flashLight));
+	flash->addUniqueComponent(move(flashLight));
 
 	// Flipping triangles!
 	/////////////////////////
@@ -152,6 +181,7 @@ int main(int argc, char** argv)
 
 	// Assemble Bob!
 	/////////////////////////
+	rotate(bob->getTransform(), MathConstants::PI * 0.5f, Vector3(0.0f, 1.0f, 0.0f));
 	setPosition(bob->getTransform(), Vector3(0.0f, 0.0f, radius - 1.0f));
 	bob->addUniqueComponent(move(bobBody));
 	bob->addUniqueComponent(move(bobGunArm));
@@ -162,7 +192,7 @@ int main(int argc, char** argv)
 	// Testing 123
 	/////////////////////////
 	/*unique_ptr<FlyingCameraEngine> flyingCameraEngine(new FlyingCameraEngine(*bob.get()));
-	Simplicity::addEngine(move(flyingCameraEngine));
+	//Simplicity::addEngine(move(flyingCameraEngine));
 
 	unique_ptr<Entity> test(new Entity);
 	setPosition(test->getTransform(), Vector3(0.0f, 2.0f, radius - 3.0f));
@@ -177,8 +207,11 @@ int main(int argc, char** argv)
 	unique_ptr<Mesh> cylinder = ModelFactory::getInstance().createCylinderMesh(0.25f, 10.0f, 5,
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
+	unique_ptr<Mesh> hemisphere = ModelFactory::getInstance().createHemisphereMesh(1.0f, 10,
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+
 	unique_ptr<Mesh> sphere = ModelFactory::getInstance().createSphereMesh(1.0f, 10, Vector4(1.0f, 0.0f, 0.0f, 1.0f),
-			false);
+			true);
 
 	unique_ptr<Mesh> triangle = ModelFactory::getInstance().createTriangleMesh(Vector3(0.0f, 1.0f, -5.0f),
 			Vector3(-1.0f, -2.0f, 0.0f), Vector3(1.0f, -2.0f, 0.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -192,6 +225,7 @@ int main(int argc, char** argv)
 	//test->addUniqueComponent(move(cube));
 	//test->addUniqueComponent(move(cubeMinusCube));
 	//test->addUniqueComponent(move(cylinder));
+	//test->addUniqueComponent(move(hemisphere));
 	test->addUniqueComponent(move(sphere));
 	//test->addUniqueComponent(move(triangle));
 	//test->addUniqueComponent(move(triangleMinusCylinder));
@@ -204,12 +238,15 @@ int main(int argc, char** argv)
 	Simplicity::addEngine(move(scriptingEngine));
 	Simplicity::addEngine(move(physicsEngine));
 	Simplicity::addEngine(move(renderingEngine));
+	Simplicity::addEngine(move(sunEngine));
 	Simplicity::addEngine(move(flippingEngine));
 
-	Simplicity::addWorldRepresentation(move(world));
+	//Simplicity::addWorldRepresentation(move(world0));
+	Simplicity::addWorldRepresentation(move(world1));
 
 	Simplicity::addEntity(move(bob));
 	Simplicity::addEntity(move(theSun));
+	//Simplicity::addEntity(move(flash), *rawBob);
 
 	// GO!
 	/////////////////////////

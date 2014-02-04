@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef FLIPPINGENGINE_H_
-#define FLIPPINGENGINE_H_
+#ifndef SUNENGINE_H_
+#define SUNENGINE_H_
 
 #include <simplicity/API.h>
 
 namespace bobsisland
 {
-	class FlippingEngine : public simplicity::Engine
+	class SunEngine : public simplicity::Engine
 	{
 		public:
-			FlippingEngine(simplicity::Shader& shader);
+			SunEngine(simplicity::Entity& theSun, simplicity::Light& flash);
 
 			void addEntity(simplicity::Entity& entity);
 
@@ -37,10 +37,10 @@ namespace bobsisland
 			void removeEntity(const simplicity::Entity& entity);
 
 		private:
-			simplicity::Shader& shader;
+			simplicity::Light& flash;
 
-			void onApplyShader(const void* message);
+			simplicity::Entity& theSun;
 	};
 }
 
-#endif /* FLIPPINGENGINE_H_ */
+#endif /* SUNENGINE_H_ */

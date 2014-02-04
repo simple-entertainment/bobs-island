@@ -16,7 +16,7 @@
  */
 #include "FlippingEngine.h"
 
-using namespace boost;
+using namespace simplicity;
 
 namespace bobsisland
 {
@@ -54,7 +54,7 @@ namespace bobsisland
 		float timesTravelled100m = floor(Simplicity::getTotalTime() / timeToTravel100m);
 		shader.setVar("effectTime", Simplicity::getTotalTime() - timesTravelled100m * timeToTravel100m);
 
-		shader.setVar("effectVisibleBeforeFlip", timesTravelled100m >= 1.0f);
+		shader.setVar("effectVisibleBeforeFlip", true);
 	}
 
 	void FlippingEngine::removeEntity(const Entity& /*entity*/)

@@ -94,6 +94,14 @@ vec4 applyPointLight(Point point, Light light, vec3 cameraPosition)
 	return color;
 }
 
+vec4 applySpotLight(Point point, Light light, vec3 cameraPosition)
+{
+	vec3 toLight = normalize(light.position - point.worldPosition);
+
+	return applyPointLight(point, light, cameraPosition) *
+		pow(max(dot(-toLight, light.direction), 0.0f), light.strength);
+}
+
 float getRandomFloat(vec2 seed)
 {
     return fract(sin(dot(seed.xy ,vec2(12.9898,78.233))) * 43758.5453);
@@ -125,6 +133,7 @@ bool near(float a, float b)
 in Point point1;
 
 uniform vec3 cameraPosition;
+uniform Light flashLight;
 uniform Light theSunLight;
 
 out vec4 color;
@@ -136,6 +145,12 @@ out vec4 color;
 void main()
 {
 	Point point2 = point1;
+
+	Light theSunLight1 = theSunLight;
+	float sunFactor = max(min(sin(theSunLight.position.y / 1000.0f) + 0.25f, 1.0f), 0.0f);
+	theSunLight1.ambient *= max(sunFactor, 0.2f);
+	theSunLight1.diffuse *= sunFactor;
+	theSunLight1.specular *= sunFactor;
 
 	// Grass shader.
 	if (near(point1.color.x, 0.0f) && near(point1.color.y, 0.5f) && near(point1.color.z, 0.0f))
@@ -172,11 +187,22 @@ void main()
 		}
 	}
 
+	// Sky shader.
+	if (near(point1.color.x, 0.0f) && near(point1.color.y, 0.5f) && near(point1.color.z, 0.75f))
+	{
+		point2.color.x = (1.0f - sunFactor) * 0.5f;
+	}
+
 	// Tree shader.
 	if (near(point1.color.x, 0.47f) && near(point1.color.y, 0.24f) && near(point1.color.z, 0.0f))
 	{
 		point2.color *= getRandomFloatZeroToOne(point1.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
 	}
 
-	color = applyDirectionalLight(point2, theSunLight, cameraPosition);
+	color = applyDirectionalLight(point2, theSunLight1, cameraPosition);
+
+	color.y *= sunFactor;
+	color.z *= sunFactor;
+
+	color += applyPointLight(point2, flashLight, cameraPosition);
 }
