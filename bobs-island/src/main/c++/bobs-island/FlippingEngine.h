@@ -36,12 +36,12 @@ namespace bobsisland
 
 			void init();
 
-			void onApplyShader(const void* message);
-
 			void removeEntity(const Entity& entity);
 
 		private:
 			Shader& shader;
+
+			void onApplyShader(const void* message);
 	};
 }
 

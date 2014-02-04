@@ -34,14 +34,16 @@ namespace bobsisland
 
 			void init();
 
-			void onKeyboardButton(const void* message);
-
-			void onMouseButton(const void* message);
-
-			void onMouseMove(const void* message);
-
 		private:
 			std::map<simplicity::Keyboard::Button, simplicity::Button::State> buttonStates;
+
+			bool falling;
+
+			float fallTime;
+
+			bool jumping;
+
+			float jumpTime;
 
 			const simplicity::Graph& world;
 
@@ -49,9 +51,19 @@ namespace bobsisland
 
 			int y;
 
-			void updateY();
+			std::unique_ptr<simplicity::Triangle> getGroundAtBobsPosition();
 
-			bool updateY(const simplicity::Mesh& ground);
+			float getYAtBobsPosition(const simplicity::Triangle& ground);
+
+			float getYForBob(float bobY, float groundY);
+
+			void onKeyboardButton(const void* message);
+
+			void onMouseButton(const void* message);
+
+			void onMouseMove(const void* message);
+
+			void updateY();
 	};
 }
 
