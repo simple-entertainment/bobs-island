@@ -41,9 +41,9 @@ vec4 applyDirectionalLight(Point point, Light light, vec3 cameraPosition)
 		color += diffuseFactor * point.color * light.diffuse;
 
 		// Add the specular term.
-		vec3 toEye = normalize(cameraPosition - point.worldPosition);
+		vec3 toCamera = normalize(cameraPosition - point.worldPosition);
         vec3 lightReflect = normalize(reflect(light.direction, point.normal));
-        float specularFactor = dot(toEye, lightReflect);
+        float specularFactor = dot(toCamera, lightReflect);
 
         specularFactor = pow(specularFactor, light.strength);
         if (specularFactor > 0.0f)
@@ -52,6 +52,45 @@ vec4 applyDirectionalLight(Point point, Light light, vec3 cameraPosition)
         }
 	}
 
+	return color;
+}
+
+vec4 applyPointLight(Point point, Light light, vec3 cameraPosition)
+{
+	vec3 toLight = light.position - point.worldPosition;
+	float distanceToLight = length(toLight);
+	toLight /= distanceToLight;
+
+	// If the point is out of range, do not light it.
+	if(distanceToLight > light.range)
+	{
+		return vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	}
+
+	// Add the ambient term.
+	vec4 color = point.color * light.ambient;
+
+	float diffuseFactor = dot(toLight, point.normal);
+	if(diffuseFactor > 0.0f)
+	{
+		// Add the diffuse term.
+		color += diffuseFactor * point.color * light.diffuse;
+
+		// Add the specular term.
+		vec3 toCamera = normalize(cameraPosition - point.worldPosition);
+        vec3 lightReflect = normalize(reflect(-toLight, point.normal));
+        float specularFactor = dot(toCamera, lightReflect);
+
+        specularFactor = pow(specularFactor, light.strength);
+        if (specularFactor > 0.0f)
+        {
+            color += specularFactor * light.specular;
+        }
+	}
+
+	// Attenuate
+	color /= dot(light.attenuation, vec3(1.0f, distanceToLight, distanceToLight * distanceToLight));
+	
 	return color;
 }
 
@@ -86,7 +125,7 @@ bool near(float a, float b)
 in Point point1;
 
 uniform vec3 cameraPosition;
-uniform Light theOnlyLight;
+uniform Light theSunLight;
 
 out vec4 color;
 
@@ -102,6 +141,22 @@ void main()
 	if (near(point1.color.x, 0.0f) && near(point1.color.y, 0.5f) && near(point1.color.z, 0.0f))
 	{
 		point2.color.y = getRandomFloatZeroToOne(point1.worldPosition.xz) * 0.5f + 0.25f;
+	}
+
+	// Ocean shader.
+	if (near(point1.color.x, 0.0f) && near(point1.color.y, 0.4f) && near(point1.color.z, 0.6f))
+	{
+		if (cameraPosition.y < 0.0f)
+		{
+			Light theSunLightUnderwater = theSunLight;
+			theSunLightUnderwater.ambient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			theSunLightUnderwater.attenuation = vec3(0.5f, 0.00025f * -cameraPosition.y, 0.0f);
+			color = applyPointLight(point1, theSunLightUnderwater, cameraPosition * vec3(1.0f, -1.0f, 1.0f));
+
+			color /= length(cameraPosition - point1.worldPosition) * 0.05f;
+
+			return;
+		}
 	}
 
 	// Sand shader.
@@ -123,5 +178,5 @@ void main()
 		point2.color *= getRandomFloatZeroToOne(point1.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
 	}
 
-	color = applyDirectionalLight(point2, theOnlyLight, cameraPosition);
+	color = applyDirectionalLight(point2, theSunLight, cameraPosition);
 }

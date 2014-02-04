@@ -102,16 +102,21 @@ int main(int argc, char** argv)
 	translate(camera->getTransform(), Vector3(0.0f, 1.11f, -0.21f));
 
 	// Light
-	unique_ptr<Light> light(new OpenGLLight("theOnly"));
+	unique_ptr<Entity> theSun(new Entity);
+	setPosition(theSun->getTransform(), Vector3(0.0f, 500.0f, 0.0f));
+	unique_ptr<Light> light(new OpenGLLight("theSun"));
 	light->setAmbientComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	light->setAttenuation(Vector3(1.0f, 0.0f, 0.0f));
 	light->setDiffuseComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	light->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	light->setDirection(Vector3(0.0f, -1.0f, 0.0f));
+	light->setRange(1000.0f);
+	light->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	light->setStrength(32.0f);
+	theSun->addUniqueComponent(move(light));
 
-	renderingEngine->addLight(move(light));
+	renderingEngine->addLight(*theSun);
 	renderingEngine->addRenderer(move(renderer));
-	renderingEngine->setCamera(move(bob.get()));
+	renderingEngine->setCamera(bob.get());
 	renderingEngine->setClearingColor(Vector4(0.0f, 0.5f, 0.75f, 1.0f));
 	renderingEngine->setGraph(world.get());
 
@@ -204,6 +209,7 @@ int main(int argc, char** argv)
 	Simplicity::addWorldRepresentation(move(world));
 
 	Simplicity::addEntity(move(bob));
+	Simplicity::addEntity(move(theSun));
 
 	// GO!
 	/////////////////////////

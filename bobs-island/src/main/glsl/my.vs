@@ -36,9 +36,16 @@ void main()
 	vec4 worldPosition = worldTransform * vec4(position, 1.0);
 	vec4 clipPosition = cameraTransform * worldPosition;
 
+	mat4 worldRotation = worldTransform;
+	worldRotation[3][0] = 0.0f;
+	worldRotation[3][1] = 0.0f;
+	worldRotation[3][2] = 0.0f;
+	worldRotation[3][3] = 1.0f;
+	vec4 worldNormal = worldRotation * vec4(normal, 1.0f);
+
 	point.clipPosition = clipPosition;
 	point.color = color;
-	point.normal = normal;
+	point.normal = worldNormal.xyz;
 	point.texCoord = texCoord;
 	point.worldPosition = worldPosition.xyz;
 
