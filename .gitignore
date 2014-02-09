@@ -2,4 +2,5 @@
 *.metadata
 *.settings
 bobs-island/Debug
+bobs-island/gmon.out
 
