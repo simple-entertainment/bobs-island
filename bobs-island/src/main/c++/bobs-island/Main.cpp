@@ -20,6 +20,7 @@
 #include <simplicity/bullet/API.h>
 #include <simplicity/freeglut/API.h>
 #include <simplicity/opengl/API.h>
+#include <simplicity/rocket/API.h>
 
 #include <the-island/API.h>
 
@@ -32,10 +33,35 @@ using namespace simplicity;
 using namespace simplicity::bullet;
 using namespace simplicity::freeglut;
 using namespace simplicity::opengl;
+using namespace simplicity::rocket;
 using namespace std;
 using namespace theisland;
 
+void onKeyboardButton(const void* message);
+void setupEngine();
+void setupScene();
+
 int main(int argc, char** argv)
+{
+	setupEngine();
+	setupScene();
+
+	Messages::registerRecipient(Events::KEYBOARD_BUTTON, onKeyboardButton);
+
+	Simplicity::play();
+}
+
+void onKeyboardButton(const void* message)
+{
+	const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message);
+
+	if (event->button == Keyboard::Button::ESCAPE && event->buttonState == Button::State::UP)
+	{
+		Simplicity::stop();
+	}
+}
+
+void setupEngine()
 {
 	// Windowing
 	/////////////////////////
@@ -51,24 +77,6 @@ int main(int argc, char** argv)
 	unique_ptr<ModelFactory> modelFactory(new OpenGLModelFactory);
 	ModelFactory::setInstance(move(modelFactory));
 
-	// Bob!
-	/////////////////////////
-	unique_ptr<Entity> bob(new Entity);
-	Entity* rawBob = bob.get();
-
-	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	unique_ptr<Model> bobGunArm = ModelFactory::getInstance().createCylinderMesh(0.05f, 0.75f, 10,
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
-
-	unique_ptr<BobControl> bobControl(new BobControl(*world1.get()));
-	bobControl->setEntity(bob.get());
-
-	unique_ptr<Model> cameraBounds(new Square(32.0f));
-	cameraBounds->setCategory(Categories::BOUNDS);
-
 	// Scripting
 	/////////////////////////
 	unique_ptr<Engine> scriptingEngine(new ScriptingEngine);
@@ -82,6 +90,9 @@ int main(int argc, char** argv)
 
 	// Rendering
 	/////////////////////////
+	unique_ptr<RenderingFactory> renderingFactory(new OpenGLRenderingFactory);
+	RenderingFactory::setInstance(move(renderingFactory));
+
 	unique_ptr<OpenGLRenderingEngine> renderingEngine(new OpenGLRenderingEngine);
 	unique_ptr<Renderer> renderer(new OpenGLRenderer);
 
@@ -93,12 +104,85 @@ int main(int argc, char** argv)
 	unique_ptr<OpenGLGeometryShader> geometryShader(new OpenGLGeometryShader(geometryShaderFile));
 	unique_ptr<OpenGLFragmentShader> fragmentShader(new OpenGLFragmentShader(fragmentShaderFile));
 	vertexShaderFile.close();
+	geometryShaderFile.close();
 	fragmentShaderFile.close();
 	unique_ptr<Shader> shader(new OpenGLShader(move(vertexShader), move(geometryShader), move(fragmentShader)));
 	Shader* shaderRaw = shader.get();
 	renderer->setShader(move(shader));
 
+	// Flipping triangles!
+	/////////////////////////
+	unique_ptr<Engine> flippingEngine(new FlippingEngine(*shaderRaw));
+
+	// UI
+	/////////////////////////
+	unique_ptr<Renderer> uiRenderer(new OpenGLRenderer);
+	uiRenderer->setClearColorBuffer(false);
+
+	ifstream uiVertexShaderFile("src/main/glsl/rocket.vs");
+	ifstream uiFragmentShaderFile("src/main/glsl/rocket.fs");
+	unique_ptr<OpenGLVertexShader> uiVertexShader(new OpenGLVertexShader(uiVertexShaderFile));
+	unique_ptr<OpenGLFragmentShader> uiFragmentShader(new OpenGLFragmentShader(uiFragmentShaderFile));
+	uiVertexShaderFile.close();
+	uiFragmentShaderFile.close();
+	unique_ptr<Shader> uiShader(new OpenGLShader(move(uiVertexShader), move(uiFragmentShader)));
+	uiRenderer->setShader(move(uiShader));
+
+	unique_ptr<Engine> uiEngine(new RocketEngine(move(uiRenderer)));
+
+	// Assemble the rendering engine.
+	/////////////////////////
+	renderingEngine->addRenderer(move(renderer));
+	renderingEngine->setGraph(world1.get());
+
+	// Debugging
+	/////////////////////////
+	unique_ptr<DebugSerialCompositeEngine> debuggingEngine(new DebugSerialCompositeEngine);
+	unique_ptr<Entity> debug(new Entity);
+	unique_ptr<RocketDocument> console(new RocketConsole("src/main/rml/console.rml", debuggingEngine.get()));
+	unique_ptr<RocketFontFace> consoleFont(new RocketFontFace("src/main/resources/fonts/Ubuntu-Regular.ttf"));
+	debug->addUniqueComponent(move(console));
+	debug->addUniqueComponent(move(consoleFont));
+
+	// Add everything!
+	/////////////////////////
+	Simplicity::setCompositeEngine(move(debuggingEngine));
+	Simplicity::addEngine(move(windowingEngine));
+	Simplicity::addEngine(move(scriptingEngine));
+	Simplicity::addEngine(move(physicsEngine));
+	Simplicity::addEngine(move(renderingEngine));
+	Simplicity::addEngine(move(flippingEngine));
+	Simplicity::addEngine(move(uiEngine));
+
+	//Simplicity::addWorldRepresentation(move(world0));
+	Simplicity::addWorldRepresentation(move(world1));
+
+	Simplicity::addEntity(move(debug));
+}
+
+void setupScene()
+{
+	// Bob!
+	/////////////////////////
+	unique_ptr<Entity> bob(new Entity);
+	Entity* rawBob = bob.get();
+
+	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	unique_ptr<Model> bobGunArm = ModelFactory::getInstance().createCylinderMesh(0.05f, 0.75f, 10,
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
+
+	Graph* world = Simplicity::getWorldRepresentation<QuadTree>();
+	unique_ptr<BobControl> bobControl(new BobControl(*world));
+	bobControl->setEntity(bob.get());
+
+	unique_ptr<Model> cameraBounds(new Square(32.0f));
+	cameraBounds->setCategory(Categories::BOUNDS);
+
 	// Camera
+	/////////////////////////
 	unique_ptr<Camera> camera(new OpenGLCamera);
 	camera->setFarClippingDistance(2000.0f);
 	camera->setPerspective(60.0f, 4.0f / 3.0f);
@@ -106,6 +190,7 @@ int main(int argc, char** argv)
 	translate(camera->getTransform(), Vector3(0.0f, 1.11f, -0.21f));
 
 	// The Sun
+	/////////////////////////
 	unique_ptr<Entity> theSun(new Entity);
 
 	unique_ptr<Light> sunLight(new OpenGLLight("theSun"));
@@ -125,6 +210,7 @@ int main(int argc, char** argv)
 	theSun->addUniqueComponent(move(sunModel));
 
 	// The flashlight
+	/////////////////////////
 	unique_ptr<Entity> flash(new Entity);
 
 	unique_ptr<Light> flashLight(new OpenGLLight("flash"));
@@ -136,22 +222,17 @@ int main(int argc, char** argv)
 	flashLight->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	flashLight->setStrength(32.0f);
 
-	// Assemble the rendering engine.
-	/////////////////////////
-	renderingEngine->addLight(*theSun);
-	//renderingEngine->addLight(*flash);
-	renderingEngine->addRenderer(move(renderer));
-	renderingEngine->setCamera(bob.get());
-	renderingEngine->setGraph(world1.get());
-
-	// The Sun
+	// The Sun engine
 	/////////////////////////
 	unique_ptr<Engine> sunEngine(new SunEngine(*theSun, *flashLight));
 	flash->addUniqueComponent(move(flashLight));
 
-	// Flipping triangles!
+	// Update the rendering engine.
 	/////////////////////////
-	unique_ptr<Engine> flippingEngine(new FlippingEngine(*shaderRaw));
+	RenderingEngine* renderingEngine = Simplicity::getEngine<RenderingEngine>();
+	renderingEngine->addLight(*theSun);
+	//renderingEngine->addLight(*flash);
+	renderingEngine->setCamera(bob.get());
 
 	// The Island!
 	/////////////////////////
@@ -202,10 +283,10 @@ int main(int argc, char** argv)
 	Matrix44 relativeTransform;
 	relativeTransform.setIdentity();
 	setPosition(relativeTransform, Vector3(1.0f, 1.0f, 1.0f));
-	unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
+	//unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
 
-	unique_ptr<Mesh> cylinder = ModelFactory::getInstance().createCylinderMesh(0.25f, 10.0f, 5,
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	unique_ptr<Mesh> cylinder = ModelFactory::getInstance().createCylinderMesh(0.6f, 10.0f, 5,
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
 
 	unique_ptr<Mesh> hemisphere = ModelFactory::getInstance().createHemisphereMesh(1.0f, 10,
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
@@ -226,29 +307,17 @@ int main(int argc, char** argv)
 	//test->addUniqueComponent(move(cubeMinusCube));
 	//test->addUniqueComponent(move(cylinder));
 	//test->addUniqueComponent(move(hemisphere));
-	test->addUniqueComponent(move(sphere));
+	//test->addUniqueComponent(move(sphere));
 	//test->addUniqueComponent(move(triangle));
-	//test->addUniqueComponent(move(triangleMinusCylinder));
+	test->addUniqueComponent(move(triangleMinusCylinder));
 	test->addUniqueComponent(move(bounds));
 	Simplicity::addEntity(move(test));*/
 
 	// Add everything!
 	/////////////////////////
-	Simplicity::addEngine(move(windowingEngine));
-	Simplicity::addEngine(move(scriptingEngine));
-	Simplicity::addEngine(move(physicsEngine));
-	Simplicity::addEngine(move(renderingEngine));
 	Simplicity::addEngine(move(sunEngine));
-	Simplicity::addEngine(move(flippingEngine));
-
-	//Simplicity::addWorldRepresentation(move(world0));
-	Simplicity::addWorldRepresentation(move(world1));
 
 	Simplicity::addEntity(move(bob));
 	Simplicity::addEntity(move(theSun));
-	//Simplicity::addEntity(move(flash), *rawBob);
-
-	// GO!
-	/////////////////////////
-	Simplicity::play();
+	Simplicity::addEntity(move(flash), *rawBob);
 }

@@ -1,0 +1,13 @@
+body
+{
+	color: white;
+	padding-left: 10px;
+	font-family: Ubuntu;
+	font-size: 12;
+}
+
+div
+{
+	//background-color: black;
+	padding: 5px;
+}

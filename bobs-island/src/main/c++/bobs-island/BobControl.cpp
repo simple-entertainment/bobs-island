@@ -21,6 +21,7 @@
 #include "BobControl.h"
 
 using namespace simplicity;
+using namespace std;
 //using namespace theisland;
 
 namespace bobsisland

@@ -1,0 +1,11 @@
+<rml>
+	<head>
+		<link type="text/rcss" href="../rcss/rkt.rcss"/>
+		<link type="text/rcss" href="../rcss/console.rcss"/>
+	</head>
+	<body>
+		<div>
+			Console
+		</div>
+	</body>
+</rml>

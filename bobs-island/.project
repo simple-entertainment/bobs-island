@@ -8,6 +8,7 @@
 		<project>simplicity-freeglut</project>
 		<project>simplicity-opengl</project>
 		<project>simplicity-bullet</project>
+		<project>simplicity-rocket</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
