@@ -17,6 +17,7 @@
 #include "FlippingEngine.h"
 
 using namespace simplicity;
+using namespace std;
 
 namespace bobsisland
 {
@@ -52,7 +53,8 @@ namespace bobsisland
 
 		float timeToTravel100m = 100.0f / 5.0f;
 		float timesTravelled100m = floor(Simplicity::getTotalTime() / timeToTravel100m);
-		shader.setVar("effectTime", Simplicity::getTotalTime() - timesTravelled100m * timeToTravel100m);
+		//shader.setVar("effectTime", Simplicity::getTotalTime() - timesTravelled100m * timeToTravel100m);
+		shader.setVar("effectTime", 1000.0f);
 
 		shader.setVar("effectVisibleBeforeFlip", true);
 	}

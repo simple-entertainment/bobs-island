@@ -92,7 +92,7 @@ namespace bobsisland
 		material.mass = 0.2f;
 		material.friction = 0.5f;
 		material.restitution = 0.1f;
-		unique_ptr<Body> body = PhysicsFactory::getInstance().createBody(material, bodyModel.get(),
+		unique_ptr<Body> body = PhysicsFactory::getInstance()->createBody(material, bodyModel.get(),
 				bullet->getTransform());
 		body->setEntity(bullet.get());
 

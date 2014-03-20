@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include <fstream>
-
 #include <simplicity/API.h>
 #include <simplicity/bullet/API.h>
 #include <simplicity/freeglut/API.h>
@@ -43,10 +41,17 @@ void setupScene();
 
 int main(int argc, char** argv)
 {
+	/*OpenCL::init();
+	ifstream clFile("src/main/cl/matrix.cl");
+	OpenCL::addProgram(clFile, "matrix");
+	clFile.close();*/
+
+	setRandomSeed(1234567);
+
 	setupEngine();
 	setupScene();
 
-	Messages::registerRecipient(Events::KEYBOARD_BUTTON, onKeyboardButton);
+	//Messages::registerRecipient(Events::KEYBOARD_BUTTON, onKeyboardButton);
 
 	Simplicity::play();
 }
@@ -66,6 +71,11 @@ void setupEngine()
 	// Windowing
 	/////////////////////////
 	unique_ptr<Engine> windowingEngine(new FreeGLUTEngine("Bob's Island"));
+
+	// Resources
+	/////////////////////////
+	unique_ptr<DataStore> fileSystemDataStore(new FileSystemDataStore("."));
+	Resources::setDataStore(move(fileSystemDataStore), Categories::ALL_CATEGORIES);
 
 	// World Representations
 	/////////////////////////
@@ -97,15 +107,12 @@ void setupEngine()
 	unique_ptr<Renderer> renderer(new OpenGLRenderer);
 
 	// Shaders
-	ifstream vertexShaderFile("src/main/glsl/my.vs");
-	ifstream geometryShaderFile("src/main/glsl/my.gs");
-	ifstream fragmentShaderFile("src/main/glsl/my.fs");
-	unique_ptr<OpenGLVertexShader> vertexShader(new OpenGLVertexShader(vertexShaderFile));
-	unique_ptr<OpenGLGeometryShader> geometryShader(new OpenGLGeometryShader(geometryShaderFile));
-	unique_ptr<OpenGLFragmentShader> fragmentShader(new OpenGLFragmentShader(fragmentShaderFile));
-	vertexShaderFile.close();
-	geometryShaderFile.close();
-	fragmentShaderFile.close();
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/my.vs", Categories::UNCATEGORIZED);
+	Resource* geometryShaderSource = Resources::get("src/main/glsl/my.gs", Categories::UNCATEGORIZED);
+	Resource* fragmentShaderSource = Resources::get("src/main/glsl/my.fs", Categories::UNCATEGORIZED);
+	unique_ptr<OpenGLVertexShader> vertexShader(new OpenGLVertexShader(*vertexShaderSource));
+	unique_ptr<OpenGLGeometryShader> geometryShader(new OpenGLGeometryShader(*geometryShaderSource));
+	unique_ptr<OpenGLFragmentShader> fragmentShader(new OpenGLFragmentShader(*fragmentShaderSource));
 	unique_ptr<Shader> shader(new OpenGLShader(move(vertexShader), move(geometryShader), move(fragmentShader)));
 	Shader* shaderRaw = shader.get();
 	renderer->setShader(move(shader));
@@ -119,12 +126,10 @@ void setupEngine()
 	unique_ptr<Renderer> uiRenderer(new OpenGLRenderer);
 	uiRenderer->setClearColorBuffer(false);
 
-	ifstream uiVertexShaderFile("src/main/glsl/rocket.vs");
-	ifstream uiFragmentShaderFile("src/main/glsl/rocket.fs");
-	unique_ptr<OpenGLVertexShader> uiVertexShader(new OpenGLVertexShader(uiVertexShaderFile));
-	unique_ptr<OpenGLFragmentShader> uiFragmentShader(new OpenGLFragmentShader(uiFragmentShaderFile));
-	uiVertexShaderFile.close();
-	uiFragmentShaderFile.close();
+	Resource* uiVertexShaderSource = Resources::get("src/main/glsl/rocket.vs", Categories::UNCATEGORIZED);
+	Resource* uiFragmentShaderSource = Resources::get("src/main/glsl/rocket.fs", Categories::UNCATEGORIZED);
+	unique_ptr<OpenGLVertexShader> uiVertexShader(new OpenGLVertexShader(*uiVertexShaderSource));
+	unique_ptr<OpenGLFragmentShader> uiFragmentShader(new OpenGLFragmentShader(*uiFragmentShaderSource));
 	unique_ptr<Shader> uiShader(new OpenGLShader(move(uiVertexShader), move(uiFragmentShader)));
 	uiRenderer->setShader(move(uiShader));
 
@@ -179,6 +184,7 @@ void setupScene()
 	bobControl->setEntity(bob.get());
 
 	unique_ptr<Model> cameraBounds(new Square(32.0f));
+	setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
 	cameraBounds->setCategory(Categories::BOUNDS);
 
 	// Camera
@@ -272,46 +278,52 @@ void setupScene()
 
 	// Testing 123
 	/////////////////////////
-	/*unique_ptr<FlyingCameraEngine> flyingCameraEngine(new FlyingCameraEngine(*bob.get()));
+	unique_ptr<FlyingCameraEngine> flyingCameraEngine(new FlyingCameraEngine(*bob.get()));
 	//Simplicity::addEngine(move(flyingCameraEngine));
 
 	unique_ptr<Entity> test(new Entity);
-	setPosition(test->getTransform(), Vector3(0.0f, 2.0f, radius - 3.0f));
+	setPosition(test->getTransform(), Vector3(0.0f, 2.0f, radius - 5.0f));
 
 	unique_ptr<Mesh> cube = ModelFactory::getInstance().createCubeMesh(1.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	Matrix44 relativeTransform;
 	relativeTransform.setIdentity();
 	setPosition(relativeTransform, Vector3(1.0f, 1.0f, 1.0f));
-	//unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
+	unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
 
-	unique_ptr<Mesh> cylinder = ModelFactory::getInstance().createCylinderMesh(0.6f, 10.0f, 5,
+	unique_ptr<Mesh> cylinder = ModelFactory::getInstance().createCylinderMesh(0.3f, 10.0f, 5,
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
 
 	unique_ptr<Mesh> hemisphere = ModelFactory::getInstance().createHemisphereMesh(1.0f, 10,
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
+	unique_ptr<Mesh> prism = ModelFactory::getInstance().createPrismMesh(Vector3(0.5f, 0.5f, 0.5f),
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
 	unique_ptr<Mesh> sphere = ModelFactory::getInstance().createSphereMesh(1.0f, 10, Vector4(1.0f, 0.0f, 0.0f, 1.0f),
 			true);
 
-	unique_ptr<Mesh> triangle = ModelFactory::getInstance().createTriangleMesh(Vector3(0.0f, 1.0f, -5.0f),
+	unique_ptr<Mesh> triangle = ModelFactory::getInstance().createTriangleMesh(Vector3(0.0f, 1.0f, 0.0f),
 			Vector3(-1.0f, -2.0f, 0.0f), Vector3(1.0f, -2.0f, 0.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-	relativeTransform.setIdentity();
+	setPosition(relativeTransform, Vector3(0.0f, 0.0f, 5.0f));
 	unique_ptr<Model> triangleMinusCylinder = ModelFunctions::subtract(*triangle, *cylinder, relativeTransform);
+	unique_ptr<Model> prismMinusCylinder = ModelFunctions::subtract(*prism, *cylinder, relativeTransform);
 
 	unique_ptr<Model> bounds(new Square(1.0f));
 	bounds->setCategory(Categories::BOUNDS);
 
 	//test->addUniqueComponent(move(cube));
-	//test->addUniqueComponent(move(cubeMinusCube));
+	test->addUniqueComponent(move(cubeMinusCube));
 	//test->addUniqueComponent(move(cylinder));
 	//test->addUniqueComponent(move(hemisphere));
+	//test->addUniqueComponent(move(prism));
 	//test->addUniqueComponent(move(sphere));
 	//test->addUniqueComponent(move(triangle));
-	test->addUniqueComponent(move(triangleMinusCylinder));
+	//test->addUniqueComponent(move(triangleMinusCylinder));
+	//test->addUniqueComponent(move(prismMinusCylinder));
 	test->addUniqueComponent(move(bounds));
-	Simplicity::addEntity(move(test));*/
+	Simplicity::addEntity(move(test));
 
 	// Add everything!
 	/////////////////////////
