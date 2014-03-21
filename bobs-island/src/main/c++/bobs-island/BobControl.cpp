@@ -79,7 +79,7 @@ namespace bobsisland
 	{
 		unique_ptr<Entity> bullet(new Entity);
 		bullet->setTransform(getEntity()->getTransform() * getEntity()->getComponents<Mesh>()[1]->getTransform());
-		rotate(bullet->getTransform(), MathConstants::PI * 0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		rotate(bullet->getTransform(), MathConstants::PI * -0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 		unique_ptr<Mesh> mesh = ModelFactory::getInstance().createPyramidMesh(0.1f, 0.5f,
 				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -94,11 +94,10 @@ namespace bobsisland
 		material.restitution = 0.1f;
 		unique_ptr<Body> body = PhysicsFactory::getInstance()->createBody(material, bodyModel.get(),
 				bullet->getTransform());
-		body->setEntity(bullet.get());
 
 		Vector3 trajectory = getUp3(bullet->getTransform());
 		trajectory.normalize();
-		trajectory *= -50.0f;
+		trajectory *= 50.0f;
 		body->applyForce(trajectory, Vector3(0.0f, 0.0f, 0.0f));
 
 		bullet->addUniqueComponent(move(mesh));
