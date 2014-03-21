@@ -74,8 +74,14 @@ void setupEngine()
 
 	// Resources
 	/////////////////////////
+	unique_ptr<DataStore> consoleDataStore(new ConsoleDataStore);
+	Resources::setDataStore(move(consoleDataStore), Categories::CONSOLE);
 	unique_ptr<DataStore> fileSystemDataStore(new FileSystemDataStore("."));
 	Resources::setDataStore(move(fileSystemDataStore), Categories::ALL_CATEGORIES);
+
+	// Logging
+	/////////////////////////
+	Logs::setResource(Resources::get("out", Categories::CONSOLE), Categories::ALL_CATEGORIES);
 
 	// World Representations
 	/////////////////////////
