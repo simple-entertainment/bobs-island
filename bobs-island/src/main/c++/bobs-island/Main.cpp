@@ -206,10 +206,10 @@ void setupScene()
 	unique_ptr<Entity> theSun(new Entity);
 
 	unique_ptr<Light> sunLight(new OpenGLLight("theSun"));
-	sunLight->setAmbientComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	sunLight->setDiffuseComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	sunLight->setAmbient(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	sunLight->setDiffuse(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	sunLight->setRange(1000.0f);
-	sunLight->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	sunLight->setSpecular(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	sunLight->setStrength(32.0f);
 
 	unique_ptr<Mesh> sunModel = ModelFactory::getInstance().createSphereMesh(50.0f, 10, Vector4(1.0f, 1.0f, 0.6f));
@@ -226,12 +226,12 @@ void setupScene()
 	unique_ptr<Entity> flash(new Entity);
 
 	unique_ptr<Light> flashLight(new OpenGLLight("flash"));
-	flashLight->setAmbientComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	flashLight->setAmbient(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	flashLight->setAttenuation(Vector3(0.5f, 0.05f, 0.0f));
-	flashLight->setDiffuseComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	flashLight->setDiffuse(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	flashLight->setDirection(Vector3(0.0f, 0.0f, -1.0f));
 	flashLight->setRange(50.0f);
-	flashLight->setSpecularComponent(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
+	flashLight->setSpecular(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	flashLight->setStrength(32.0f);
 
 	// The Sun engine
