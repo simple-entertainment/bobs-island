@@ -2,7 +2,7 @@
 <?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="cdt.managedbuild.config.gnu.exe.debug.2102939327">
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.exe.debug.2102939327" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.exe.debug.2102939327" moduleId="org.eclipse.cdt.core.settings" name="Debug (Linux)">
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -12,7 +12,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.debug.2102939327" name="Debug" parent="cdt.managedbuild.config.gnu.exe.debug">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.debug.2102939327" name="Debug (Linux)" parent="cdt.managedbuild.config.gnu.exe.debug">
 					<folderInfo id="cdt.managedbuild.config.gnu.exe.debug.2102939327." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.exe.debug.1534075954" name="Linux GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.exe.debug" superClass="cdt.managedbuild.toolchain.gnu.exe.debug">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.debug.1037601429" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.debug"/>
@@ -22,14 +22,14 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.2048162354" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.86945493" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.725910506" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/include/bullet"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-cegui/src/main/c++}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/include}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.pic.1528936757" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" value="false" valueType="boolean"/>
@@ -41,36 +41,36 @@
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.exe.debug.option.optimization.level.1830558329" name="Optimization Level" superClass="gnu.c.compiler.exe.debug.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.2073766430" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1934745971" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1688505777" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.2104218054" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.269580042" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.paths.612475866" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/Debug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/Debug (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/Debug (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/Debug (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/Debug (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/Debug (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/Debug (Linux)}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/lib}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1176524456" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-rocket"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-bullet"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="the-island"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-rocket"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-opengl"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-freeglut"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-bullet"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="BulletDynamics"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="LinearMath"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="BulletCollision"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="LinearMath"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="RocketCore"/>
 								</option>
 								<option id="gnu.cpp.link.option.debugging.gprof.1697243794" name="Generate gprof information (-pg)" superClass="gnu.cpp.link.option.debugging.gprof" value="true" valueType="boolean"/>
@@ -81,12 +81,12 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.972037474" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
 								<option id="gnu.both.asm.option.include.paths.316891889" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.537664275" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -98,59 +98,55 @@
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
-				<externalSettings containerId="simplicity;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+				<externalSettings containerId="simplicity;cdt.managedbuild.config.gnu.so.debug.586103328" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
 					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity/Debug"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity/Debug (Linux)"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="simplicity" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
-				<externalSettings containerId="simplicity-freeglut;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+				<externalSettings containerId="simplicity-freeglut;cdt.managedbuild.config.gnu.exe.debug.1362149033" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
 					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-freeglut"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-freeglut/Debug"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-freeglut/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-freeglut/Debug (Linux)"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-freeglut" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
-				<externalSettings containerId="simplicity-opengl;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+				<externalSettings containerId="simplicity-opengl;cdt.managedbuild.config.gnu.exe.debug.562495905" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
 					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity_opengl"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-opengl"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity_opengl/Debug"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-opengl/Debug"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-opengl/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-opengl/Debug (Linux)"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="simplicity_opengl" srcPrefixMapping="" srcRootPath=""/>
 						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-opengl" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
-				<externalSettings containerId="the-island;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+				<externalSettings containerId="the-island;cdt.managedbuild.config.gnu.exe.debug.2067916645" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
 					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/the-island"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/the-island/Debug"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/the-island/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/the-island/Debug (Linux)"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="the-island" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
-				<externalSettings containerId="simplicity-bullet;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+				<externalSettings containerId="simplicity-bullet;cdt.managedbuild.config.gnu.exe.debug.1997204639" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
 					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-bullet"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-bullet/Debug"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-bullet/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-bullet/Debug (Linux)"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-bullet" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
-				<externalSettings containerId="simplicity-rocket;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+				<externalSettings containerId="simplicity-rocket;cdt.managedbuild.config.gnu.exe.debug.623567163" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
 					<externalSetting>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-rocket"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-rocket/Debug"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-rocket/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-rocket/Debug (Linux)"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-rocket" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
 		</cconfiguration>
 		<cconfiguration id="cdt.managedbuild.config.gnu.exe.release.872330628">
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.exe.release.872330628" moduleId="org.eclipse.cdt.core.settings" name="Release">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.exe.release.872330628" moduleId="org.eclipse.cdt.core.settings" name="Release (Linux)">
 				<externalSettings/>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -158,37 +154,132 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.release.872330628" name="Release" parent="cdt.managedbuild.config.gnu.exe.release">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.release.872330628" name="Release (Linux)" parent="cdt.managedbuild.config.gnu.exe.release">
 					<folderInfo id="cdt.managedbuild.config.gnu.exe.release.872330628." name="/" resourcePath="">
-						<toolChain id="cdt.managedbuild.toolchain.gnu.exe.release.527814798" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.exe.release">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.exe.release.527814798" name="Linux GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.exe.release" superClass="cdt.managedbuild.toolchain.gnu.exe.release">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.release.584245095" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.release"/>
-							<builder buildPath="${workspace_loc:/bobs-island}/Release" id="cdt.managedbuild.target.gnu.builder.exe.release.1432568946" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.exe.release"/>
+							<builder autoBuildTarget="all" buildPath="${workspace_loc:/bobs-island}/Release (Linux)" cleanBuildTarget="clean" enableAutoBuild="true" id="org.eclipse.cdt.build.core.internal.builder.1642274939" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.13682002" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.314868396" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
 								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.2057939786" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.623168593" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.include.paths.1501292904" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/include/bullet"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/include}&quot;"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.other.pic.684692871" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.other.other.628429627" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -std=c++11" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.940030293" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1273313708" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release">
 								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1880655085" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.release.option.debugging.level.920500383" name="Debug Level" superClass="gnu.c.compiler.exe.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.include.paths.937690406" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1348337763" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.2079980062" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.288051813" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
+								<option id="gnu.cpp.link.option.paths.1568379921" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/Release (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/Release (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/Release (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/Release (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/Release (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/Release (Linux)}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/lib}&quot;"/>
+								</option>
+								<option id="gnu.cpp.link.option.libs.894769374" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="the-island"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-rocket"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-opengl"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-freeglut"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity-bullet"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="simplicity"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="BulletDynamics"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="BulletCollision"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="LinearMath"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="RocketCore"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1166909342" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.1087244978" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release">
+								<option id="gnu.both.asm.option.include.paths.43139484" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/the-island/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1813340804" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/main/c++"/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="simplicity;cdt.managedbuild.config.gnu.so.release.1449668993" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity/Release (Linux)"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="simplicity" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<externalSettings containerId="simplicity-bullet;cdt.managedbuild.config.gnu.exe.release.423457582" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-bullet/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-bullet/Release (Linux)"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-bullet" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<externalSettings containerId="simplicity-freeglut;cdt.managedbuild.config.gnu.exe.release.1562239122" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-freeglut/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-freeglut/Release (Linux)"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-freeglut" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<externalSettings containerId="simplicity-opengl;cdt.managedbuild.config.gnu.exe.release.705319885" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-opengl/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-opengl/Release (Linux)"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-opengl" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<externalSettings containerId="simplicity-rocket;cdt.managedbuild.config.gnu.exe.release.1710488221" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/simplicity-rocket/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/simplicity-rocket/Release (Linux)"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="simplicity-rocket" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<externalSettings containerId="the-island;cdt.managedbuild.config.gnu.exe.release.1911678275" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/the-island/src/main/c++"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/the-island/Release (Linux)"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="the-island" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+			</storageModule>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -214,7 +305,13 @@
 		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/bobs-island"/>
 		</configuration>
+		<configuration configurationName="Release (Linux)">
+			<resource resourceType="PROJECT" workspacePath="/bobs-island"/>
+		</configuration>
 		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/bobs-island"/>
+		</configuration>
+		<configuration configurationName="Debug (Linux)">
 			<resource resourceType="PROJECT" workspacePath="/bobs-island"/>
 		</configuration>
 	</storageModule>
