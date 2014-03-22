@@ -1,6 +1,8 @@
 # Eclipse project management
 *.metadata
 *.settings
-bobs-island/Debug
-bobs-island/gmon.out
+bobs-island/Debug (Linux)
+bobs-island/Debug (Windows)
+bobs-island/Release (Linux)
+bobs-island/Release (Windows)
 
