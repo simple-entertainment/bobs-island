@@ -83,10 +83,10 @@ void setupEngine()
 	/////////////////////////
 	Logs::setResource(Resources::get("out", Categories::CONSOLE), Categories::ALL_CATEGORIES);
 
-	// World Representations
+	// Scene Graphs
 	/////////////////////////
-	unique_ptr<Graph> world0(new SimpleGraph);
-	unique_ptr<Graph> world1(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
+	unique_ptr<Graph> sceneGraph0(new SimpleGraph);
+	unique_ptr<Graph> sceneGraph1(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
 
 	// Models
 	/////////////////////////
@@ -144,7 +144,7 @@ void setupEngine()
 	// Assemble the rendering engine.
 	/////////////////////////
 	renderingEngine->addRenderer(move(renderer));
-	renderingEngine->setGraph(world1.get());
+	renderingEngine->setGraph(sceneGraph1.get());
 
 	// Debugging
 	/////////////////////////
@@ -167,10 +167,13 @@ void setupEngine()
 	Simplicity::addEngine(move(flippingEngine));
 	Simplicity::addEngine(move(uiEngine));
 
-	//Simplicity::addWorldRepresentation(move(world0));
-	Simplicity::addWorldRepresentation(move(world1));
+	unique_ptr<Scene> theOnlyScene(new Scene);
+	Simplicity::addScene("theOnly", move(theOnlyScene));
 
-	Simplicity::addEntity(move(debug));
+	//Simplicity::getScene()->addGraph(move(sceneGraph0));
+	Simplicity::getScene()->addGraph(move(sceneGraph1));
+
+	Simplicity::getScene()->addEntity(move(debug));
 }
 
 void setupScene()
@@ -187,8 +190,8 @@ void setupScene()
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
 
-	Graph* world = Simplicity::getWorldRepresentation<QuadTree>();
-	unique_ptr<BobControl> bobControl(new BobControl(*world));
+	Graph* quadTree = Simplicity::getScene()->getGraph<QuadTree>();
+	unique_ptr<BobControl> bobControl(new BobControl(*quadTree));
 	bobControl->setEntity(bob.get());
 
 	unique_ptr<Model> cameraBounds(new Square(32.0f));
@@ -331,13 +334,13 @@ void setupScene()
 	//test->addUniqueComponent(move(triangleMinusCylinder));
 	//test->addUniqueComponent(move(prismMinusCylinder));
 	test->addUniqueComponent(move(bounds));
-	Simplicity::addEntity(move(test));
+	Simplicity::getScene()->addEntity(move(test));
 
 	// Add everything!
 	/////////////////////////
 	Simplicity::addEngine(move(sunEngine));
 
-	Simplicity::addEntity(move(bob));
-	Simplicity::addEntity(move(theSun));
-	Simplicity::addEntity(move(flash), *rawBob);
+	Simplicity::getScene()->addEntity(move(bob));
+	Simplicity::getScene()->addEntity(move(theSun));
+	Simplicity::getScene()->addEntity(move(flash), *rawBob);
 }

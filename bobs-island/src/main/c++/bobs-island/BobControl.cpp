@@ -72,7 +72,7 @@ namespace bobsisland
 
 		updateY();
 
-		Simplicity::updateWorldRepresentations(*getEntity());
+		Simplicity::getScene()->updateGraphs(*getEntity());
 	}
 
 	void BobControl::fireGun()
@@ -105,7 +105,7 @@ namespace bobsisland
 		bullet->addUniqueComponent(move(body));
 		bullet->addUniqueComponent(move(bodyModel));
 
-		Simplicity::addEntity(move(bullet));
+		Simplicity::getScene()->addEntity(move(bullet));
 	}
 
 	unique_ptr<Triangle> BobControl::getGroundAtBobsPosition()
@@ -249,7 +249,7 @@ namespace bobsisland
 			rotate(getEntity()->getComponents<Mesh>()[1]->getTransform(),
 					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-			Simplicity::updateWorldRepresentations(*getEntity());
+			Simplicity::getScene()->updateGraphs(*getEntity());
 		}
 
 		x = event->x;
