@@ -139,7 +139,7 @@ void setupEngine()
 	unique_ptr<Shader> uiShader(new OpenGLShader(move(uiVertexShader), move(uiFragmentShader)));
 	uiRenderer->setShader(move(uiShader));
 
-	unique_ptr<Engine> uiEngine(new RocketEngine(move(uiRenderer)));
+	unique_ptr<Engine> uiEngine(new RocketEngine(move(uiRenderer), Categories::UNCATEGORIZED));
 
 	// Assemble the rendering engine.
 	/////////////////////////
@@ -150,8 +150,10 @@ void setupEngine()
 	/////////////////////////
 	unique_ptr<DebugSerialCompositeEngine> debuggingEngine(new DebugSerialCompositeEngine);
 	unique_ptr<Entity> debug(new Entity);
-	unique_ptr<RocketDocument> console(new RocketConsole("src/main/rml/console.rml", debuggingEngine.get()));
-	unique_ptr<RocketFontFace> consoleFont(new RocketFontFace("src/main/resources/fonts/Ubuntu-Regular.ttf"));
+	Resource* consoleResource = Resources::get("src/main/rml/console.rml", Categories::UNCATEGORIZED);
+	unique_ptr<RocketDocument> console(new RocketConsole(*consoleResource, debuggingEngine.get()));
+	Resource* consoleFontResource = Resources::get("src/main/resources/fonts/Ubuntu-Regular.ttf", Categories::UNCATEGORIZED);
+	unique_ptr<RocketFontFace> consoleFont(new RocketFontFace(*consoleFontResource));
 	debug->addUniqueComponent(move(console));
 	debug->addUniqueComponent(move(consoleFont));
 
