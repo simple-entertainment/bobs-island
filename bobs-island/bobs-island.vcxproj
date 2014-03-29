@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A338FC27-559B-400C-9565-1E37BAF5D7A9}</ProjectGuid>
+    <RootNamespace>bobsisland</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-freeglut/simplicity-freeglut/src/main/c++;../../simplicity-opengl/simplicity-opengl/src/main/c++;../../simplicity-opengl/simplicity-opengl/dep/glew/include;../../simplicity-rocket/simplicity-rocket/src/main/c++;../../simplicity-rocket/simplicity-rocket/dep/librocket/include;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <AdditionalDependencies>FreeImagePlus.lib;glew32.lib;RocketCore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-freeglut/simplicity-freeglut/src/main/c++;../../simplicity-opengl/simplicity-opengl/src/main/c++;../../simplicity-opengl/simplicity-opengl/dep/glew/include;../../simplicity-rocket/simplicity-rocket/src/main/c++;../../simplicity-rocket/simplicity-rocket/dep/librocket/include;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <AdditionalDependencies>FreeImagePlus.lib;glew32.lib;RocketCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main\c++\bobs-island\BobControl.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\FlippingEngine.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\Main.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\SunEngine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main\c++\bobs-island\BobControl.h" />
+    <ClInclude Include="src\main\c++\bobs-island\FlippingEngine.h" />
+    <ClInclude Include="src\main\c++\bobs-island\SunEngine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\simplicity-bullet\simplicity-bullet\simplicity-bullet.vcxproj">
+      <Project>{8702bac0-f8b0-4f1e-aae8-022f2a4c9666}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-freeglut\simplicity-freeglut\simplicity-freeglut.vcxproj">
+      <Project>{3a88522a-4e4e-4082-b8e7-5bc8112d7a33}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-opengl\simplicity-opengl\simplicity-opengl.vcxproj">
+      <Project>{e47761bf-7a28-4a20-ab5c-4b7a2bd2d1f3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-rocket\simplicity-rocket\simplicity-rocket.vcxproj">
+      <Project>{57750541-8c5f-43a7-8fcc-6de4038c3a1f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity\simplicity\simplicity.vcxproj">
+      <Project>{19eb601f-a765-4e02-a16a-6222bda83439}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\the-island\the-island\the-island.vcxproj">
+      <Project>{848ffe75-11cb-44c7-a775-83f6192fd35c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

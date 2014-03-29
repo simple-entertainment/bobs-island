@@ -39,7 +39,7 @@ void onKeyboardButton(const void* message);
 void setupEngine();
 void setupScene();
 
-int main(int argc, char** argv)
+int main()
 {
 	/*OpenCL::init();
 	ifstream clFile("src/main/cl/matrix.cl");

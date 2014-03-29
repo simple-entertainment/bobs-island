@@ -1,8 +1,15 @@
-# Eclipse project management
+# Eclipse
+#########################
 *.metadata
 *.settings
-bobs-island/Debug (Linux)
-bobs-island/Debug (Windows)
-bobs-island/Release (Linux)
-bobs-island/Release (Windows)
+
+# Visual Studio
+#########################
+*.filters
+*.user
+
+# Output
+#########################
+Debug*/
+Release*/
 
