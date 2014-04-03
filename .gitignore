@@ -6,6 +6,7 @@
 # Visual Studio
 #########################
 *.filters
+*.sdf
 *.user
 
 # Output

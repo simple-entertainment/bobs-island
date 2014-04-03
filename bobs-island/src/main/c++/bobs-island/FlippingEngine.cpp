@@ -46,7 +46,7 @@ namespace bobsisland
 				placeholders::_1));
 	}
 
-	void FlippingEngine::onApplyShader(const void* message)
+	void FlippingEngine::onApplyShader(const void* /* message */)
 	{
 		shader.setVar("effectOrigin", Vector3(0.0f, 0.0f, 0.0f));
 		shader.setVar("effectSpeed", 5.0f);

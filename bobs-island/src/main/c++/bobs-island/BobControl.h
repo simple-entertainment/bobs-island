@@ -21,7 +21,7 @@
 
 namespace bobsisland
 {
-	class BobControl : public simplicity::Script
+	class BobControl : public simplicity::Script, private simplicity::NonCopyable
 	{
 		public:
 			BobControl(const simplicity::Graph& world);

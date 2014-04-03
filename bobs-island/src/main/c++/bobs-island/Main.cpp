@@ -273,7 +273,7 @@ void setupScene()
 		//profile.push_back(peakHeight * ((sinf(index / 5.5f) + 1.0f) / 4.0f));
 
 		// Mountains and beaches.
-		profile.push_back(peakHeight * (pow(radius - index, 3) / pow(radius, 3)));
+		profile.push_back(peakHeight * static_cast<float>(pow(radius - index, 3) / pow(radius, 3)));
 	}
 	IslandFactory::createIsland(radius, profile);
 
