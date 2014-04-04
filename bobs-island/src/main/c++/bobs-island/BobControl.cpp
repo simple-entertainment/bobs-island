@@ -30,55 +30,53 @@ namespace bobsisland
 		buttonStates(),
 		falling(false),
 		fallTime(0.0f),
+		firing(false),
 		jumping(false),
 		jumpTime(0.0f),
+		mouseDelta(),
 		world(world),
 		x(-1),
 		y(-1)
 	{
 	}
 
-	void BobControl::destroy()
-	{
-		Messages::deregisterRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
-				placeholders::_1));
-		Messages::deregisterRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
-				placeholders::_1));
-		Messages::deregisterRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
-				placeholders::_1));
-	}
-
-	void BobControl::execute()
+	void BobControl::execute(Entity& entity)
 	{
 		if (buttonStates[Keyboard::Button::W] == Button::State::DOWN)
 		{
-			translate(getEntity()->getTransform(), Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			translate(entity.getTransform(), Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::A] == Button::State::DOWN)
 		{
-			translate(getEntity()->getTransform(), Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			translate(entity.getTransform(), Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::S] == Button::State::DOWN)
 		{
-			translate(getEntity()->getTransform(), Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			translate(entity.getTransform(), Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
 		}
 
 		if (buttonStates[Keyboard::Button::D] == Button::State::DOWN)
 		{
-			translate(getEntity()->getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			translate(entity.getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
-		updateY();
+		updateY(entity);
+		turn(entity);
 
-		Simplicity::getScene()->updateGraphs(*getEntity());
+		if (firing)
+		{
+			fireGun(entity);
+		}
+
+		Simplicity::getScene()->updateGraphs(entity);
 	}
 
-	void BobControl::fireGun()
+	void BobControl::fireGun(Entity& entity)
 	{
 		unique_ptr<Entity> bullet(new Entity);
-		bullet->setTransform(getEntity()->getTransform() * getEntity()->getComponents<Mesh>()[1]->getTransform());
+		bullet->setTransform(entity.getTransform() * entity.getComponents<Mesh>()[1]->getTransform());
 		rotate(bullet->getTransform(), MathConstants::PI * -0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 		unique_ptr<Mesh> mesh = ModelFactory::getInstance().createPyramidMesh(0.1f, 0.5f,
@@ -106,11 +104,13 @@ namespace bobsisland
 		bullet->addUniqueComponent(move(bodyModel));
 
 		Simplicity::getScene()->addEntity(move(bullet));
+
+		firing = false;
 	}
 
-	unique_ptr<Triangle> BobControl::getGroundAtBobsPosition()
+	unique_ptr<Triangle> BobControl::getGroundAtBobsPosition(Entity& entity)
 	{
-		Vector3 position = getPosition3(getEntity()->getTransform());
+		Vector3 position = getPosition3(entity.getTransform());
 		Vector3 position2d = position;
 		position2d.Y() = 0.0f;
 
@@ -144,9 +144,9 @@ namespace bobsisland
 		return unique_ptr<Triangle>();
 	}
 
-	float BobControl::getYAtBobsPosition(const Triangle& ground)
+	float BobControl::getYAtBobsPosition(Entity& entity, const Triangle& ground)
 	{
-		Vector3 position2d = getPosition3(getEntity()->getTransform());
+		Vector3 position2d = getPosition3(entity.getTransform());
 		position2d.Y() = 0.0f;
 
 		Vector3 edge0 = ground.getPointB() - ground.getPointA();
@@ -199,19 +199,14 @@ namespace bobsisland
 		return newBobY;
 	}
 
-	void BobControl::init()
+	void BobControl::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		buttonStates[Keyboard::Button::W] = Button::State::UP;
-		buttonStates[Keyboard::Button::A] = Button::State::UP;
-		buttonStates[Keyboard::Button::S] = Button::State::UP;
-		buttonStates[Keyboard::Button::D] = Button::State::UP;
-
-		Messages::registerRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
-				placeholders::_1));
-		Messages::registerRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
-				placeholders::_1));
-		Messages::registerRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
-				placeholders::_1));
+		Messages::deregisterRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
+			placeholders::_1));
+		Messages::deregisterRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
+			placeholders::_1));
+		Messages::deregisterRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
+			placeholders::_1));
 	}
 
 	void BobControl::onKeyboardButton(const void* message)
@@ -230,7 +225,7 @@ namespace bobsisland
 		const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message);
 		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
 		{
-			fireGun();
+			firing = true;
 		}
 	}
 
@@ -238,32 +233,49 @@ namespace bobsisland
 	{
 		const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message);
 
-		if (x != -1)
-		{
-			int deltaX = event->x - x;
-			int deltaY = event->y - y;
-			rotate(getEntity()->getTransform(), deltaX * -Simplicity::getDeltaTime() * 0.1f,
-					Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-			rotate(getEntity()->getComponent<Camera>()->getTransform(),
-					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-			rotate(getEntity()->getComponents<Mesh>()[1]->getTransform(),
-					deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-			Simplicity::getScene()->updateGraphs(*getEntity());
-		}
-
-		x = event->x;
-		y = event->y;
+		mouseDelta.X() = static_cast<float>(event->x);
+		mouseDelta.Y() = static_cast<float>(event->y);
 	}
 
-	void BobControl::updateY()
+	void BobControl::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		unique_ptr<Triangle> ground = getGroundAtBobsPosition();
+		buttonStates[Keyboard::Button::W] = Button::State::UP;
+		buttonStates[Keyboard::Button::A] = Button::State::UP;
+		buttonStates[Keyboard::Button::S] = Button::State::UP;
+		buttonStates[Keyboard::Button::D] = Button::State::UP;
+
+		Messages::registerRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
+			placeholders::_1));
+		Messages::registerRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
+			placeholders::_1));
+		Messages::registerRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
+			placeholders::_1));
+	}
+
+	void BobControl::turn(Entity& entity)
+	{
+		int deltaX = static_cast<int>(mouseDelta.X()) - x;
+		int deltaY = static_cast<int>(mouseDelta.Y()) - y;
+		rotate(entity.getTransform(), deltaX * -Simplicity::getDeltaTime() * 0.1f,
+			Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+		rotate(entity.getComponent<Camera>()->getTransform(),
+			deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		rotate(entity.getComponents<Mesh>()[1]->getTransform(),
+			deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+		x = static_cast<int>(mouseDelta.X());
+		y = static_cast<int>(mouseDelta.Y());
+		mouseDelta = Vector2(0.0f, 0.0f);
+	}
+
+	void BobControl::updateY(Entity& entity)
+	{
+		unique_ptr<Triangle> ground = getGroundAtBobsPosition(entity);
 
 		float groundY = 0.0f;
 		if (ground.get() != NULL)
 		{
-			groundY = getYAtBobsPosition(*ground);
+			groundY = getYAtBobsPosition(entity, *ground);
 		}
 		else
 		{
@@ -275,9 +287,9 @@ namespace bobsisland
 			}
 		}
 
-		Vector3 position = getPosition3(getEntity()->getTransform());
+		Vector3 position = getPosition3(entity.getTransform());
 		position.Y() = getYForBob(position.Y(), groundY);
 
-		setPosition(getEntity()->getTransform(), position);
+		setPosition(entity.getTransform(), position);
 	}
 }

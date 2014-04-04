@@ -26,13 +26,11 @@ namespace bobsisland
 		public:
 			BobControl(const simplicity::Graph& world);
 
-			void destroy();
+			void execute(simplicity::Entity& entity);
 
-			void execute();
+			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity);
 
-			void fireGun();
-
-			void init();
+			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
 
 		private:
 			std::map<simplicity::Keyboard::Button, simplicity::Button::State> buttonStates;
@@ -41,9 +39,13 @@ namespace bobsisland
 
 			float fallTime;
 
+			bool firing;
+
 			bool jumping;
 
 			float jumpTime;
+
+			simplicity::Vector2 mouseDelta;
 
 			const simplicity::Graph& world;
 
@@ -51,9 +53,11 @@ namespace bobsisland
 
 			int y;
 
-			std::unique_ptr<simplicity::Triangle> getGroundAtBobsPosition();
+			void fireGun(simplicity::Entity& entity);
 
-			float getYAtBobsPosition(const simplicity::Triangle& ground);
+			std::unique_ptr<simplicity::Triangle> getGroundAtBobsPosition(simplicity::Entity& entity);
+
+			float getYAtBobsPosition(simplicity::Entity& entity, const simplicity::Triangle& ground);
 
 			float getYForBob(float bobY, float groundY);
 
@@ -63,7 +67,9 @@ namespace bobsisland
 
 			void onMouseMove(const void* message);
 
-			void updateY();
+			void turn(simplicity::Entity& entity);
+
+			void updateY(simplicity::Entity& entity);
 	};
 }
 

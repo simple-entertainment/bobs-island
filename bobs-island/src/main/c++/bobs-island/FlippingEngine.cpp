@@ -26,24 +26,8 @@ namespace bobsisland
 	{
 	}
 
-	void FlippingEngine::addEntity(Entity& /*entity*/)
-	{
-	}
-
 	void FlippingEngine::advance()
 	{
-	}
-
-	void FlippingEngine::destroy()
-	{
-		Messages::deregisterRecipient(Events::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
-				placeholders::_1));
-	}
-
-	void FlippingEngine::init()
-	{
-		Messages::registerRecipient(Events::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
-				placeholders::_1));
 	}
 
 	void FlippingEngine::onApplyShader(const void* /* message */)
@@ -59,7 +43,15 @@ namespace bobsisland
 		shader.setVar("effectVisibleBeforeFlip", true);
 	}
 
-	void FlippingEngine::removeEntity(const Entity& /*entity*/)
+	void FlippingEngine::onPlay()
 	{
+		Messages::registerRecipient(Events::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
+			placeholders::_1));
+	}
+
+	void FlippingEngine::onStop()
+	{
+		Messages::deregisterRecipient(Events::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
+				placeholders::_1));
 	}
 }

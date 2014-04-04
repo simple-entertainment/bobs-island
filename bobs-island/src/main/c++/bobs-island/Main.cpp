@@ -192,7 +192,6 @@ void setupScene()
 
 	Graph* quadTree = Simplicity::getScene()->getGraph<QuadTree>();
 	unique_ptr<BobControl> bobControl(new BobControl(*quadTree));
-	bobControl->setEntity(bob.get());
 
 	unique_ptr<Model> cameraBounds(new Square(32.0f));
 	setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));

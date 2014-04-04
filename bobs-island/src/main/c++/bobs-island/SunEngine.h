@@ -26,15 +26,9 @@ namespace bobsisland
 		public:
 			SunEngine(simplicity::Entity& theSun, simplicity::Light& flash);
 
-			void addEntity(simplicity::Entity& entity);
-
 			void advance();
 
-			void destroy();
-
-			void init();
-
-			void removeEntity(const simplicity::Entity& entity);
+			void onPlay();
 
 		private:
 			simplicity::Light& flash;

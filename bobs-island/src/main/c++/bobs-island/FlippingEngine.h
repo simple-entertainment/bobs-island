@@ -26,15 +26,11 @@ namespace bobsisland
 		public:
 			FlippingEngine(simplicity::Shader& shader);
 
-			void addEntity(simplicity::Entity& entity);
-
 			void advance();
 
-			void destroy();
+			void onPlay();
 
-			void init();
-
-			void removeEntity(const simplicity::Entity& entity);
+			void onStop();
 
 		private:
 			simplicity::Shader& shader;

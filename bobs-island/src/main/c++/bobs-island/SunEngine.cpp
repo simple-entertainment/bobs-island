@@ -26,10 +26,6 @@ namespace bobsisland
 	{
 	}
 
-	void SunEngine::addEntity(Entity& /*entity*/)
-	{
-	}
-
 	void SunEngine::advance()
 	{
 		float toPosition = 2.0f * MathConstants::PI * Simplicity::getTotalTime() / 60.0f;
@@ -53,16 +49,8 @@ namespace bobsisland
 		}
 	}
 
-	void SunEngine::destroy()
-	{
-	}
-
-	void SunEngine::init()
+	void SunEngine::onPlay()
 	{
 		advance();
-	}
-
-	void SunEngine::removeEntity(const Entity& /*entity*/)
-	{
 	}
 }
