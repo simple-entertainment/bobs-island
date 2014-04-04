@@ -119,7 +119,7 @@ namespace bobsisland
 		{
 			if (entity->getCategory() == 128)
 			{
-				Mesh* groundMesh = entity->getComponent<Mesh>(Categories::RENDER);
+				Mesh* groundMesh = entity->getComponent<Mesh>(Category::RENDER);
 				vector<unsigned int> indices = groundMesh->getIndices();
 				vector<Vertex> vertices = groundMesh->getVertices();
 				for (unsigned int triangleIndex = 0; triangleIndex < indices.size(); triangleIndex += 3)
@@ -201,11 +201,11 @@ namespace bobsisland
 
 	void BobControl::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
+		Messages::deregisterRecipient(Subject::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
 			placeholders::_1));
-		Messages::deregisterRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
+		Messages::deregisterRecipient(Subject::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
 			placeholders::_1));
-		Messages::deregisterRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
+		Messages::deregisterRecipient(Subject::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
 			placeholders::_1));
 	}
 
@@ -244,11 +244,11 @@ namespace bobsisland
 		buttonStates[Keyboard::Button::S] = Button::State::UP;
 		buttonStates[Keyboard::Button::D] = Button::State::UP;
 
-		Messages::registerRecipient(Events::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
+		Messages::registerRecipient(Subject::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
 			placeholders::_1));
-		Messages::registerRecipient(Events::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
+		Messages::registerRecipient(Subject::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
 			placeholders::_1));
-		Messages::registerRecipient(Events::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
+		Messages::registerRecipient(Subject::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
 			placeholders::_1));
 	}
 

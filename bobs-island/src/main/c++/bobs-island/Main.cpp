@@ -75,13 +75,13 @@ void setupEngine()
 	// Resources
 	/////////////////////////
 	unique_ptr<DataStore> consoleDataStore(new ConsoleDataStore);
-	Resources::setDataStore(move(consoleDataStore), Categories::CONSOLE);
+	Resources::setDataStore(move(consoleDataStore), Category::CONSOLE);
 	unique_ptr<DataStore> fileSystemDataStore(new FileSystemDataStore("."));
-	Resources::setDataStore(move(fileSystemDataStore), Categories::ALL_CATEGORIES);
+	Resources::setDataStore(move(fileSystemDataStore), Category::ALL_CATEGORIES);
 
 	// Logging
 	/////////////////////////
-	Logs::setResource(Resources::get("out", Categories::CONSOLE), Categories::ALL_CATEGORIES);
+	Logs::setResource(Resources::get("out", Category::CONSOLE), Category::ALL_CATEGORIES);
 
 	// Scene Graphs
 	/////////////////////////
@@ -113,9 +113,9 @@ void setupEngine()
 	unique_ptr<Renderer> renderer(new OpenGLRenderer);
 
 	// Shaders
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/my.vs", Categories::UNCATEGORIZED);
-	Resource* geometryShaderSource = Resources::get("src/main/glsl/my.gs", Categories::UNCATEGORIZED);
-	Resource* fragmentShaderSource = Resources::get("src/main/glsl/my.fs", Categories::UNCATEGORIZED);
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/my.vs", Category::UNCATEGORIZED);
+	Resource* geometryShaderSource = Resources::get("src/main/glsl/my.gs", Category::UNCATEGORIZED);
+	Resource* fragmentShaderSource = Resources::get("src/main/glsl/my.fs", Category::UNCATEGORIZED);
 	unique_ptr<OpenGLVertexShader> vertexShader(new OpenGLVertexShader(*vertexShaderSource));
 	unique_ptr<OpenGLGeometryShader> geometryShader(new OpenGLGeometryShader(*geometryShaderSource));
 	unique_ptr<OpenGLFragmentShader> fragmentShader(new OpenGLFragmentShader(*fragmentShaderSource));
@@ -132,14 +132,14 @@ void setupEngine()
 	unique_ptr<Renderer> uiRenderer(new OpenGLRenderer);
 	uiRenderer->setClearColorBuffer(false);
 
-	Resource* uiVertexShaderSource = Resources::get("src/main/glsl/rocket.vs", Categories::UNCATEGORIZED);
-	Resource* uiFragmentShaderSource = Resources::get("src/main/glsl/rocket.fs", Categories::UNCATEGORIZED);
+	Resource* uiVertexShaderSource = Resources::get("src/main/glsl/rocket.vs", Category::UNCATEGORIZED);
+	Resource* uiFragmentShaderSource = Resources::get("src/main/glsl/rocket.fs", Category::UNCATEGORIZED);
 	unique_ptr<OpenGLVertexShader> uiVertexShader(new OpenGLVertexShader(*uiVertexShaderSource));
 	unique_ptr<OpenGLFragmentShader> uiFragmentShader(new OpenGLFragmentShader(*uiFragmentShaderSource));
 	unique_ptr<Shader> uiShader(new OpenGLShader(move(uiVertexShader), move(uiFragmentShader)));
 	uiRenderer->setShader(move(uiShader));
 
-	unique_ptr<Engine> uiEngine(new RocketEngine(move(uiRenderer), Categories::UNCATEGORIZED));
+	unique_ptr<Engine> uiEngine(new RocketEngine(move(uiRenderer), Category::UNCATEGORIZED));
 
 	// Assemble the rendering engine.
 	/////////////////////////
@@ -150,9 +150,9 @@ void setupEngine()
 	/////////////////////////
 	unique_ptr<DebugSerialCompositeEngine> debuggingEngine(new DebugSerialCompositeEngine);
 	unique_ptr<Entity> debug(new Entity);
-	Resource* consoleResource = Resources::get("src/main/rml/console.rml", Categories::UNCATEGORIZED);
+	Resource* consoleResource = Resources::get("src/main/rml/console.rml", Category::UNCATEGORIZED);
 	unique_ptr<RocketDocument> console(new RocketConsole(*consoleResource, debuggingEngine.get()));
-	Resource* consoleFontResource = Resources::get("src/main/resources/fonts/Ubuntu-Regular.ttf", Categories::UNCATEGORIZED);
+	Resource* consoleFontResource = Resources::get("src/main/resources/fonts/Ubuntu-Regular.ttf", Category::UNCATEGORIZED);
 	unique_ptr<RocketFontFace> consoleFont(new RocketFontFace(*consoleFontResource));
 	debug->addUniqueComponent(move(console));
 	debug->addUniqueComponent(move(consoleFont));
@@ -195,7 +195,7 @@ void setupScene()
 
 	unique_ptr<Model> cameraBounds(new Square(32.0f));
 	setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
-	cameraBounds->setCategory(Categories::BOUNDS);
+	cameraBounds->setCategory(Category::BOUNDS);
 
 	// Camera
 	/////////////////////////
@@ -321,7 +321,7 @@ void setupScene()
 	unique_ptr<Model> prismMinusCylinder = ModelFunctions::subtract(*prism, *cylinder, relativeTransform);
 
 	unique_ptr<Model> bounds(new Square(1.0f));
-	bounds->setCategory(Categories::BOUNDS);
+	bounds->setCategory(Category::BOUNDS);
 
 	//test->addUniqueComponent(move(cube));
 	test->addUniqueComponent(move(cubeMinusCube));

@@ -45,13 +45,13 @@ namespace bobsisland
 
 	void FlippingEngine::onPlay()
 	{
-		Messages::registerRecipient(Events::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
+		Messages::registerRecipient(Subject::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
 			placeholders::_1));
 	}
 
 	void FlippingEngine::onStop()
 	{
-		Messages::deregisterRecipient(Events::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
+		Messages::deregisterRecipient(Subject::APPLY_SHADER, bind(&FlippingEngine::onApplyShader, this,
 				placeholders::_1));
 	}
 }
