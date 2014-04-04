@@ -29,8 +29,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/include/bullet"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-cegui/src/main/c++}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/dep/librocket/include}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.pic.1528936757" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.other.other.445365927" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -std=c++11" valueType="string"/>
@@ -59,7 +58,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-opengl/Debug (Linux)}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/Debug (Linux)}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/Debug (Linux)}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/dep/librocket/lib}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1176524456" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="the-island"/>
@@ -171,7 +170,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/src/main/c++}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/include/bullet"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/dep/librocket/include}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.pic.684692871" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.other.other.628429627" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -std=c++11" valueType="string"/>
@@ -199,7 +198,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-freeglut/Release (Linux)}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-bullet/Release (Linux)}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity/Release (Linux)}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-dependencies/lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/simplicity-rocket/dep/librocket/lib}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.894769374" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="the-island"/>
