@@ -273,7 +273,7 @@ namespace bobsisland
 		unique_ptr<Triangle> ground = getGroundAtBobsPosition(entity);
 
 		float groundY = 0.0f;
-		if (ground.get() != NULL)
+		if (ground.get() != nullptr)
 		{
 			groundY = getYAtBobsPosition(entity, *ground);
 		}
