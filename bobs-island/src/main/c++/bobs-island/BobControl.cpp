@@ -62,7 +62,7 @@ namespace bobsisland
 			translate(entity.getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
-		updateY(entity);
+		//updateY(entity);
 		turn(entity);
 
 		if (firing)
@@ -81,8 +81,9 @@ namespace bobsisland
 
 		unique_ptr<Mesh> mesh = ModelFactory::getInstance().createPyramidMesh(0.1f, 0.5f,
 				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		mesh->init();
 
-		unique_ptr<Model> bounds = ModelFunctions::getSquareBoundsXZ(mesh->getVertices());
+		unique_ptr<Model> bounds = ModelFunctions::getSquareBoundsXZ(mesh->getVertices(), mesh->getVertexCount());
 
 		unique_ptr<Model> bodyModel(new Box(0.1f, 0.25f, 0.1f));
 
@@ -120,9 +121,8 @@ namespace bobsisland
 			if (entity->getCategory() == 128)
 			{
 				Mesh* groundMesh = entity->getComponent<Mesh>(Category::RENDER);
-				vector<unsigned int> indices = groundMesh->getIndices();
-				vector<Vertex> vertices = groundMesh->getVertices();
-				for (unsigned int triangleIndex = 0; triangleIndex < indices.size(); triangleIndex += 3)
+				Vertex* vertices = groundMesh->getVertices();
+				for (unsigned int triangleIndex = 0; triangleIndex < groundMesh->getVertexCount(); triangleIndex += 3)
 				{
 					Vector3 triangle2d0 = vertices[triangleIndex].position;
 					triangle2d0.Y() = 0.0f;

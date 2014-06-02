@@ -77,10 +77,10 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86</AdditionalLibraryDirectories>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
-      <AdditionalDependencies>FreeImagePlus.lib;glew32.lib;RocketCore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;FreeImagePlus.lib;glew32.lib;RocketCore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">
@@ -89,15 +89,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4251;4351</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-freeglut/simplicity-freeglut/src/main/c++;../../simplicity-opengl/simplicity-opengl/src/main/c++;../../simplicity-opengl/simplicity-opengl/dep/glew/include;../../simplicity-rocket/simplicity-rocket/src/main/c++;../../simplicity-rocket/simplicity-rocket/dep/librocket/include;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-direct3d/simplicity-direct3d/src/main/c++;../../simplicity-freeglut/simplicity-freeglut/src/main/c++;../../simplicity-opengl/simplicity-opengl/src/main/c++;../../simplicity-opengl/simplicity-opengl/dep/glew/include;../../simplicity-physx/simplicity-physx/src/main/c++;../../simplicity-physx/simplicity-physx/dep/physx/include;../../simplicity-rocket/simplicity-rocket/src/main/c++;../../simplicity-rocket/simplicity-rocket/dep/librocket/include;../../simplicity-winapi/simplicity-winapi/src/main/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86</AdditionalLibraryDirectories>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
-      <AdditionalDependencies>FreeImagePlus.lib;glew32.lib;RocketCore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;FreeImagePlus.lib;glew32.lib;RocketCore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Windows-Shared)|Win32'">
@@ -115,10 +115,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86</AdditionalLibraryDirectories>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
-      <AdditionalDependencies>FreeImagePlus.lib;glew32.lib;RocketCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;FreeImagePlus.lib;glew32.lib;RocketCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Windows-Static)|Win32'">
@@ -136,26 +136,29 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../simplicity-freeglut/simplicity-freeglut/dep/freeglut/lib;../../simplicity-opengl/simplicity-opengl/dep/freeimageplus/lib;../../simplicity-opengl/simplicity-opengl/dep/glew/lib;../../simplicity-rocket/simplicity-rocket/dep/librocket/lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86</AdditionalLibraryDirectories>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
-      <AdditionalDependencies>FreeImagePlus.lib;glew32.lib;RocketCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;FreeImagePlus.lib;glew32.lib;RocketCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main\c++\bobs-island\BobControl.cpp" />
-    <ClCompile Include="src\main\c++\bobs-island\FlippingEngine.cpp" />
     <ClCompile Include="src\main\c++\bobs-island\Main.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\MeshLoader.cpp" />
     <ClCompile Include="src\main\c++\bobs-island\SunEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main\c++\bobs-island\BobControl.h" />
-    <ClInclude Include="src\main\c++\bobs-island\FlippingEngine.h" />
+    <ClInclude Include="src\main\c++\bobs-island\MeshLoader.h" />
     <ClInclude Include="src\main\c++\bobs-island\SunEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\simplicity-bullet\simplicity-bullet\simplicity-bullet.vcxproj">
       <Project>{8702bac0-f8b0-4f1e-aae8-022f2a4c9666}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-direct3d\simplicity-direct3d\simplicity-direct3d.vcxproj">
+      <Project>{f514c950-b5cb-4e24-bedc-fe6485391d55}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\simplicity-freeglut\simplicity-freeglut\simplicity-freeglut.vcxproj">
       <Project>{3a88522a-4e4e-4082-b8e7-5bc8112d7a33}</Project>
@@ -163,8 +166,14 @@
     <ProjectReference Include="..\..\simplicity-opengl\simplicity-opengl\simplicity-opengl.vcxproj">
       <Project>{e47761bf-7a28-4a20-ab5c-4b7a2bd2d1f3}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-physx\simplicity-physx\simplicity-physx.vcxproj">
+      <Project>{dc5f649b-87a3-40f2-9ccc-0446e8e53dc7}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\simplicity-rocket\simplicity-rocket\simplicity-rocket.vcxproj">
       <Project>{57750541-8c5f-43a7-8fcc-6de4038c3a1f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-winapi\simplicity-winapi\simplicity-winapi.vcxproj">
+      <Project>{196d8fcd-75be-4d06-9ae3-3269747561a3}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\simplicity\simplicity\simplicity.vcxproj">
       <Project>{19eb601f-a765-4e02-a16a-6222bda83439}</Project>
@@ -172,6 +181,24 @@
     <ProjectReference Include="..\..\the-island\the-island\the-island.vcxproj">
       <Project>{848ffe75-11cb-44c7-a775-83f6192fd35c}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\main\hlsl\fragmentDefault.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\main\hlsl\fragmentRocket.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\main\hlsl\vertexDefault.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\main\hlsl\vertexRocket.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">4.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

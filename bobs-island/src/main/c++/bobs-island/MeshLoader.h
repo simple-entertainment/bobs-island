@@ -14,29 +14,20 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef FLIPPINGENGINE_H_
-#define FLIPPINGENGINE_H_
+#ifndef MESHLOADER_H_
+#define MESHLOADER_H_
 
 #include <simplicity/API.h>
 
 namespace bobsisland
 {
-	class FlippingEngine : public simplicity::Engine
+	class MeshLoader : public simplicity::Script, private simplicity::NonCopyable
 	{
 		public:
-			FlippingEngine(simplicity::Shader& shader);
+			void execute(simplicity::Entity& entity);
 
-			void advance();
-
-			void onPlay();
-
-			void onStop();
-
-		private:
-			simplicity::Shader& shader;
-
-			void onApplyShader(const void* message);
+			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
 	};
 }
 
-#endif /* FLIPPINGENGINE_H_ */
+#endif /* MESHLOADER_H_ */

@@ -16,30 +16,44 @@
  */
 #include <simplicity/API.h>
 #include <simplicity/bullet/API.h>
+//#include <simplicity/direct3d/API.h>
 #include <simplicity/freeglut/API.h>
 #include <simplicity/opengl/API.h>
+//#include <simplicity/physx/API.h>
 #include <simplicity/rocket/API.h>
+//#include <simplicity/winapi/API.h>
 
 #include <the-island/API.h>
 
 #include "BobControl.h"
-#include "FlippingEngine.h"
+#include "MeshLoader.h"
 #include "SunEngine.h"
 
 using namespace bobsisland;
 using namespace simplicity;
 using namespace simplicity::bullet;
+//using namespace simplicity::direct3d;
 using namespace simplicity::freeglut;
 using namespace simplicity::opengl;
+//using namespace simplicity::physx;
 using namespace simplicity::rocket;
+//using namespace simplicity::winapi;
 using namespace std;
 using namespace theisland;
 
 void onKeyboardButton(const void* message);
+//#ifdef SIMPLE_WINDOWS
+//void setupEngine(HINSTANCE instance, int commandShow);
+//#else
 void setupEngine();
+//#endif
 void setupScene();
 
+//#ifdef SIMPLE_WINDOWS
+//int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR /* commandLine */, int commandShow)
+//#else
 int main()
+//#endif
 {
 	/*OpenCL::init();
 	ifstream clFile("src/main/cl/matrix.cl");
@@ -49,6 +63,7 @@ int main()
 	setRandomSeed(1234567);
 
 	setupEngine();
+	//setupEngine(instance, commandShow);
 	setupScene();
 
 	//Messages::registerRecipient(Events::KEYBOARD_BUTTON, onKeyboardButton);
@@ -66,11 +81,16 @@ void onKeyboardButton(const void* message)
 	}
 }
 
+//#ifdef SIMPLE_WINDOWS
+//void setupEngine(HINSTANCE instance, int commandShow)
+//#else
 void setupEngine()
+//#endif
 {
 	// Windowing
 	/////////////////////////
 	unique_ptr<Engine> windowingEngine(new FreeGLUTEngine("Bob's Island"));
+	//unique_ptr<WinAPIEngine> windowingEngine(new WinAPIEngine("Bob's Island", instance, commandShow));
 
 	// Resources
 	/////////////////////////
@@ -91,6 +111,7 @@ void setupEngine()
 	// Models
 	/////////////////////////
 	unique_ptr<ModelFactory> modelFactory(new OpenGLModelFactory);
+	//unique_ptr<ModelFactory> modelFactory(new Direct3DModelFactory);
 	ModelFactory::setInstance(move(modelFactory));
 
 	// Scripting
@@ -107,37 +128,40 @@ void setupEngine()
 	// Rendering
 	/////////////////////////
 	unique_ptr<RenderingFactory> renderingFactory(new OpenGLRenderingFactory);
+	//unique_ptr<RenderingFactory> renderingFactory(new Direct3DRenderingFactory);
 	RenderingFactory::setInstance(move(renderingFactory));
 
-	unique_ptr<OpenGLRenderingEngine> renderingEngine(new OpenGLRenderingEngine);
+	unique_ptr<RenderingEngine> renderingEngine(new OpenGLRenderingEngine);
 	unique_ptr<Renderer> renderer(new OpenGLRenderer);
+	//unique_ptr<RenderingEngine> renderingEngine(new Direct3DRenderingEngine);
+	//unique_ptr<Renderer> renderer(new Direct3DRenderer);
 
 	// Shaders
 	Resource* vertexShaderSource = Resources::get("src/main/glsl/my.vs", Category::UNCATEGORIZED);
-	Resource* geometryShaderSource = Resources::get("src/main/glsl/my.gs", Category::UNCATEGORIZED);
 	Resource* fragmentShaderSource = Resources::get("src/main/glsl/my.fs", Category::UNCATEGORIZED);
-	unique_ptr<OpenGLVertexShader> vertexShader(new OpenGLVertexShader(*vertexShaderSource));
-	unique_ptr<OpenGLGeometryShader> geometryShader(new OpenGLGeometryShader(*geometryShaderSource));
-	unique_ptr<OpenGLFragmentShader> fragmentShader(new OpenGLFragmentShader(*fragmentShaderSource));
-	unique_ptr<Shader> shader(new OpenGLShader(move(vertexShader), move(geometryShader), move(fragmentShader)));
-	Shader* shaderRaw = shader.get();
-	renderer->setShader(move(shader));
-
-	// Flipping triangles!
-	/////////////////////////
-	unique_ptr<Engine> flippingEngine(new FlippingEngine(*shaderRaw));
+	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
+	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
+	unique_ptr<Pipeline> pipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
+	//Resource* vertexShaderSource = Resources::get("vertexDefault.cso", Category::UNCATEGORIZED, true);
+	//Resource* fragmentShaderSource = Resources::get("fragmentDefault.cso", Category::UNCATEGORIZED, true);
+	//unique_ptr<Pipeline> pipeline(new Direct3DPipeline(*vertexShaderSource, *fragmentShaderSource));
+	renderer->setDefaultPipeline(move(pipeline));
 
 	// UI
 	/////////////////////////
 	unique_ptr<Renderer> uiRenderer(new OpenGLRenderer);
+	//unique_ptr<Renderer> uiRenderer(new Direct3DRenderer);
 	uiRenderer->setClearColorBuffer(false);
 
 	Resource* uiVertexShaderSource = Resources::get("src/main/glsl/rocket.vs", Category::UNCATEGORIZED);
 	Resource* uiFragmentShaderSource = Resources::get("src/main/glsl/rocket.fs", Category::UNCATEGORIZED);
-	unique_ptr<OpenGLVertexShader> uiVertexShader(new OpenGLVertexShader(*uiVertexShaderSource));
-	unique_ptr<OpenGLFragmentShader> uiFragmentShader(new OpenGLFragmentShader(*uiFragmentShaderSource));
-	unique_ptr<Shader> uiShader(new OpenGLShader(move(uiVertexShader), move(uiFragmentShader)));
-	uiRenderer->setShader(move(uiShader));
+	unique_ptr<OpenGLShader> uiVertexShader(new OpenGLShader(Shader::Type::VERTEX, *uiVertexShaderSource));
+	unique_ptr<OpenGLShader> uiFragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *uiFragmentShaderSource));
+	unique_ptr<Pipeline> uiPipeline(new OpenGLPipeline(move(uiVertexShader), move(uiFragmentShader)));
+	//Resource* uiVertexShaderSource = Resources::get("vertexRocket.cso", Category::UNCATEGORIZED, true);
+	//Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
+	//unique_ptr<Pipeline> uiPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
+	uiRenderer->setDefaultPipeline(move(uiPipeline));
 
 	unique_ptr<Engine> uiEngine(new RocketEngine(move(uiRenderer), Category::UNCATEGORIZED));
 
@@ -164,7 +188,6 @@ void setupEngine()
 	Simplicity::addEngine(move(scriptingEngine));
 	Simplicity::addEngine(move(physicsEngine));
 	Simplicity::addEngine(move(renderingEngine));
-	Simplicity::addEngine(move(flippingEngine));
 	Simplicity::addEngine(move(uiEngine));
 
 	unique_ptr<Scene> theOnlyScene(new Scene);
@@ -178,6 +201,12 @@ void setupEngine()
 
 void setupScene()
 {
+	// Mesh Loader! (TODO review)
+	/////////////////////////
+	unique_ptr<Entity> meshLoader(new Entity);
+	unique_ptr<MeshLoader> meshLoaderComponent(new MeshLoader);
+	meshLoader->addUniqueComponent(move(meshLoaderComponent));
+
 	// Bob!
 	/////////////////////////
 	unique_ptr<Entity> bob(new Entity);
@@ -199,7 +228,7 @@ void setupScene()
 
 	// Camera
 	/////////////////////////
-	unique_ptr<Camera> camera(new OpenGLCamera);
+	unique_ptr<Camera> camera(new Camera);
 	camera->setFarClippingDistance(2000.0f);
 	camera->setPerspective(60.0f, 4.0f / 3.0f);
 	// Position is relative to Bob.
@@ -209,7 +238,7 @@ void setupScene()
 	/////////////////////////
 	unique_ptr<Entity> theSun(new Entity);
 
-	unique_ptr<Light> sunLight(new OpenGLLight("theSun"));
+	unique_ptr<Light> sunLight(new Light("theSun"));
 	sunLight->setAmbient(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	sunLight->setDiffuse(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	sunLight->setRange(1000.0f);
@@ -217,7 +246,7 @@ void setupScene()
 	sunLight->setStrength(32.0f);
 
 	unique_ptr<Mesh> sunModel = ModelFactory::getInstance().createSphereMesh(50.0f, 10, Vector4(1.0f, 1.0f, 0.6f));
-	for (unsigned int index = 0; index < sunModel->getVertices().size(); index++)
+	for (unsigned int index = 0; index < sunModel->getVertexCount(); index++)
 	{
 		sunModel->getVertices()[index].normal.negate();
 	}
@@ -229,7 +258,7 @@ void setupScene()
 	/////////////////////////
 	unique_ptr<Entity> flash(new Entity);
 
-	unique_ptr<Light> flashLight(new OpenGLLight("flash"));
+	unique_ptr<Light> flashLight(new Light("flash"));
 	flashLight->setAmbient(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	flashLight->setAttenuation(Vector3(0.5f, 0.05f, 0.0f));
 	flashLight->setDiffuse(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
@@ -339,6 +368,7 @@ void setupScene()
 	/////////////////////////
 	Simplicity::addEngine(move(sunEngine));
 
+	Simplicity::getScene()->addEntity(move(meshLoader));
 	Simplicity::getScene()->addEntity(move(bob));
 	Simplicity::getScene()->addEntity(move(theSun));
 	Simplicity::getScene()->addEntity(move(flash), *rawBob);

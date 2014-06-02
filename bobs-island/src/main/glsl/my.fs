@@ -130,7 +130,7 @@ bool near(float a, float b)
 // Variables
 // /////////////////////////
 
-in Point point1;
+in Point point;
 
 uniform vec3 cameraPosition;
 uniform Light flashLight;
@@ -144,7 +144,7 @@ out vec4 color;
 
 void main()
 {
-	Point point2 = point1;
+	Point point2 = point;
 
 	Light theSunLight1 = theSunLight;
 	float sunFactor = max(min(sin(theSunLight.position.y / 1000.0f) + 0.25f, 1.0f), 0.0f);
@@ -153,50 +153,50 @@ void main()
 	theSunLight1.specular *= sunFactor;
 
 	// Grass shader.
-	if (near(point1.color.x, 0.0f) && near(point1.color.y, 0.5f) && near(point1.color.z, 0.0f))
+	if (near(point.color.x, 0.0f) && near(point.color.y, 0.5f) && near(point.color.z, 0.0f))
 	{
-		point2.color.y = getRandomFloatZeroToOne(point1.worldPosition.xz) * 0.5f + 0.25f;
+		point2.color.y = getRandomFloatZeroToOne(point.worldPosition.xz) * 0.5f + 0.25f;
 	}
 
 	// Ocean shader.
-	if (near(point1.color.x, 0.0f) && near(point1.color.y, 0.4f) && near(point1.color.z, 0.6f))
+	if (near(point.color.x, 0.0f) && near(point.color.y, 0.4f) && near(point.color.z, 0.6f))
 	{
 		if (cameraPosition.y < 0.0f)
 		{
 			Light theSunLightUnderwater = theSunLight;
 			theSunLightUnderwater.ambient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			theSunLightUnderwater.attenuation = vec3(0.5f, 0.00025f * -cameraPosition.y, 0.0f);
-			color = applyPointLight(point1, theSunLightUnderwater, cameraPosition * vec3(1.0f, -1.0f, 1.0f));
+			color = applyPointLight(point, theSunLightUnderwater, cameraPosition * vec3(1.0f, -1.0f, 1.0f));
 
-			color /= length(cameraPosition - point1.worldPosition) * 0.05f;
+			color /= length(cameraPosition - point.worldPosition) * 0.05f;
 
 			return;
 		}
 	}
 
 	// Sand shader.
-	if (near(point1.color.x, 0.83f) && near(point1.color.y, 0.65f) && near(point1.color.z, 0.15f))
+	if (near(point.color.x, 0.83f) && near(point.color.y, 0.65f) && near(point.color.z, 0.15f))
 	{
-		if (isGrain(point1.worldPosition.xyz, 0.0f, 100.0f, 0.3f))
+		if (isGrain(point.worldPosition.xyz, 0.0f, 100.0f, 0.3f))
 		{
 			point2.color = vec4(0.72f, 0.44f, 0.04f, 1.0f);
 		}
-		if (isGrain(point1.worldPosition.xyz, 1.0f, 100.0f, 0.3f))
+		if (isGrain(point.worldPosition.xyz, 1.0f, 100.0f, 0.3f))
 		{
 			point2.color = vec4(0.6f, 0.6f, 0.6f, 1.0f);
 		}
 	}
 
 	// Sky shader.
-	if (near(point1.color.x, 0.0f) && near(point1.color.y, 0.5f) && near(point1.color.z, 0.75f))
+	if (near(point.color.x, 0.0f) && near(point.color.y, 0.5f) && near(point.color.z, 0.75f))
 	{
 		point2.color.x = (1.0f - sunFactor) * 0.5f;
 	}
 
 	// Tree shader.
-	if (near(point1.color.x, 0.47f) && near(point1.color.y, 0.24f) && near(point1.color.z, 0.0f))
+	if (near(point.color.x, 0.47f) && near(point.color.y, 0.24f) && near(point.color.z, 0.0f))
 	{
-		point2.color *= getRandomFloatZeroToOne(point1.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
+		point2.color *= getRandomFloatZeroToOne(point.worldPosition.xy * 0.000001f) * 0.5f + 0.25f;
 	}
 
 	color = applyDirectionalLight(point2, theSunLight1, cameraPosition);
