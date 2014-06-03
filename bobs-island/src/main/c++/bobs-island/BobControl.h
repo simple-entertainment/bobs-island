@@ -28,9 +28,9 @@ namespace bobsisland
 
 			void execute(simplicity::Entity& entity);
 
-			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
 
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
 
 		private:
 			std::map<simplicity::Keyboard::Button, simplicity::Button::State> buttonStates;

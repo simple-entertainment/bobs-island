@@ -26,7 +26,7 @@ namespace bobsisland
 		public:
 			void execute(simplicity::Entity& entity);
 
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
 	};
 }
 

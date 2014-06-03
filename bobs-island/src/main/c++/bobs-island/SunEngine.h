@@ -26,9 +26,9 @@ namespace bobsisland
 		public:
 			SunEngine(simplicity::Entity& theSun, simplicity::Light& flash);
 
-			void advance();
+			void advance() override;
 
-			void onPlay();
+			void onPlay() override;
 
 		private:
 			simplicity::Light& flash;
