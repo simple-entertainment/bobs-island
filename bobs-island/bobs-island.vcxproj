@@ -143,15 +143,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\main\c++\bobs-island\BobControl.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\BobLooker.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\BobMover.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\BobShooter.cpp" />
     <ClCompile Include="src\main\c++\bobs-island\Main.cpp" />
     <ClCompile Include="src\main\c++\bobs-island\MeshLoader.cpp" />
-    <ClCompile Include="src\main\c++\bobs-island\SunEngine.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\SunMover.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\main\c++\bobs-island\BobControl.h" />
+    <ClInclude Include="src\main\c++\bobs-island\BobLooker.h" />
+    <ClInclude Include="src\main\c++\bobs-island\BobMover.h" />
+    <ClInclude Include="src\main\c++\bobs-island\BobShooter.h" />
     <ClInclude Include="src\main\c++\bobs-island\MeshLoader.h" />
-    <ClInclude Include="src\main\c++\bobs-island\SunEngine.h" />
+    <ClInclude Include="src\main\c++\bobs-island\SunMover.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\simplicity-bullet\simplicity-bullet\simplicity-bullet.vcxproj">

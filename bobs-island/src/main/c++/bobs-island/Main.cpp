@@ -25,9 +25,11 @@
 
 #include <the-island/API.h>
 
-#include "BobControl.h"
+#include "BobLooker.h"
+#include "BobMover.h"
+#include "BobShooter.h"
 #include "MeshLoader.h"
-#include "SunEngine.h"
+#include "SunMover.h"
 
 using namespace bobsisland;
 using namespace simplicity;
@@ -48,6 +50,7 @@ void onKeyboardButton(const void* message);
 void setupEngine();
 //#endif
 void setupScene();
+void testing123(unsigned int radius);
 
 //#ifdef SIMPLE_WINDOWS
 //int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR /* commandLine */, int commandShow)
@@ -219,8 +222,10 @@ void setupScene()
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
 
+	unique_ptr<Script> bobLooker(new BobLooker);
 	Graph* quadTree = Simplicity::getScene()->getGraph<QuadTree>();
-	unique_ptr<BobControl> bobControl(new BobControl(*quadTree));
+	unique_ptr<Script> bobMover(new BobMover(*quadTree));
+	unique_ptr<Script> bobShooter(new BobShooter);
 
 	unique_ptr<Model> cameraBounds(new Square(32.0f));
 	setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
@@ -267,11 +272,6 @@ void setupScene()
 	flashLight->setSpecular(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	flashLight->setStrength(32.0f);
 
-	// The Sun engine
-	/////////////////////////
-	unique_ptr<Engine> sunEngine(new SunEngine(*theSun, *flashLight));
-	flash->addUniqueComponent(move(flashLight));
-
 	// Update the rendering engine.
 	/////////////////////////
 	RenderingEngine* renderingEngine = Simplicity::getEngine<RenderingEngine>();
@@ -311,14 +311,37 @@ void setupScene()
 	setPosition(bob->getTransform(), Vector3(0.0f, 0.0f, radius - 1.0f));
 	bob->addUniqueComponent(move(bobBody));
 	bob->addUniqueComponent(move(bobGunArm));
-	bob->addUniqueComponent(move(bobControl));
+	bob->addUniqueComponent(move(bobLooker));
+	bob->addUniqueComponent(move(bobMover));
+	bob->addUniqueComponent(move(bobShooter));
 	bob->addUniqueComponent(move(camera));
 	bob->addUniqueComponent(move(cameraBounds)); // Yes, this is odd...
 
+	// Assemble the Sun!
+	/////////////////////////
+	unique_ptr<Script> sunMover(new SunMover(*theSun, *flashLight));
+	theSun->addUniqueComponent(move(sunMover));
+
+	// Assemble the Flash Light!
+	/////////////////////////
+	flash->addUniqueComponent(move(flashLight));
+
 	// Testing 123
 	/////////////////////////
-	unique_ptr<FlyingCameraEngine> flyingCameraEngine(new FlyingCameraEngine(*bob.get()));
+	//unique_ptr<FlyingCameraEngine> flyingCameraEngine(new FlyingCameraEngine(*bob.get()));
 	//Simplicity::addEngine(move(flyingCameraEngine));
+	//testing123(radius);
+
+	// Add everything!
+	/////////////////////////
+	Simplicity::getScene()->addEntity(move(bob));
+	Simplicity::getScene()->addEntity(move(meshLoader));
+	Simplicity::getScene()->addEntity(move(theSun));
+	Simplicity::getScene()->addEntity(move(flash), *rawBob);
+}
+
+void testing123(unsigned int radius)
+{
 
 	unique_ptr<Entity> test(new Entity);
 	setPosition(test->getTransform(), Vector3(0.0f, 2.0f, radius - 5.0f));
@@ -363,13 +386,4 @@ void setupScene()
 	//test->addUniqueComponent(move(prismMinusCylinder));
 	test->addUniqueComponent(move(bounds));
 	Simplicity::getScene()->addEntity(move(test));
-
-	// Add everything!
-	/////////////////////////
-	Simplicity::addEngine(move(sunEngine));
-
-	Simplicity::getScene()->addEntity(move(meshLoader));
-	Simplicity::getScene()->addEntity(move(bob));
-	Simplicity::getScene()->addEntity(move(theSun));
-	Simplicity::getScene()->addEntity(move(flash), *rawBob);
 }

@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "SunEngine.h"
+#include "SunMover.h"
 
 using namespace simplicity;
 
 namespace bobsisland
 {
-	SunEngine::SunEngine(Entity& theSun, simplicity::Light& flash) :
-		flash(flash),
+	SunMover::SunMover(Entity& theSun, simplicity::Light& flashLight) :
+		flashLight(flashLight),
 		theSun(theSun)
 	{
 	}
 
-	void SunEngine::advance()
+	void SunMover::execute(Entity& entity)
 	{
 		float toPosition = 2.0f * MathConstants::PI * Simplicity::getTotalTime() / 60.0f;
 		toPosition -= 0.75f * MathConstants::PI;
@@ -41,16 +41,16 @@ namespace bobsisland
 
 		if (position.Y() < -10.0f)
 		{
-			flash.activate();
+			flashLight.activate();
 		}
 		else
 		{
-			flash.deactivate();
+			flashLight.deactivate();
 		}
 	}
 
-	void SunEngine::onPlay()
+	void SunMover::onAddEntity(Entity& entity)
 	{
-		advance();
+		execute(entity);
 	}
 }

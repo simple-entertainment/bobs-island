@@ -14,27 +14,31 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef SUNENGINE_H_
-#define SUNENGINE_H_
+#ifndef BOBLOOKER_H_
+#define BOBLOOKER_H_
 
 #include <simplicity/API.h>
 
 namespace bobsisland
 {
-	class SunEngine : public simplicity::Engine
+	class BobLooker : public simplicity::Script, private simplicity::NonCopyable
 	{
 		public:
-			SunEngine(simplicity::Entity& theSun, simplicity::Light& flash);
+			BobLooker();
 
-			void advance() override;
+			void execute(simplicity::Entity& entity);
 
-			void onPlay() override;
+			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity);
+
+			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
 
 		private:
-			simplicity::Light& flash;
+			simplicity::Vector<int, 2> mousePosition;
 
-			simplicity::Entity& theSun;
+			simplicity::Vector<int, 2> newMousePosition;
+
+			void onMouseMove(const void* message);
 	};
 }
 
-#endif /* SUNENGINE_H_ */
+#endif /* BOBLOOKER_H_ */

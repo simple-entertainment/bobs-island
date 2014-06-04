@@ -16,31 +16,27 @@
  */
 #include <functional>
 
-//#include <the-island/API.h>
+#include <the-island/API.h>
 
-#include "BobControl.h"
+#include "BobMover.h"
 
 using namespace simplicity;
 using namespace std;
-//using namespace theisland;
+using namespace theisland;
 
 namespace bobsisland
 {
-	BobControl::BobControl(const simplicity::Graph& world) :
+	BobMover::BobMover(const Graph& world) :
 		buttonStates(),
 		falling(false),
 		fallTime(0.0f),
-		firing(false),
 		jumping(false),
 		jumpTime(0.0f),
-		mouseDelta(),
-		world(world),
-		x(-1),
-		y(-1)
+		world(world)
 	{
 	}
 
-	void BobControl::execute(Entity& entity)
+	void BobMover::execute(Entity& entity)
 	{
 		if (buttonStates[Keyboard::Button::W] == Button::State::DOWN)
 		{
@@ -62,54 +58,12 @@ namespace bobsisland
 			translate(entity.getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 		}
 
-		//updateY(entity);
-		turn(entity);
-
-		if (firing)
-		{
-			fireGun(entity);
-		}
+		updateY(entity);
 
 		Simplicity::getScene()->updateGraphs(entity);
 	}
 
-	void BobControl::fireGun(Entity& entity)
-	{
-		unique_ptr<Entity> bullet(new Entity);
-		bullet->setTransform(entity.getTransform() * entity.getComponents<Mesh>()[1]->getTransform());
-		rotate(bullet->getTransform(), MathConstants::PI * -0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-		unique_ptr<Mesh> mesh = ModelFactory::getInstance().createPyramidMesh(0.1f, 0.5f,
-				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		mesh->init();
-
-		unique_ptr<Model> bounds = ModelFunctions::getSquareBoundsXZ(mesh->getVertices(), mesh->getVertexCount());
-
-		unique_ptr<Model> bodyModel(new Box(0.1f, 0.25f, 0.1f));
-
-		Body::Material material;
-		material.mass = 0.2f;
-		material.friction = 0.5f;
-		material.restitution = 0.1f;
-		unique_ptr<Body> body = PhysicsFactory::getInstance()->createBody(material, bodyModel.get(),
-				bullet->getTransform());
-
-		Vector3 trajectory = getUp3(bullet->getTransform());
-		trajectory.normalize();
-		trajectory *= 50.0f;
-		body->applyForce(trajectory, Vector3(0.0f, 0.0f, 0.0f));
-
-		bullet->addUniqueComponent(move(mesh));
-		bullet->addUniqueComponent(move(bounds));
-		bullet->addUniqueComponent(move(body));
-		bullet->addUniqueComponent(move(bodyModel));
-
-		Simplicity::getScene()->addEntity(move(bullet));
-
-		firing = false;
-	}
-
-	unique_ptr<Triangle> BobControl::getGroundAtBobsPosition(Entity& entity)
+	unique_ptr<Triangle> BobMover::getGroundAtBobsPosition(Entity& entity)
 	{
 		Vector3 position = getPosition3(entity.getTransform());
 		Vector3 position2d = position;
@@ -118,24 +72,25 @@ namespace bobsisland
 		vector<Entity*> entities = world.getEntitiesWithinBounds(Square(0.25f), position);
 		for (Entity* entity : entities)
 		{
-			if (entity->getCategory() == 128)
+			if (entity->getCategory() == EntityCategories::GROUND)
 			{
 				Mesh* groundMesh = entity->getComponent<Mesh>(Category::RENDER);
+				unsigned int* indices = groundMesh->getIndices();
 				Vertex* vertices = groundMesh->getVertices();
-				for (unsigned int triangleIndex = 0; triangleIndex < groundMesh->getVertexCount(); triangleIndex += 3)
+				for (unsigned int index = 0; index < groundMesh->getIndexCount(); index += 3)
 				{
-					Vector3 triangle2d0 = vertices[triangleIndex].position;
+					Vector3 triangle2d0 = vertices[indices[index]].position;
 					triangle2d0.Y() = 0.0f;
-					Vector3 triangle2d1 = vertices[triangleIndex + 1].position;
+					Vector3 triangle2d1 = vertices[indices[index + 1]].position;
 					triangle2d1.Y() = 0.0f;
-					Vector3 triangle2d2 = vertices[triangleIndex + 2].position;
+					Vector3 triangle2d2 = vertices[indices[index + 2]].position;
 					triangle2d2.Y() = 0.0f;
 
 					// Determine if Bob is inside the triangle ignoring the Y axis.
 					if (Intersection::contains(Triangle(triangle2d0, triangle2d1, triangle2d2), position2d))
 					{
-						return unique_ptr<Triangle>(new Triangle(vertices[triangleIndex].position,
-								vertices[triangleIndex + 1].position, vertices[triangleIndex + 2].position));
+						return unique_ptr<Triangle>(new Triangle(vertices[index].position,
+							vertices[index + 1].position, vertices[index + 2].position));
 					}
 				}
 			}
@@ -144,7 +99,7 @@ namespace bobsisland
 		return unique_ptr<Triangle>();
 	}
 
-	float BobControl::getYAtBobsPosition(Entity& entity, const Triangle& ground)
+	float BobMover::getYAtBobsPosition(Entity& entity, const Triangle& ground)
 	{
 		Vector3 position2d = getPosition3(entity.getTransform());
 		position2d.Y() = 0.0f;
@@ -160,7 +115,7 @@ namespace bobsisland
 		return y + 1.0f; // Add the half extent of Bob's body.
 	}
 
-	float BobControl::getYForBob(float bobY, float groundY)
+	float BobMover::getYForBob(float bobY, float groundY)
 	{
 		float newBobY = bobY;
 
@@ -199,17 +154,13 @@ namespace bobsisland
 		return newBobY;
 	}
 
-	void BobControl::onCloseScene(Scene& /* scene */, Entity& /* entity */)
+	void BobMover::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Subject::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
-			placeholders::_1));
-		Messages::deregisterRecipient(Subject::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
-			placeholders::_1));
-		Messages::deregisterRecipient(Subject::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
+		Messages::deregisterRecipient(Subject::KEYBOARD_BUTTON, bind(&BobMover::onKeyboardButton, this,
 			placeholders::_1));
 	}
 
-	void BobControl::onKeyboardButton(const void* message)
+	void BobMover::onKeyboardButton(const void* message)
 	{
 		const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message);
 		buttonStates[event->button] = event->buttonState;
@@ -220,55 +171,18 @@ namespace bobsisland
 		}
 	}
 
-	void BobControl::onMouseButton(const void* message)
-	{
-		const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message);
-		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
-		{
-			firing = true;
-		}
-	}
-
-	void BobControl::onMouseMove(const void* message)
-	{
-		const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message);
-
-		mouseDelta.X() = static_cast<float>(event->x);
-		mouseDelta.Y() = static_cast<float>(event->y);
-	}
-
-	void BobControl::onOpenScene(Scene& /* scene */, Entity& /* entity */)
+	void BobMover::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
 		buttonStates[Keyboard::Button::W] = Button::State::UP;
 		buttonStates[Keyboard::Button::A] = Button::State::UP;
 		buttonStates[Keyboard::Button::S] = Button::State::UP;
 		buttonStates[Keyboard::Button::D] = Button::State::UP;
 
-		Messages::registerRecipient(Subject::KEYBOARD_BUTTON, bind(&BobControl::onKeyboardButton, this,
-			placeholders::_1));
-		Messages::registerRecipient(Subject::MOUSE_BUTTON, bind(&BobControl::onMouseButton, this,
-			placeholders::_1));
-		Messages::registerRecipient(Subject::MOUSE_MOVE, bind(&BobControl::onMouseMove, this,
+		Messages::registerRecipient(Subject::KEYBOARD_BUTTON, bind(&BobMover::onKeyboardButton, this,
 			placeholders::_1));
 	}
 
-	void BobControl::turn(Entity& entity)
-	{
-		int deltaX = static_cast<int>(mouseDelta.X()) - x;
-		int deltaY = static_cast<int>(mouseDelta.Y()) - y;
-		rotate(entity.getTransform(), deltaX * -Simplicity::getDeltaTime() * 0.1f,
-			Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-		rotate(entity.getComponent<Camera>()->getTransform(),
-			deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		rotate(entity.getComponents<Mesh>()[1]->getTransform(),
-			deltaY * -Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-		x = static_cast<int>(mouseDelta.X());
-		y = static_cast<int>(mouseDelta.Y());
-		mouseDelta = Vector2(0.0f, 0.0f);
-	}
-
-	void BobControl::updateY(Entity& entity)
+	void BobMover::updateY(Entity& entity)
 	{
 		unique_ptr<Triangle> ground = getGroundAtBobsPosition(entity);
 

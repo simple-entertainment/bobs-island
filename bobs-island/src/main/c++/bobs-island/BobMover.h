@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef BOBCONTROL_H_
-#define BOBCONTROL_H_
+#ifndef BOBMOVER_H_
+#define BOBMOVER_H_
 
 #include <simplicity/API.h>
 
 namespace bobsisland
 {
-	class BobControl : public simplicity::Script, private simplicity::NonCopyable
+	class BobMover : public simplicity::Script, private simplicity::NonCopyable
 	{
 		public:
-			BobControl(const simplicity::Graph& world);
+			BobMover(const simplicity::Graph& world);
 
 			void execute(simplicity::Entity& entity);
 
@@ -39,21 +39,11 @@ namespace bobsisland
 
 			float fallTime;
 
-			bool firing;
-
 			bool jumping;
 
 			float jumpTime;
 
-			simplicity::Vector2 mouseDelta;
-
 			const simplicity::Graph& world;
-
-			int x;
-
-			int y;
-
-			void fireGun(simplicity::Entity& entity);
 
 			std::unique_ptr<simplicity::Triangle> getGroundAtBobsPosition(simplicity::Entity& entity);
 
@@ -63,14 +53,8 @@ namespace bobsisland
 
 			void onKeyboardButton(const void* message);
 
-			void onMouseButton(const void* message);
-
-			void onMouseMove(const void* message);
-
-			void turn(simplicity::Entity& entity);
-
 			void updateY(simplicity::Entity& entity);
 	};
 }
 
-#endif /* BOBCONTROL_H_ */
+#endif /* BOBMOVER_H_ */
