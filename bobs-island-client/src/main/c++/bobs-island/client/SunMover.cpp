@@ -20,9 +20,8 @@ using namespace simplicity;
 
 namespace bobsisland
 {
-	SunMover::SunMover(Entity& theSun, simplicity::Light& flashLight) :
-		flashLight(flashLight),
-		theSun(theSun)
+	SunMover::SunMover(simplicity::Light& flashLight) :
+		flashLight(flashLight)
 	{
 	}
 
@@ -36,8 +35,8 @@ namespace bobsisland
 		direction.negate();
 		position *= 1000.0f;
 
-		setPosition(theSun.getTransform(), position);
-		theSun.getComponent<Light>()->setDirection(direction);
+		setPosition(entity.getTransform(), position);
+		entity.getComponent<Light>()->setDirection(direction);
 
 		if (position.Y() < -10.0f)
 		{

@@ -14,27 +14,24 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef SUNMOVER_H_
-#define SUNMOVER_H_
+#include "MeshLoader.h"
 
-#include <simplicity/API.h>
+using namespace simplicity;
 
 namespace bobsisland
 {
-	class SunMover : public simplicity::Script
+	void MeshLoader::execute(Entity& /* entity */)
 	{
-		public:
-			SunMover(simplicity::Entity& theSun, simplicity::Light& flashLight);
+	}
 
-			void execute(simplicity::Entity& entity);
-
-			void onAddEntity(simplicity::Entity& entity);
-
-		private:
-			simplicity::Light& flashLight;
-
-			simplicity::Entity& theSun;
-	};
+	void MeshLoader::onOpenScene(Scene& scene, Entity& /* entity */)
+	{
+		for (Entity* entity : scene.getEntities())
+		{
+			for (Mesh* mesh : entity->getComponents<Mesh>(Category::RENDER))
+			{
+				mesh->init();
+			}
+		}
+	}
 }
-
-#endif /* SUNMOVER_H_ */

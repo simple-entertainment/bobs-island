@@ -19,9 +19,11 @@
 
 #include <simplicity/API.h>
 
+#include "BobController.h"
+
 namespace bobsisland
 {
-	class BobMover : public simplicity::Script, private simplicity::NonCopyable
+	class BobMover : public simplicity::Script
 	{
 		public:
 			BobMover(const simplicity::Graph& world);
@@ -33,7 +35,7 @@ namespace bobsisland
 			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
 
 		private:
-			std::map<simplicity::Keyboard::Button, simplicity::Button::State> buttonStates;
+			std::vector<BobController::Direction> directions;
 
 			bool falling;
 
@@ -51,7 +53,9 @@ namespace bobsisland
 
 			float getYForBob(float bobY, float groundY);
 
-			void onKeyboardButton(const void* message);
+			void onJump(const void* message);
+
+			void onMove(const void* message);
 
 			void updateY(simplicity::Entity& entity);
 	};

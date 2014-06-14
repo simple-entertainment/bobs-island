@@ -27,7 +27,7 @@ using namespace theisland;
 namespace bobsisland
 {
 	BobMover::BobMover(const Graph& world) :
-		buttonStates(),
+		directions(),
 		falling(false),
 		fallTime(0.0f),
 		jumping(false),
@@ -38,25 +38,29 @@ namespace bobsisland
 
 	void BobMover::execute(Entity& entity)
 	{
-		if (buttonStates[Keyboard::Button::W] == Button::State::DOWN)
+		for (BobController::Direction direction : directions)
 		{
-			translate(entity.getTransform(), Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
-		}
+			if (direction == BobController::Direction::BACKWARD)
+			{
+				translate(entity.getTransform(), Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			}
 
-		if (buttonStates[Keyboard::Button::A] == Button::State::DOWN)
-		{
-			translate(entity.getTransform(), Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
-		}
+			if (direction == BobController::Direction::FORWARD)
+			{
+				translate(entity.getTransform(), Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			}
 
-		if (buttonStates[Keyboard::Button::S] == Button::State::DOWN)
-		{
-			translate(entity.getTransform(), Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
-		}
+			if (direction == BobController::Direction::LEFT)
+			{
+				translate(entity.getTransform(), Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			}
 
-		if (buttonStates[Keyboard::Button::D] == Button::State::DOWN)
-		{
-			translate(entity.getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			if (direction == BobController::Direction::RIGHT)
+			{
+				translate(entity.getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			}
 		}
+		directions.clear();
 
 		updateY(entity);
 
@@ -156,30 +160,22 @@ namespace bobsisland
 
 	void BobMover::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Subject::KEYBOARD_BUTTON, bind(&BobMover::onKeyboardButton, this,
-			placeholders::_1));
+		Messages::deregisterRecipient(Action::MOVE, bind(&BobMover::onMove, this, placeholders::_1));
 	}
 
-	void BobMover::onKeyboardButton(const void* message)
+	void BobMover::onJump(const void* message)
 	{
-		const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message);
-		buttonStates[event->button] = event->buttonState;
+		jumping = true;
+	}
 
-		if (event->button == Keyboard::Button::SPACE && event->buttonState == Button::State::UP)
-		{
-			jumping = true;
-		}
+	void BobMover::onMove(const void* message)
+	{
+		directions.push_back(*static_cast<const BobController::Direction*>(message));
 	}
 
 	void BobMover::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		buttonStates[Keyboard::Button::W] = Button::State::UP;
-		buttonStates[Keyboard::Button::A] = Button::State::UP;
-		buttonStates[Keyboard::Button::S] = Button::State::UP;
-		buttonStates[Keyboard::Button::D] = Button::State::UP;
-
-		Messages::registerRecipient(Subject::KEYBOARD_BUTTON, bind(&BobMover::onKeyboardButton, this,
-			placeholders::_1));
+		Messages::registerRecipient(Action::MOVE, bind(&BobMover::onMove, this, placeholders::_1));
 	}
 
 	void BobMover::updateY(Entity& entity)

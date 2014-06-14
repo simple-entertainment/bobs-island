@@ -16,6 +16,7 @@
  */
 #include <functional>
 
+#include "BobController.h"
 #include "BobShooter.h"
 
 using namespace simplicity;
@@ -74,22 +75,16 @@ namespace bobsisland
 
 	void BobShooter::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Subject::MOUSE_BUTTON, bind(&BobShooter::onMouseButton, this,
-			placeholders::_1));
-	}
-
-	void BobShooter::onMouseButton(const void* message)
-	{
-		const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message);
-		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
-		{
-			firing = true;
-		}
+		Messages::deregisterRecipient(Action::SHOOT, bind(&BobShooter::onShoot, this, placeholders::_1));
 	}
 
 	void BobShooter::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::registerRecipient(Subject::MOUSE_BUTTON, bind(&BobShooter::onMouseButton, this,
-			placeholders::_1));
+		Messages::registerRecipient(Action::SHOOT, bind(&BobShooter::onShoot, this, placeholders::_1));
+	}
+
+	void BobShooter::onShoot(const void* /* message */)
+	{
+		firing = true;
 	}
 }

@@ -20,14 +20,14 @@
 #include <simplicity/freeglut/API.h>
 #include <simplicity/opengl/API.h>
 //#include <simplicity/physx/API.h>
+#include <simplicity/raknet/API.h>
 #include <simplicity/rocket/API.h>
 //#include <simplicity/winapi/API.h>
 
 #include <the-island/API.h>
 
-#include "BobLooker.h"
-#include "BobMover.h"
-#include "BobShooter.h"
+#include <bobs-island/bob/BobFactory.h>
+
 #include "MeshLoader.h"
 #include "SunMover.h"
 
@@ -38,12 +38,12 @@ using namespace simplicity::bullet;
 using namespace simplicity::freeglut;
 using namespace simplicity::opengl;
 //using namespace simplicity::physx;
+using namespace simplicity::raknet;
 using namespace simplicity::rocket;
 //using namespace simplicity::winapi;
 using namespace std;
 using namespace theisland;
 
-void onKeyboardButton(const void* message);
 //#ifdef SIMPLE_WINDOWS
 //void setupEngine(HINSTANCE instance, int commandShow);
 //#else
@@ -58,30 +58,31 @@ void testing123(unsigned int radius);
 int main()
 //#endif
 {
-	/*OpenCL::init();
-	ifstream clFile("src/main/cl/matrix.cl");
-	OpenCL::addProgram(clFile, "matrix");
-	clFile.close();*/
+	// Resources
+	/////////////////////////
+	unique_ptr<DataStore> consoleDataStore(new ConsoleDataStore);
+	Resources::setDataStore(move(consoleDataStore), Category::CONSOLE);
+	unique_ptr<DataStore> fileSystemDataStore(new FileSystemDataStore("."));
+	Resources::setDataStore(move(fileSystemDataStore), Category::ALL_CATEGORIES);
+
+	// Logging
+	/////////////////////////
+	Logs::setResource(Resources::get("out", Category::CONSOLE), Category::ALL_CATEGORIES);
+
+	Logs::log(Category::INFO_LOG, "###########################");
+	Logs::log(Category::INFO_LOG, "### BOB's Island Client ###");
+	Logs::log(Category::INFO_LOG, "###########################");
 
 	setRandomSeed(1234567);
 
+	Logs::log(Category::INFO_LOG, "Setting up engine...");
 	setupEngine();
 	//setupEngine(instance, commandShow);
+	Logs::log(Category::INFO_LOG, "Setting up scene...");
 	setupScene();
 
-	//Messages::registerRecipient(Events::KEYBOARD_BUTTON, onKeyboardButton);
-
+	Logs::log(Category::INFO_LOG, "GO!!!");
 	Simplicity::play();
-}
-
-void onKeyboardButton(const void* message)
-{
-	const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message);
-
-	if (event->button == Keyboard::Button::ESCAPE && event->buttonState == Button::State::UP)
-	{
-		Simplicity::stop();
-	}
 }
 
 //#ifdef SIMPLE_WINDOWS
@@ -95,21 +96,16 @@ void setupEngine()
 	unique_ptr<Engine> windowingEngine(new FreeGLUTEngine("Bob's Island"));
 	//unique_ptr<WinAPIEngine> windowingEngine(new WinAPIEngine("Bob's Island", instance, commandShow));
 
-	// Resources
+	// Messaging
 	/////////////////////////
-	unique_ptr<DataStore> consoleDataStore(new ConsoleDataStore);
-	Resources::setDataStore(move(consoleDataStore), Category::CONSOLE);
-	unique_ptr<DataStore> fileSystemDataStore(new FileSystemDataStore("."));
-	Resources::setDataStore(move(fileSystemDataStore), Category::ALL_CATEGORIES);
+	unique_ptr<MessagingEngine> localMessagingEngine(new SimpleMessagingEngine);
+	Messages::addEngine(localMessagingEngine.get());
+	unique_ptr<MessagingEngine> remoteMessagingEngine(new RakNetMessagingEngine("127.0.0.1", 55501));
+	Messages::addEngine(remoteMessagingEngine.get());
 
-	// Logging
+	// Scene Graph
 	/////////////////////////
-	Logs::setResource(Resources::get("out", Category::CONSOLE), Category::ALL_CATEGORIES);
-
-	// Scene Graphs
-	/////////////////////////
-	unique_ptr<Graph> sceneGraph0(new SimpleGraph);
-	unique_ptr<Graph> sceneGraph1(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
+	unique_ptr<Graph> sceneGraph(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
 
 	// Models
 	/////////////////////////
@@ -171,7 +167,7 @@ void setupEngine()
 	// Assemble the rendering engine.
 	/////////////////////////
 	renderingEngine->addRenderer(move(renderer));
-	renderingEngine->setGraph(sceneGraph1.get());
+	renderingEngine->setGraph(sceneGraph.get());
 
 	// Debugging
 	/////////////////////////
@@ -188,6 +184,8 @@ void setupEngine()
 	/////////////////////////
 	Simplicity::setCompositeEngine(move(debuggingEngine));
 	Simplicity::addEngine(move(windowingEngine));
+	Simplicity::addEngine(move(localMessagingEngine));
+	Simplicity::addEngine(move(remoteMessagingEngine));
 	Simplicity::addEngine(move(scriptingEngine));
 	Simplicity::addEngine(move(physicsEngine));
 	Simplicity::addEngine(move(renderingEngine));
@@ -196,8 +194,7 @@ void setupEngine()
 	unique_ptr<Scene> theOnlyScene(new Scene);
 	Simplicity::addScene("theOnly", move(theOnlyScene));
 
-	//Simplicity::getScene()->addGraph(move(sceneGraph0));
-	Simplicity::getScene()->addGraph(move(sceneGraph1));
+	Simplicity::getScene()->addGraph(move(sceneGraph));
 
 	Simplicity::getScene()->addEntity(move(debug));
 }
@@ -212,24 +209,8 @@ void setupScene()
 
 	// Bob!
 	/////////////////////////
-	unique_ptr<Entity> bob(new Entity);
+	unique_ptr<Entity> bob = BobFactory::createBob();
 	Entity* rawBob = bob.get();
-
-	unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	unique_ptr<Model> bobGunArm = ModelFactory::getInstance().createCylinderMesh(0.05f, 0.75f, 10,
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
-
-	unique_ptr<Script> bobLooker(new BobLooker);
-	Graph* quadTree = Simplicity::getScene()->getGraph<QuadTree>();
-	unique_ptr<Script> bobMover(new BobMover(*quadTree));
-	unique_ptr<Script> bobShooter(new BobShooter);
-
-	unique_ptr<Model> cameraBounds(new Square(32.0f));
-	setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
-	cameraBounds->setCategory(Category::BOUNDS);
 
 	// Camera
 	/////////////////////////
@@ -238,6 +219,10 @@ void setupScene()
 	camera->setPerspective(60.0f, 4.0f / 3.0f);
 	// Position is relative to Bob.
 	translate(camera->getTransform(), Vector3(0.0f, 1.11f, -0.21f));
+
+	unique_ptr<Model> cameraBounds(new Square(32.0f));
+	setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
+	cameraBounds->setCategory(Category::BOUNDS);
 
 	// The Sun
 	/////////////////////////
@@ -277,7 +262,7 @@ void setupScene()
 	RenderingEngine* renderingEngine = Simplicity::getEngine<RenderingEngine>();
 	renderingEngine->addLight(*theSun);
 	//renderingEngine->addLight(*flash);
-	renderingEngine->setCamera(bob.get());
+	renderingEngine->setCamera(rawBob);
 
 	// The Island!
 	/////////////////////////
@@ -309,17 +294,12 @@ void setupScene()
 	/////////////////////////
 	rotate(bob->getTransform(), MathConstants::PI * 0.5f, Vector3(0.0f, 1.0f, 0.0f));
 	setPosition(bob->getTransform(), Vector3(0.0f, 0.0f, radius - 1.0f));
-	bob->addUniqueComponent(move(bobBody));
-	bob->addUniqueComponent(move(bobGunArm));
-	bob->addUniqueComponent(move(bobLooker));
-	bob->addUniqueComponent(move(bobMover));
-	bob->addUniqueComponent(move(bobShooter));
 	bob->addUniqueComponent(move(camera));
 	bob->addUniqueComponent(move(cameraBounds)); // Yes, this is odd...
 
 	// Assemble the Sun!
 	/////////////////////////
-	unique_ptr<Script> sunMover(new SunMover(*theSun, *flashLight));
+	unique_ptr<Script> sunMover(new SunMover(*flashLight));
 	theSun->addUniqueComponent(move(sunMover));
 
 	// Assemble the Flash Light!

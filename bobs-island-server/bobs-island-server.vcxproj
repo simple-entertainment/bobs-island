@@ -19,31 +19,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A338FC27-559B-400C-9565-1E37BAF5D7A9}</ProjectGuid>
+    <ProjectGuid>{598CF5F7-249B-4009-A9F6-7EDB66BECE29}</ProjectGuid>
     <RootNamespace>bobsisland</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Shared)|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Windows-Shared)|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Windows-Static)|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -65,25 +65,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Static)|Win32'">
-    <TargetExt>.lib</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Shared)|Win32'">
-    <TargetExt>.dll</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Windows-Shared)|Win32'">
-    <TargetExt>.dll</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Windows-Static)|Win32'">
-    <TargetExt>.lib</TargetExt>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (Windows-Shared)|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4251;4351</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../bobs-island/bobs-island/src/main/c++;../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-physx/simplicity-physx/src/main/c++;../../simplicity-physx/simplicity-physx/dep/physx/include;../../simplicity-raknet/simplicity-raknet/src/main/c++;../../simplicity-raknet/simplicity-raknet/src/raknet/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SIMPLE_SHARED_EXE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -100,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4251;4351</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../bobs-island/bobs-island/src/main/c++;../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-physx/simplicity-physx/src/main/c++;../../simplicity-physx/simplicity-physx/dep/physx/include;../../simplicity-raknet/simplicity-raknet/src/main/c++;../../simplicity-raknet/simplicity-raknet/src/raknet/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -119,7 +108,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4251;4351</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../bobs-island/bobs-island/src/main/c++;../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-physx/simplicity-physx/src/main/c++;../../simplicity-physx/simplicity-physx/dep/physx/include;../../simplicity-raknet/simplicity-raknet/src/main/c++;../../simplicity-raknet/simplicity-raknet/src/raknet/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SIMPLE_SHARED_EXE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -140,7 +129,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4251;4351</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>../../simplicity/simplicity/src/main/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../bobs-island/bobs-island/src/main/c++;../../simplicity/simplicity/src/main/c++;../../simplicity-bullet/simplicity-bullet/src/bullet/c++;../../simplicity-bullet/simplicity-bullet/src/main/c++;../../simplicity-physx/simplicity-physx/src/main/c++;../../simplicity-physx/simplicity-physx/dep/physx/include;../../simplicity-raknet/simplicity-raknet/src/main/c++;../../simplicity-raknet/simplicity-raknet/src/raknet/c++;../../the-island/the-island/src/main/c++</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -154,25 +143,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\main\c++\bobs-island\bob\BobController.cpp" />
-    <ClCompile Include="src\main\c++\bobs-island\bob\BobFactory.cpp" />
-    <ClCompile Include="src\main\c++\bobs-island\bob\BobLooker.cpp" />
-    <ClCompile Include="src\main\c++\bobs-island\bob\BobMover.cpp" />
-    <ClCompile Include="src\main\c++\bobs-island\bob\BobShooter.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\server\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\main\c++\bobs-island\bob\BobController.h" />
-    <ClInclude Include="src\main\c++\bobs-island\bob\BobFactory.h" />
-    <ClInclude Include="src\main\c++\bobs-island\bob\BobLooker.h" />
-    <ClInclude Include="src\main\c++\bobs-island\bob\BobMover.h" />
-    <ClInclude Include="src\main\c++\bobs-island\bob\BobShooter.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\simplicity-bullet\simplicity-bullet\simplicity-bullet.vcxproj">
+      <Project>{8702bac0-f8b0-4f1e-aae8-022f2a4c9666}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-physx\simplicity-physx\simplicity-physx.vcxproj">
+      <Project>{dc5f649b-87a3-40f2-9ccc-0446e8e53dc7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\simplicity-raknet\simplicity-raknet\simplicity-raknet.vcxproj">
+      <Project>{94d64adf-8596-46ff-8c99-ad86e7a89216}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\simplicity\simplicity\simplicity.vcxproj">
       <Project>{19eb601f-a765-4e02-a16a-6222bda83439}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\the-island\the-island\the-island.vcxproj">
       <Project>{848ffe75-11cb-44c7-a775-83f6192fd35c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\bobs-island\bobs-island.vcxproj">
+      <Project>{a338fc27-559b-400c-9565-1e37baf5d7a9}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

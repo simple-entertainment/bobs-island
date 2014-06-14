@@ -16,6 +16,7 @@
  */
 #include <functional>
 
+#include "BobController.h"
 #include "BobLooker.h"
 
 using namespace simplicity;
@@ -24,43 +25,47 @@ using namespace std;
 namespace bobsisland
 {
 	BobLooker::BobLooker() :
-		mousePosition(0, 0),
-		newMousePosition(0, 0)
+		delta(0, 0)
 	{
 	}
 
 	void BobLooker::execute(Entity& entity)
 	{
-		Vector<int, 2> delta = newMousePosition - mousePosition;
+		if (delta == Vector<int, 2>(0, 0))
+		{
+			return;
+		}
+
 		rotate(entity.getTransform(), delta.X() * -Simplicity::getDeltaTime() * 0.1f,
 			Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-		rotate(entity.getComponent<Camera>()->getTransform(),
-			-delta.Y() * Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+		Camera* camera = entity.getComponent<Camera>();
+		if (camera != nullptr)
+		{
+			rotate(camera->getTransform(),
+				-delta.Y() * Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		}
+
 		rotate(entity.getComponents<Mesh>()[1]->getTransform(),
 			-delta.Y() * Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-		mousePosition = newMousePosition;
-
 		Simplicity::getScene()->updateGraphs(entity);
+
+		delta = Vector<int, 2>(0, 0);
 	}
 
 	void BobLooker::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Subject::MOUSE_MOVE, bind(&BobLooker::onMouseMove, this,
-			placeholders::_1));
+		Messages::deregisterRecipient(Action::LOOK, bind(&BobLooker::onLook, this, placeholders::_1));
 	}
 
-	void BobLooker::onMouseMove(const void* message)
+	void BobLooker::onLook(const void* message)
 	{
-		const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message);
-
-		newMousePosition.X() = event->x;
-		newMousePosition.Y() = event->y;
+		delta = *static_cast<const Vector<int, 2>*>(message);
 	}
 
 	void BobLooker::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::registerRecipient(Subject::MOUSE_MOVE, bind(&BobLooker::onMouseMove, this,
-			placeholders::_1));
+		Messages::registerRecipient(Action::LOOK, bind(&BobLooker::onLook, this, placeholders::_1));
 	}
 }

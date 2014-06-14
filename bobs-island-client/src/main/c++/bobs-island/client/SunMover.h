@@ -14,31 +14,25 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef BOBSHOOTER_H_
-#define BOBSHOOTER_H_
+#ifndef SUNMOVER_H_
+#define SUNMOVER_H_
 
 #include <simplicity/API.h>
 
 namespace bobsisland
 {
-	class BobShooter : public simplicity::Script, private simplicity::NonCopyable
+	class SunMover : public simplicity::Script
 	{
 		public:
-			BobShooter();
+			SunMover(simplicity::Light& flashLight);
 
 			void execute(simplicity::Entity& entity);
 
-			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity);
-
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onAddEntity(simplicity::Entity& entity);
 
 		private:
-			bool firing;
-
-			void fireGun(simplicity::Entity& entity);
-
-			void onMouseButton(const void* message);
+			simplicity::Light& flashLight;
 	};
 }
 
-#endif /* BOBSHOOTER_H_ */
+#endif /* SUNMOVER_H_ */

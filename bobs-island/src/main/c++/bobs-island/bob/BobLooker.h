@@ -14,24 +14,29 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "MeshLoader.h"
+#ifndef BOBLOOKER_H_
+#define BOBLOOKER_H_
 
-using namespace simplicity;
+#include <simplicity/API.h>
 
 namespace bobsisland
 {
-	void MeshLoader::execute(Entity& entity)
+	class BobLooker : public simplicity::Script
 	{
-	}
+		public:
+			BobLooker();
 
-	void MeshLoader::onOpenScene(Scene& scene, Entity& /* entity */)
-	{
-		for (Entity* entity : scene.getEntities())
-		{
-			for (Mesh* mesh : entity->getComponents<Mesh>(Category::RENDER))
-			{
-				mesh->init();
-			}
-		}
-	}
+			void execute(simplicity::Entity& entity);
+
+			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity);
+
+			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
+
+		private:
+			simplicity::Vector<int, 2> delta;
+
+			void onLook(const void* message);
+	};
 }
+
+#endif /* BOBLOOKER_H_ */
