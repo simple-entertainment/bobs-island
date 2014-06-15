@@ -26,6 +26,7 @@
 
 #include <the-island/API.h>
 
+#include <bobs-island/bob/BobController.h>
 #include <bobs-island/bob/BobFactory.h>
 
 #include "MeshLoader.h"
@@ -102,6 +103,29 @@ void setupEngine()
 	Messages::addEngine(localMessagingEngine.get());
 	unique_ptr<MessagingEngine> remoteMessagingEngine(new RakNetMessagingEngine("127.0.0.1", 55501));
 	Messages::addEngine(remoteMessagingEngine.get());
+
+	Logs::log(Category::INFO_LOG, "Setting up echo!");
+	Messages::registerRecipient(Action::JUMP, RecipientCategory::SERVER);
+	Messages::registerRecipient(Action::LOOK, RecipientCategory::SERVER);
+	Messages::registerRecipient(Action::MOVE, RecipientCategory::SERVER);
+	Messages::registerRecipient(Action::SHOOT, RecipientCategory::SERVER);
+
+	unique_ptr<Codec> jumpCodec(new EmptyCodec);
+	Messages::setCodec(Action::JUMP, move(jumpCodec));
+	unique_ptr<Codec> jump2Codec(new EmptyCodec);
+	Messages::setCodec(Action::JUMP2, move(jump2Codec));
+	unique_ptr<Codec> lookCodec(new SimpleCodec<Vector<int, 2>>);
+	Messages::setCodec(Action::LOOK, move(lookCodec));
+	unique_ptr<Codec> look2Codec(new SimpleCodec<Vector<int, 2>>);
+	Messages::setCodec(Action::LOOK2, move(look2Codec));
+	unique_ptr<Codec> moveCodec(new SimpleCodec<BobController::Direction>);
+	Messages::setCodec(Action::MOVE, move(moveCodec));
+	unique_ptr<Codec> move2Codec(new SimpleCodec<BobController::Direction>);
+	Messages::setCodec(Action::MOVE2, move(move2Codec));
+	unique_ptr<Codec> shootCodec(new EmptyCodec);
+	Messages::setCodec(Action::SHOOT, move(shootCodec));
+	unique_ptr<Codec> shoot2Codec(new EmptyCodec);
+	Messages::setCodec(Action::SHOOT2, move(shoot2Codec));
 
 	// Scene Graph
 	/////////////////////////

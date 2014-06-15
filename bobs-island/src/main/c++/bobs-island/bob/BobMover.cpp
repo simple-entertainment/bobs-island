@@ -160,7 +160,8 @@ namespace bobsisland
 
 	void BobMover::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Action::MOVE, bind(&BobMover::onMove, this, placeholders::_1));
+		Messages::deregisterRecipient(Action::JUMP2, bind(&BobMover::onJump, this, placeholders::_1));
+		Messages::deregisterRecipient(Action::MOVE2, bind(&BobMover::onMove, this, placeholders::_1));
 	}
 
 	void BobMover::onJump(const void* message)
@@ -175,7 +176,8 @@ namespace bobsisland
 
 	void BobMover::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::registerRecipient(Action::MOVE, bind(&BobMover::onMove, this, placeholders::_1));
+		Messages::registerRecipient(Action::JUMP2, bind(&BobMover::onJump, this, placeholders::_1));
+		Messages::registerRecipient(Action::MOVE2, bind(&BobMover::onMove, this, placeholders::_1));
 	}
 
 	void BobMover::updateY(Entity& entity)

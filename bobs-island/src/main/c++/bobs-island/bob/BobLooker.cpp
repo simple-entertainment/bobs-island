@@ -56,7 +56,7 @@ namespace bobsisland
 
 	void BobLooker::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Action::LOOK, bind(&BobLooker::onLook, this, placeholders::_1));
+		Messages::deregisterRecipient(Action::LOOK2, bind(&BobLooker::onLook, this, placeholders::_1));
 	}
 
 	void BobLooker::onLook(const void* message)
@@ -66,6 +66,6 @@ namespace bobsisland
 
 	void BobLooker::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::registerRecipient(Action::LOOK, bind(&BobLooker::onLook, this, placeholders::_1));
+		Messages::registerRecipient(Action::LOOK2, bind(&BobLooker::onLook, this, placeholders::_1));
 	}
 }

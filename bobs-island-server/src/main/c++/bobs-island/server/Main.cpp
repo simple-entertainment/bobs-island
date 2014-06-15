@@ -21,6 +21,7 @@
 
 #include <the-island/API.h>
 
+#include <bobs-island/bob/BobController.h>
 #include <bobs-island/bob/BobFactory.h>
 
 using namespace bobsisland;
@@ -33,6 +34,11 @@ using namespace theisland;
 
 void setupEngine();
 void setupScene();
+
+void jumpEcho(const void* message);
+void lookEcho(const void* message);
+void moveEcho(const void* message);
+void shootEcho(const void* message);
 
 int main()
 {
@@ -73,6 +79,34 @@ void setupEngine()
 	unique_ptr<MessagingEngine> remoteMessagingEngine(new RakNetMessagingEngine(55501, 1));
 	Messages::addEngine(remoteMessagingEngine.get());
 	Simplicity::addEngine(move(remoteMessagingEngine));
+
+	Logs::log(Category::INFO_LOG, "Setting up echo!");
+	Messages::registerRecipient(Action::JUMP, jumpEcho);
+	Messages::registerRecipient(Action::LOOK, lookEcho);
+	Messages::registerRecipient(Action::MOVE, moveEcho);
+	Messages::registerRecipient(Action::SHOOT, shootEcho);
+
+	Messages::registerRecipient(Action::JUMP2, RecipientCategory::CLIENT);
+	Messages::registerRecipient(Action::LOOK2, RecipientCategory::CLIENT);
+	Messages::registerRecipient(Action::MOVE2, RecipientCategory::CLIENT);
+	Messages::registerRecipient(Action::SHOOT2, RecipientCategory::CLIENT);
+
+	unique_ptr<Codec> jumpCodec(new EmptyCodec);
+	Messages::setCodec(Action::JUMP, move(jumpCodec));
+	unique_ptr<Codec> jump2Codec(new EmptyCodec);
+	Messages::setCodec(Action::JUMP2, move(jump2Codec));
+	unique_ptr<Codec> lookCodec(new SimpleCodec<Vector<int, 2>>);
+	Messages::setCodec(Action::LOOK, move(lookCodec));
+	unique_ptr<Codec> look2Codec(new SimpleCodec<Vector<int, 2>>);
+	Messages::setCodec(Action::LOOK2, move(look2Codec));
+	unique_ptr<Codec> moveCodec(new SimpleCodec<BobController::Direction>);
+	Messages::setCodec(Action::MOVE, move(moveCodec));
+	unique_ptr<Codec> move2Codec(new SimpleCodec<BobController::Direction>);
+	Messages::setCodec(Action::MOVE2, move(move2Codec));
+	unique_ptr<Codec> shootCodec(new EmptyCodec);
+	Messages::setCodec(Action::SHOOT, move(shootCodec));
+	unique_ptr<Codec> shoot2Codec(new EmptyCodec);
+	Messages::setCodec(Action::SHOOT2, move(shoot2Codec));
 
 	// Models
 	/////////////////////////
@@ -139,4 +173,24 @@ void setupScene()
 	rotate(bob->getTransform(), MathConstants::PI * 0.5f, Vector3(0.0f, 1.0f, 0.0f));
 	setPosition(bob->getTransform(), Vector3(0.0f, 0.0f, radius - 1.0f));
 	Simplicity::getScene()->addEntity(move(bob));
+}
+
+void jumpEcho(const void* message)
+{
+	Messages::send(Action::JUMP2, message);
+}
+
+void lookEcho(const void* message)
+{
+	Messages::send(Action::LOOK2, message);
+}
+
+void moveEcho(const void* message)
+{
+	Messages::send(Action::MOVE2, message);
+}
+
+void shootEcho(const void* message)
+{
+	Messages::send(Action::SHOOT2, message);
 }

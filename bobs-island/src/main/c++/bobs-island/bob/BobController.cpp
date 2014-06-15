@@ -33,7 +33,7 @@ namespace bobsisland
 
 	void BobController::execute(Entity& /* entity */)
 	{
-		if (keyboardButtonStates[Keyboard::Button::SPACE] == Button::State::UP)
+		if (keyboardButtonStates[Keyboard::Button::SPACE] == Button::State::DOWN)
 		{
 			Messages::send(Action::JUMP, nullptr);
 		}

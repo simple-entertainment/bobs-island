@@ -75,12 +75,12 @@ namespace bobsisland
 
 	void BobShooter::onCloseScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Action::SHOOT, bind(&BobShooter::onShoot, this, placeholders::_1));
+		Messages::deregisterRecipient(Action::SHOOT2, bind(&BobShooter::onShoot, this, placeholders::_1));
 	}
 
 	void BobShooter::onOpenScene(Scene& /* scene */, Entity& /* entity */)
 	{
-		Messages::registerRecipient(Action::SHOOT, bind(&BobShooter::onShoot, this, placeholders::_1));
+		Messages::registerRecipient(Action::SHOOT2, bind(&BobShooter::onShoot, this, placeholders::_1));
 	}
 
 	void BobShooter::onShoot(const void* /* message */)

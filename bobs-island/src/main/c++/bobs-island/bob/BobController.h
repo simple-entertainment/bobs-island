@@ -30,6 +30,14 @@ namespace bobsisland
 		static unsigned short MOVE = simplicity::Subject::USER_ID_0 + 2;
 
 		static unsigned short SHOOT = simplicity::Subject::USER_ID_0 + 3;
+
+		static unsigned short JUMP2 = simplicity::Subject::USER_ID_0 + 4;
+
+		static unsigned short LOOK2 = simplicity::Subject::USER_ID_0 + 5;
+
+		static unsigned short MOVE2 = simplicity::Subject::USER_ID_0 + 6;
+
+		static unsigned short SHOOT2 = simplicity::Subject::USER_ID_0 + 7;
 	}
 
 	class BobController : public simplicity::Script
