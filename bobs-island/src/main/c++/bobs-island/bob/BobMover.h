@@ -19,23 +19,23 @@
 
 #include <simplicity/API.h>
 
-#include "BobController.h"
+#include "../BobConstants.h"
 
 namespace bobsisland
 {
 	class BobMover : public simplicity::Script
 	{
 		public:
-			BobMover(const simplicity::Graph& world);
+			BobMover(unsigned long systemId, const simplicity::Graph& world);
 
-			void execute(simplicity::Entity& entity);
+			void execute(simplicity::Entity& entity) override;
 
-			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
+			void onAddEntity(simplicity::Entity& entity) override;
 
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
+			void onRemoveEntity(simplicity::Entity& entity) override;
 
 		private:
-			std::vector<BobController::Direction> directions;
+			std::vector<Direction> directions;
 
 			bool falling;
 
@@ -45,6 +45,8 @@ namespace bobsisland
 
 			float jumpTime;
 
+			unsigned long systemId;
+
 			const simplicity::Graph& world;
 
 			std::unique_ptr<simplicity::Triangle> getGroundAtBobsPosition(simplicity::Entity& entity);
@@ -53,9 +55,9 @@ namespace bobsisland
 
 			float getYForBob(float bobY, float groundY);
 
-			void onJump(const void* message);
+			bool onJump(const simplicity::Message& message);
 
-			void onMove(const void* message);
+			bool onMove(const simplicity::Message& message);
 
 			void updateY(simplicity::Entity& entity);
 	};

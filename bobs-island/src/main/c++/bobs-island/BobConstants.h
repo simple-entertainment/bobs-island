@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2014 Simple Entertainment Limited
+ * Copyright © 2014 Simple Entertainment Limited
  *
  * This file is part of Bob's Island.
  *
@@ -14,23 +14,33 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef SUNMOVER_H_
-#define SUNMOVER_H_
+#ifndef BOBCONSTANTS_H_
+#define BOBCONSTANTS_H_
 
 #include <simplicity/API.h>
 
 namespace bobsisland
 {
-	namespace client
+	enum class Direction
 	{
-		class SunMover : public simplicity::Script
-		{
-			public:
-				void execute(simplicity::Entity& entity);
+		BACKWARD,
+		FORWARD,
+		LEFT,
+		RIGHT
+	};
 
-				void onAddEntity(simplicity::Entity& entity);
-		};
+	namespace Subject
+	{
+		static unsigned short BOBS = simplicity::Subject::USER_ID_0;
+
+		static unsigned short JUMP = simplicity::Subject::USER_ID_0 + 1;
+
+		static unsigned short LOOK = simplicity::Subject::USER_ID_0 + 2;
+
+		static unsigned short MOVE = simplicity::Subject::USER_ID_0 + 3;
+
+		static unsigned short SHOOT = simplicity::Subject::USER_ID_0 + 4;
 	}
 }
 
-#endif /* SUNMOVER_H_ */
+#endif /* BOBCONSTANTS_H_ */

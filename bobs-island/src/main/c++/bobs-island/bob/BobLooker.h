@@ -24,18 +24,20 @@ namespace bobsisland
 	class BobLooker : public simplicity::Script
 	{
 		public:
-			BobLooker();
+			BobLooker(unsigned long systemId);
 
-			void execute(simplicity::Entity& entity);
+			void execute(simplicity::Entity& entity) override;
 
-			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onAddEntity(simplicity::Entity& entity) override;
 
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onRemoveEntity(simplicity::Entity& entity) override;
 
 		private:
 			simplicity::Vector<int, 2> delta;
 
-			void onLook(const void* message);
+			unsigned long systemId;
+
+			bool onLook(const simplicity::Message& message);
 	};
 }
 

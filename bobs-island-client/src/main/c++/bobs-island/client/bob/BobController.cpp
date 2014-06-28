@@ -16,6 +16,8 @@
  */
 #include <the-island/API.h>
 
+#include <bobs-island/BobConstants.h>
+
 #include "BobController.h"
 
 using namespace simplicity;
@@ -35,81 +37,48 @@ namespace bobsisland
 	{
 		if (keyboardButtonStates[Keyboard::Button::SPACE] == Button::State::DOWN)
 		{
-			Messages::send(Action::JUMP, nullptr);
+			Messages::send(Message(Subject::JUMP, nullptr));
 		}
 
 		Vector<int, 2> delta = newMousePosition - mousePosition;
 		if (delta != Vector<int, 2>(0, 0))
 		{
-			Messages::send(Action::LOOK, &delta);
+			Messages::send(Message(Subject::LOOK, &delta));
 			mousePosition = newMousePosition;
 		}
 
 		if (keyboardButtonStates[Keyboard::Button::W] == Button::State::DOWN)
 		{
 			Direction direction = Direction::FORWARD;
-			Messages::send(Action::MOVE, &direction);
+			Messages::send(Message(Subject::MOVE, &direction));
 		}
 
 		if (keyboardButtonStates[Keyboard::Button::A] == Button::State::DOWN)
 		{
 			Direction direction = Direction::LEFT;
-			Messages::send(Action::MOVE, &direction);
+			Messages::send(Message(Subject::MOVE, &direction));
 		}
 
 		if (keyboardButtonStates[Keyboard::Button::S] == Button::State::DOWN)
 		{
 			Direction direction = Direction::BACKWARD;
-			Messages::send(Action::MOVE, &direction);
+			Messages::send(Message(Subject::MOVE, &direction));
 		}
 
 		if (keyboardButtonStates[Keyboard::Button::D] == Button::State::DOWN)
 		{
 			Direction direction = Direction::RIGHT;
-			Messages::send(Action::MOVE, &direction);
+			Messages::send(Message(Subject::MOVE, &direction));
 		}
 
 		if (shooting)
 		{
-			Messages::send(Action::SHOOT, nullptr);
+			Messages::send(Message(Subject::SHOOT, nullptr));
 			shooting = false;
 		}
 	}
 
-	void BobController::onCloseScene(Scene& /* scene */, Entity& /* entity */)
-	{
-		Messages::deregisterRecipient(Subject::KEYBOARD_BUTTON, bind(&BobController::onKeyboardButton, this,
-			placeholders::_1));
-		Messages::deregisterRecipient(Subject::MOUSE_BUTTON, bind(&BobController::onMouseButton, this,
-			placeholders::_1));
-		Messages::deregisterRecipient(Subject::MOUSE_MOVE, bind(&BobController::onMouseMove, this,
-			placeholders::_1));
-	}
-
-	void BobController::onKeyboardButton(const void* message)
-	{
-		const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message);
-		keyboardButtonStates[event->button] = event->buttonState;
-	}
-
-	void BobController::onMouseButton(const void* message)
-	{
-		const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message);
-		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
-		{
-			shooting = true;
-		}
-	}
-
-	void BobController::onMouseMove(const void* message)
-	{
-		const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message);
-
-		newMousePosition.X() = event->x;
-		newMousePosition.Y() = event->y;
-	}
-
-	void BobController::onOpenScene(Scene& /* scene */, Entity& /* entity */)
+	void BobController::onAddEntity(Entity& /* entity */)
 	{
 		keyboardButtonStates[Keyboard::Button::W] = Button::State::UP;
 		keyboardButtonStates[Keyboard::Button::A] = Button::State::UP;
@@ -117,11 +86,50 @@ namespace bobsisland
 		keyboardButtonStates[Keyboard::Button::D] = Button::State::UP;
 		keyboardButtonStates[Keyboard::Button::SPACE] = Button::State::UP;
 
-		Messages::registerRecipient(Subject::KEYBOARD_BUTTON, bind(&BobController::onKeyboardButton, this,
+		Messages::registerRecipient(simplicity::Subject::KEYBOARD_BUTTON, bind(&BobController::onKeyboardButton, this,
 			placeholders::_1));
-		Messages::registerRecipient(Subject::MOUSE_BUTTON, bind(&BobController::onMouseButton, this,
+		Messages::registerRecipient(simplicity::Subject::MOUSE_BUTTON, bind(&BobController::onMouseButton, this,
 			placeholders::_1));
-		Messages::registerRecipient(Subject::MOUSE_MOVE, bind(&BobController::onMouseMove, this,
+		Messages::registerRecipient(simplicity::Subject::MOUSE_MOVE, bind(&BobController::onMouseMove, this,
+			placeholders::_1));
+	}
+
+	bool BobController::onKeyboardButton(const Message& message)
+	{
+		const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message.body);
+		keyboardButtonStates[event->button] = event->buttonState;
+
+		return false;
+	}
+
+	bool BobController::onMouseButton(const Message& message)
+	{
+		const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message.body);
+		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
+		{
+			shooting = true;
+		}
+
+		return false;
+	}
+
+	bool BobController::onMouseMove(const Message& message)
+	{
+		const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message.body);
+
+		newMousePosition.X() = event->x;
+		newMousePosition.Y() = event->y;
+
+		return false;
+	}
+
+	void BobController::onRemoveEntity(Entity& /* entity */)
+	{
+		Messages::deregisterRecipient(simplicity::Subject::KEYBOARD_BUTTON, bind(&BobController::onKeyboardButton,
+			this, placeholders::_1));
+		Messages::deregisterRecipient(simplicity::Subject::MOUSE_BUTTON, bind(&BobController::onMouseButton, this,
+			placeholders::_1));
+		Messages::deregisterRecipient(simplicity::Subject::MOUSE_MOVE, bind(&BobController::onMouseMove, this,
 			placeholders::_1));
 	}
 }

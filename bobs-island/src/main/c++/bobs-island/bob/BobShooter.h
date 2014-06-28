@@ -24,20 +24,22 @@ namespace bobsisland
 	class BobShooter : public simplicity::Script
 	{
 		public:
-			BobShooter();
+			BobShooter(unsigned long systemId);
 
-			void execute(simplicity::Entity& entity);
+			void execute(simplicity::Entity& entity) override;
 
-			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onAddEntity(simplicity::Entity& entity) override;
 
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity);
+			void onRemoveEntity(simplicity::Entity& entity) override;
 
 		private:
 			bool firing;
 
+			unsigned long systemId;
+
 			void fireGun(simplicity::Entity& entity);
 
-			void onShoot(const void* message);
+			bool onShoot(const simplicity::Message& message);
 	};
 }
 

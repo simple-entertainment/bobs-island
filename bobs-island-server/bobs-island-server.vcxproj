@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main\c++\bobs-island\server\Main.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\server\ServerEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\simplicity-bullet\simplicity-bullet\simplicity-bullet.vcxproj">
@@ -164,6 +165,9 @@
     <ProjectReference Include="..\bobs-island\bobs-island.vcxproj">
       <Project>{a338fc27-559b-400c-9565-1e37baf5d7a9}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main\c++\bobs-island\server\ServerEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

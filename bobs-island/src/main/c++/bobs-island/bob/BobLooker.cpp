@@ -16,7 +16,7 @@
  */
 #include <functional>
 
-#include "BobController.h"
+#include "../BobConstants.h"
 #include "BobLooker.h"
 
 using namespace simplicity;
@@ -24,8 +24,9 @@ using namespace std;
 
 namespace bobsisland
 {
-	BobLooker::BobLooker() :
-		delta(0, 0)
+	BobLooker::BobLooker(unsigned long systemId) :
+		delta(0, 0),
+		systemId(systemId)
 	{
 	}
 
@@ -36,36 +37,43 @@ namespace bobsisland
 			return;
 		}
 
-		rotate(entity.getTransform(), delta.X() * -Simplicity::getDeltaTime() * 0.1f,
-			Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+		Vector2 lookDelta(static_cast<float>(delta.X()), static_cast<float>(delta.Y()));
+		lookDelta *= -Simplicity::getDeltaTime() * 0.1f;
+
+		rotate(entity.getTransform(), lookDelta.X(), Vector3(0.0f, 1.0f, 0.0f));
 
 		Camera* camera = entity.getComponent<Camera>();
 		if (camera != nullptr)
 		{
-			rotate(camera->getTransform(),
-				-delta.Y() * Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			rotate(camera->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
 		}
 
-		rotate(entity.getComponents<Mesh>()[1]->getTransform(),
-			-delta.Y() * Simplicity::getDeltaTime() * 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+		rotate(entity.getComponents<Mesh>()[1]->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
 
 		Simplicity::getScene()->updateGraphs(entity);
 
 		delta = Vector<int, 2>(0, 0);
 	}
 
-	void BobLooker::onCloseScene(Scene& /* scene */, Entity& /* entity */)
+	void BobLooker::onAddEntity(Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Action::LOOK2, bind(&BobLooker::onLook, this, placeholders::_1));
+		Messages::registerRecipient(Subject::LOOK, bind(&BobLooker::onLook, this, placeholders::_1));
 	}
 
-	void BobLooker::onLook(const void* message)
+	bool BobLooker::onLook(const Message& message)
 	{
-		delta = *static_cast<const Vector<int, 2>*>(message);
+		if (message.senderSystemId == systemId)
+		{
+			delta = *static_cast<const Vector<int, 2>*>(message.body);
+
+			return true;
+		}
+
+		return false;
 	}
 
-	void BobLooker::onOpenScene(Scene& /* scene */, Entity& /* entity */)
+	void BobLooker::onRemoveEntity(Entity& /* entity */)
 	{
-		Messages::registerRecipient(Action::LOOK2, bind(&BobLooker::onLook, this, placeholders::_1));
+		Messages::deregisterRecipient(Subject::LOOK, bind(&BobLooker::onLook, this, placeholders::_1));
 	}
 }

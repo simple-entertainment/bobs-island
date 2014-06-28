@@ -16,11 +16,7 @@
 */
 #include <functional>
 
-#include "BobController.h"
 #include "BobFactory.h"
-#include "BobLooker.h"
-#include "BobMover.h"
-#include "BobShooter.h"
 
 using namespace simplicity;
 using namespace std;
@@ -31,26 +27,18 @@ namespace bobsisland
 	{
 		unique_ptr<Entity> createBob()
 		{
-
-			unique_ptr<Model> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
-				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-			unique_ptr<Model> bobGunArm = ModelFactory::getInstance().createCylinderMesh(0.05f, 0.75f, 10,
-				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-			setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
-
-			unique_ptr<Script> bobController(new BobController);
-			unique_ptr<Script> bobLooker(new BobLooker);
-			unique_ptr<Script> bobMover(new BobMover(*Simplicity::getScene()->getGraph<QuadTree>()));
-			unique_ptr<Script> bobShooter(new BobShooter);
-
 			unique_ptr<Entity> bob(new Entity);
+
+			unique_ptr<Mesh> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
+				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			bobBody->init();
 			bob->addUniqueComponent(move(bobBody));
+
+			unique_ptr<Mesh> bobGunArm = ModelFactory::getInstance().createCylinderMesh(0.05f, 0.75f, 10,
+				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			bobGunArm->init();
+			setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
 			bob->addUniqueComponent(move(bobGunArm));
-			bob->addUniqueComponent(move(bobController));
-			bob->addUniqueComponent(move(bobLooker));
-			bob->addUniqueComponent(move(bobMover));
-			bob->addUniqueComponent(move(bobShooter));
 
 			return move(bob);
 		}

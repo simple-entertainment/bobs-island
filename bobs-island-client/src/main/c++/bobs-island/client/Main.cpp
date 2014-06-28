@@ -26,13 +26,15 @@
 
 #include <the-island/API.h>
 
-#include <bobs-island/bob/BobController.h>
 #include <bobs-island/bob/BobFactory.h>
+#include <bobs-island/BobConstants.h>
 
+#include "ClientEngine.h"
 #include "MeshLoader.h"
 #include "SunMover.h"
 
 using namespace bobsisland;
+using namespace bobsisland::client;
 using namespace simplicity;
 using namespace simplicity::bullet;
 //using namespace simplicity::direct3d;
@@ -104,29 +106,6 @@ void setupEngine()
 	unique_ptr<MessagingEngine> remoteMessagingEngine(new RakNetMessagingEngine("127.0.0.1", 55501));
 	Messages::addEngine(remoteMessagingEngine.get());
 
-	Logs::log(Category::INFO_LOG, "Setting up echo!");
-	Messages::registerRecipient(Action::JUMP, RecipientCategory::SERVER);
-	Messages::registerRecipient(Action::LOOK, RecipientCategory::SERVER);
-	Messages::registerRecipient(Action::MOVE, RecipientCategory::SERVER);
-	Messages::registerRecipient(Action::SHOOT, RecipientCategory::SERVER);
-
-	unique_ptr<Codec> jumpCodec(new EmptyCodec);
-	Messages::setCodec(Action::JUMP, move(jumpCodec));
-	unique_ptr<Codec> jump2Codec(new EmptyCodec);
-	Messages::setCodec(Action::JUMP2, move(jump2Codec));
-	unique_ptr<Codec> lookCodec(new SimpleCodec<Vector<int, 2>>);
-	Messages::setCodec(Action::LOOK, move(lookCodec));
-	unique_ptr<Codec> look2Codec(new SimpleCodec<Vector<int, 2>>);
-	Messages::setCodec(Action::LOOK2, move(look2Codec));
-	unique_ptr<Codec> moveCodec(new SimpleCodec<BobController::Direction>);
-	Messages::setCodec(Action::MOVE, move(moveCodec));
-	unique_ptr<Codec> move2Codec(new SimpleCodec<BobController::Direction>);
-	Messages::setCodec(Action::MOVE2, move(move2Codec));
-	unique_ptr<Codec> shootCodec(new EmptyCodec);
-	Messages::setCodec(Action::SHOOT, move(shootCodec));
-	unique_ptr<Codec> shoot2Codec(new EmptyCodec);
-	Messages::setCodec(Action::SHOOT2, move(shoot2Codec));
-
 	// Scene Graph
 	/////////////////////////
 	unique_ptr<Graph> sceneGraph(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
@@ -147,6 +126,10 @@ void setupEngine()
 	PhysicsFactory::setInstance(move(physicsFactory));
 
 	unique_ptr<Engine> physicsEngine(new BulletEngine(Vector3(0.0f, -10.0f, 0.0f)));
+
+	// Client Logic
+	/////////////////////////
+	unique_ptr<Engine> clientEngine(new ClientEngine);
 
 	// Rendering
 	/////////////////////////
@@ -212,6 +195,7 @@ void setupEngine()
 	Simplicity::addEngine(move(remoteMessagingEngine));
 	Simplicity::addEngine(move(scriptingEngine));
 	Simplicity::addEngine(move(physicsEngine));
+	Simplicity::addEngine(move(clientEngine));
 	Simplicity::addEngine(move(renderingEngine));
 	Simplicity::addEngine(move(uiEngine));
 
@@ -231,22 +215,20 @@ void setupScene()
 	unique_ptr<MeshLoader> meshLoaderComponent(new MeshLoader);
 	meshLoader->addUniqueComponent(move(meshLoaderComponent));
 
-	// Bob!
+	// Starting Camera
 	/////////////////////////
-	unique_ptr<Entity> bob = BobFactory::createBob();
-	Entity* rawBob = bob.get();
+	unique_ptr<Entity> startingCamera(new Entity);
+	translate(startingCamera->getTransform(), Vector3(0.0f, 10.0f, 128.0f));
 
-	// Camera
-	/////////////////////////
-	unique_ptr<Camera> camera(new Camera);
-	camera->setFarClippingDistance(2000.0f);
-	camera->setPerspective(60.0f, 4.0f / 3.0f);
-	// Position is relative to Bob.
-	translate(camera->getTransform(), Vector3(0.0f, 1.11f, -0.21f));
+	unique_ptr<Camera> cameraComponent(new Camera);
+	cameraComponent->setFarClippingDistance(2000.0f);
+	cameraComponent->setPerspective(60.0f, 4.0f / 3.0f);
+	startingCamera->addUniqueComponent(move(cameraComponent));
 
 	unique_ptr<Model> cameraBounds(new Square(32.0f));
 	setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
 	cameraBounds->setCategory(Category::BOUNDS);
+	startingCamera->addUniqueComponent(move(cameraBounds));
 
 	// The Sun
 	/////////////////////////
@@ -268,25 +250,11 @@ void setupScene()
 	theSun->addUniqueComponent(move(sunLight));
 	theSun->addUniqueComponent(move(sunModel));
 
-	// The flashlight
-	/////////////////////////
-	unique_ptr<Entity> flash(new Entity);
-
-	unique_ptr<Light> flashLight(new Light("flash"));
-	flashLight->setAmbient(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	flashLight->setAttenuation(Vector3(0.5f, 0.05f, 0.0f));
-	flashLight->setDiffuse(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	flashLight->setDirection(Vector3(0.0f, 0.0f, -1.0f));
-	flashLight->setRange(50.0f);
-	flashLight->setSpecular(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-	flashLight->setStrength(32.0f);
-
 	// Update the rendering engine.
 	/////////////////////////
 	RenderingEngine* renderingEngine = Simplicity::getEngine<RenderingEngine>();
 	renderingEngine->addLight(*theSun);
-	//renderingEngine->addLight(*flash);
-	renderingEngine->setCamera(rawBob);
+	renderingEngine->setCamera(startingCamera.get());
 
 	// The Island!
 	/////////////////////////
@@ -314,21 +282,10 @@ void setupScene()
 	}
 	IslandFactory::createIsland(radius, profile);
 
-	// Assemble Bob!
-	/////////////////////////
-	rotate(bob->getTransform(), MathConstants::PI * 0.5f, Vector3(0.0f, 1.0f, 0.0f));
-	setPosition(bob->getTransform(), Vector3(0.0f, 0.0f, radius - 1.0f));
-	bob->addUniqueComponent(move(camera));
-	bob->addUniqueComponent(move(cameraBounds)); // Yes, this is odd...
-
 	// Assemble the Sun!
 	/////////////////////////
-	unique_ptr<Script> sunMover(new SunMover(*flashLight));
+	unique_ptr<Script> sunMover(new SunMover);
 	theSun->addUniqueComponent(move(sunMover));
-
-	// Assemble the Flash Light!
-	/////////////////////////
-	flash->addUniqueComponent(move(flashLight));
 
 	// Testing 123
 	/////////////////////////
@@ -338,10 +295,9 @@ void setupScene()
 
 	// Add everything!
 	/////////////////////////
-	Simplicity::getScene()->addEntity(move(bob));
 	Simplicity::getScene()->addEntity(move(meshLoader));
+	Simplicity::getScene()->addEntity(move(startingCamera));
 	Simplicity::getScene()->addEntity(move(theSun));
-	Simplicity::getScene()->addEntity(move(flash), *rawBob);
 }
 
 void testing123(unsigned int radius)

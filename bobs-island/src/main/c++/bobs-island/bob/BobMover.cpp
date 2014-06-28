@@ -26,36 +26,37 @@ using namespace theisland;
 
 namespace bobsisland
 {
-	BobMover::BobMover(const Graph& world) :
+	BobMover::BobMover(unsigned long systemId, const Graph& world) :
 		directions(),
 		falling(false),
 		fallTime(0.0f),
 		jumping(false),
 		jumpTime(0.0f),
+		systemId(systemId),
 		world(world)
 	{
 	}
 
 	void BobMover::execute(Entity& entity)
 	{
-		for (BobController::Direction direction : directions)
+		for (Direction direction : directions)
 		{
-			if (direction == BobController::Direction::BACKWARD)
+			if (direction == Direction::BACKWARD)
 			{
 				translate(entity.getTransform(), Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
 			}
 
-			if (direction == BobController::Direction::FORWARD)
+			if (direction == Direction::FORWARD)
 			{
 				translate(entity.getTransform(), Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
 			}
 
-			if (direction == BobController::Direction::LEFT)
+			if (direction == Direction::LEFT)
 			{
 				translate(entity.getTransform(), Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 			}
 
-			if (direction == BobController::Direction::RIGHT)
+			if (direction == Direction::RIGHT)
 			{
 				translate(entity.getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
 			}
@@ -158,26 +159,40 @@ namespace bobsisland
 		return newBobY;
 	}
 
-	void BobMover::onCloseScene(Scene& /* scene */, Entity& /* entity */)
+	void BobMover::onAddEntity(Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Action::JUMP2, bind(&BobMover::onJump, this, placeholders::_1));
-		Messages::deregisterRecipient(Action::MOVE2, bind(&BobMover::onMove, this, placeholders::_1));
+		Messages::registerRecipient(Subject::JUMP, bind(&BobMover::onJump, this, placeholders::_1));
+		Messages::registerRecipient(Subject::MOVE, bind(&BobMover::onMove, this, placeholders::_1));
 	}
 
-	void BobMover::onJump(const void* message)
+	bool BobMover::onJump(const Message& message)
 	{
-		jumping = true;
+		if (message.senderSystemId == systemId)
+		{
+			jumping = true;
+
+			return true;
+		}
+
+		return false;
 	}
 
-	void BobMover::onMove(const void* message)
+	bool BobMover::onMove(const Message& message)
 	{
-		directions.push_back(*static_cast<const BobController::Direction*>(message));
+		if (message.senderSystemId == systemId)
+		{
+			directions.push_back(*static_cast<const Direction*>(message.body));
+
+			return true;
+		}
+
+		return false;
 	}
 
-	void BobMover::onOpenScene(Scene& /* scene */, Entity& /* entity */)
+	void BobMover::onRemoveEntity(Entity& /* entity */)
 	{
-		Messages::registerRecipient(Action::JUMP2, bind(&BobMover::onJump, this, placeholders::_1));
-		Messages::registerRecipient(Action::MOVE2, bind(&BobMover::onMove, this, placeholders::_1));
+		Messages::deregisterRecipient(Subject::JUMP, bind(&BobMover::onJump, this, placeholders::_1));
+		Messages::deregisterRecipient(Subject::MOVE, bind(&BobMover::onMove, this, placeholders::_1));
 	}
 
 	void BobMover::updateY(Entity& entity)

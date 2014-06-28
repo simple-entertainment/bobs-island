@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2014 Simple Entertainment Limited
+ * Copyright © 2014 Simple Entertainment Limited
  *
  * This file is part of Bob's Island.
  *
@@ -14,23 +14,21 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef SUNMOVER_H_
-#define SUNMOVER_H_
+#ifndef BOBSTATE_H_
+#define BOBSTATE_H_
 
 #include <simplicity/API.h>
 
 namespace bobsisland
 {
-	namespace client
+	struct BobState
 	{
-		class SunMover : public simplicity::Script
-		{
-			public:
-				void execute(simplicity::Entity& entity);
+		simplicity::Matrix44 entityTransform;
 
-				void onAddEntity(simplicity::Entity& entity);
-		};
-	}
+		simplicity::Matrix44 lookRotation;
+
+		unsigned long systemId;
+	};
 }
 
-#endif /* SUNMOVER_H_ */
+#endif /* BOBSTATE_H_ */

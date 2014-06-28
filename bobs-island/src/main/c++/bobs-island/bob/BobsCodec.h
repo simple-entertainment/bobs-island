@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2014 Simple Entertainment Limited
+ * Copyright © 2014 Simple Entertainment Limited
  *
  * This file is part of Bob's Island.
  *
@@ -14,23 +14,27 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef SUNMOVER_H_
-#define SUNMOVER_H_
+#ifndef BOBSCODEC_H_
+#define BOBSCODEC_H_
 
 #include <simplicity/API.h>
 
+#include "BobState.h"
+
 namespace bobsisland
 {
-	namespace client
+	class BobsCodec : public simplicity::Codec
 	{
-		class SunMover : public simplicity::Script
-		{
-			public:
-				void execute(simplicity::Entity& entity);
+		public:
+			BobsCodec();
 
-				void onAddEntity(simplicity::Entity& entity);
-		};
-	}
+			simplicity::Message decode(const simplicity::byte* data) override;
+
+			std::vector<simplicity::byte> encode(const simplicity::Message& message) override;
+
+		private:
+			std::vector<BobState> decodedBobs;
+	};
 }
 
-#endif /* SUNMOVER_H_ */
+#endif /* BOBSCODEC_H_ */

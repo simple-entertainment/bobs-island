@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2014 Simple Entertainment Limited
+ * Copyright © 2014 Simple Entertainment Limited
  *
  * This file is part of Bob's Island.
  *
@@ -14,23 +14,36 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef SUNMOVER_H_
-#define SUNMOVER_H_
+#ifndef CLIENTENGINE_H_
+#define CLIENTENGINE_H_
 
 #include <simplicity/API.h>
+
+#include <bobs-island/bob/BobState.h>
 
 namespace bobsisland
 {
 	namespace client
 	{
-		class SunMover : public simplicity::Script
+		class ClientEngine : public simplicity::Engine
 		{
 			public:
-				void execute(simplicity::Entity& entity);
+				ClientEngine();
 
-				void onAddEntity(simplicity::Entity& entity);
+				void advance() override;
+				
+				void onPlay() override;
+
+				void onStop() override;
+
+			private:
+				std::map<unsigned long, simplicity::Entity*> bobs;
+
+				std::vector<BobState> bobStates;
+
+				bool onBobs(const simplicity::Message& message);
 		};
 	}
 }
 
-#endif /* SUNMOVER_H_ */
+#endif /* CLIENTENGINE_H_ */

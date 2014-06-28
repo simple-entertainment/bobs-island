@@ -20,17 +20,20 @@ using namespace simplicity;
 
 namespace bobsisland
 {
-	void MeshLoader::execute(Entity& /* entity */)
+	namespace client
 	{
-	}
-
-	void MeshLoader::onOpenScene(Scene& scene, Entity& /* entity */)
-	{
-		for (Entity* entity : scene.getEntities())
+		void MeshLoader::execute(Entity& /* entity */)
 		{
-			for (Mesh* mesh : entity->getComponents<Mesh>(Category::RENDER))
+		}
+
+		void MeshLoader::onOpenScene(Scene& scene, Entity& /* entity */)
+		{
+			for (Entity* entity : scene.getEntities())
 			{
-				mesh->init();
+				for (Mesh* mesh : entity->getComponents<Mesh>(Category::RENDER))
+				{
+					mesh->init();
+				}
 			}
 		}
 	}

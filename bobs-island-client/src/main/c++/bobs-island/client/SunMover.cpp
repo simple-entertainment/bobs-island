@@ -20,36 +20,25 @@ using namespace simplicity;
 
 namespace bobsisland
 {
-	SunMover::SunMover(simplicity::Light& flashLight) :
-		flashLight(flashLight)
+	namespace client
 	{
-	}
-
-	void SunMover::execute(Entity& entity)
-	{
-		float toPosition = 2.0f * MathConstants::PI * Simplicity::getTotalTime() / 60.0f;
-		toPosition -= 0.75f * MathConstants::PI;
-		toPosition = 0.0f;
-		Vector3 position(sin(toPosition), cos(toPosition), 0.0f);
-		Vector3 direction = position;
-		direction.negate();
-		position *= 1000.0f;
-
-		setPosition(entity.getTransform(), position);
-		entity.getComponent<Light>()->setDirection(direction);
-
-		if (position.Y() < -10.0f)
+		void SunMover::execute(Entity& entity)
 		{
-			flashLight.activate();
-		}
-		else
-		{
-			flashLight.deactivate();
-		}
-	}
+			float toPosition = 2.0f * MathConstants::PI * Simplicity::getTotalTime() / 60.0f;
+			toPosition -= 0.75f * MathConstants::PI;
+			toPosition = 0.0f;
+			Vector3 position(sin(toPosition), cos(toPosition), 0.0f);
+			Vector3 direction = position;
+			direction.negate();
+			position *= 1000.0f;
 
-	void SunMover::onAddEntity(Entity& entity)
-	{
-		execute(entity);
+			setPosition(entity.getTransform(), position);
+			entity.getComponent<Light>()->setDirection(direction);
+		}
+
+		void SunMover::onAddEntity(Entity& entity)
+		{
+			execute(entity);
+		}
 	}
 }

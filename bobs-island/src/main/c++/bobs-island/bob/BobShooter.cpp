@@ -16,7 +16,7 @@
  */
 #include <functional>
 
-#include "BobController.h"
+#include "../BobConstants.h"
 #include "BobShooter.h"
 
 using namespace simplicity;
@@ -24,8 +24,9 @@ using namespace std;
 
 namespace bobsisland
 {
-	BobShooter::BobShooter() :
-		firing(false)
+	BobShooter::BobShooter(unsigned long systemId) :
+		firing(false),
+		systemId(systemId)
 	{
 	}
 
@@ -73,18 +74,25 @@ namespace bobsisland
 		firing = false;
 	}
 
-	void BobShooter::onCloseScene(Scene& /* scene */, Entity& /* entity */)
+	void BobShooter::onAddEntity(Entity& /* entity */)
 	{
-		Messages::deregisterRecipient(Action::SHOOT2, bind(&BobShooter::onShoot, this, placeholders::_1));
+		Messages::registerRecipient(Subject::SHOOT, bind(&BobShooter::onShoot, this, placeholders::_1));
 	}
 
-	void BobShooter::onOpenScene(Scene& /* scene */, Entity& /* entity */)
+	void BobShooter::onRemoveEntity(Entity& /* entity */)
 	{
-		Messages::registerRecipient(Action::SHOOT2, bind(&BobShooter::onShoot, this, placeholders::_1));
+		Messages::deregisterRecipient(Subject::SHOOT, bind(&BobShooter::onShoot, this, placeholders::_1));
 	}
 
-	void BobShooter::onShoot(const void* /* message */)
+	bool BobShooter::onShoot(const Message& message)
 	{
-		firing = true;
+		if (message.senderSystemId == systemId)
+		{
+			firing = true;
+
+			return true;
+		}
+
+		return false;
 	}
 }

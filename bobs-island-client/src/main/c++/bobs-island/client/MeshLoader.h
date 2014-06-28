@@ -21,13 +21,16 @@
 
 namespace bobsisland
 {
-	class MeshLoader : public simplicity::Script, private simplicity::NonCopyable
+	namespace client
 	{
-		public:
-			void execute(simplicity::Entity& entity);
+		class MeshLoader : public simplicity::Script, private simplicity::NonCopyable
+		{
+			public:
+				void execute(simplicity::Entity& entity);
 
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
-	};
+				void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
+		};
+	}
 }
 
 #endif /* MESHLOADER_H_ */

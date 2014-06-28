@@ -143,12 +143,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\main\c++\bobs-island\client\bob\BobController.cpp" />
     <ClCompile Include="src\main\c++\bobs-island\client\Main.cpp" />
     <ClCompile Include="src\main\c++\bobs-island\client\MeshLoader.cpp" />
+    <ClCompile Include="src\main\c++\bobs-island\client\ClientEngine.cpp" />
     <ClCompile Include="src\main\c++\bobs-island\client\SunMover.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\main\c++\bobs-island\client\bob\BobController.h" />
     <ClInclude Include="src\main\c++\bobs-island\client\MeshLoader.h" />
+    <ClInclude Include="src\main\c++\bobs-island\client\ClientEngine.h" />
     <ClInclude Include="src\main\c++\bobs-island\client\SunMover.h" />
   </ItemGroup>
   <ItemGroup>

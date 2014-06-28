@@ -21,43 +21,16 @@
 
 namespace bobsisland
 {
-	namespace Action
-	{
-		static unsigned short JUMP = simplicity::Subject::USER_ID_0;
-
-		static unsigned short LOOK = simplicity::Subject::USER_ID_0 + 1;
-
-		static unsigned short MOVE = simplicity::Subject::USER_ID_0 + 2;
-
-		static unsigned short SHOOT = simplicity::Subject::USER_ID_0 + 3;
-
-		static unsigned short JUMP2 = simplicity::Subject::USER_ID_0 + 4;
-
-		static unsigned short LOOK2 = simplicity::Subject::USER_ID_0 + 5;
-
-		static unsigned short MOVE2 = simplicity::Subject::USER_ID_0 + 6;
-
-		static unsigned short SHOOT2 = simplicity::Subject::USER_ID_0 + 7;
-	}
-
 	class BobController : public simplicity::Script
 	{
 		public:
-			enum class Direction
-			{
-				BACKWARD,
-				FORWARD,
-				LEFT,
-				RIGHT
-			};
-
 			BobController();
 
-			void execute(simplicity::Entity& entity);
+			void execute(simplicity::Entity& entity) override;
 
-			void onCloseScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
-
-			void onOpenScene(simplicity::Scene& scene, simplicity::Entity& entity) override;
+			void onAddEntity(simplicity::Entity& entity) override;
+			
+			void onRemoveEntity(simplicity::Entity& entity) override;
 
 		private:
 			std::map<simplicity::Keyboard::Button, simplicity::Button::State> keyboardButtonStates;
@@ -68,11 +41,11 @@ namespace bobsisland
 
 			bool shooting;
 
-			void onKeyboardButton(const void* message);
+			bool onKeyboardButton(const simplicity::Message& message);
 
-			void onMouseButton(const void* message);
+			bool onMouseButton(const simplicity::Message& message);
 
-			void onMouseMove(const void* message);
+			bool onMouseMove(const simplicity::Message& message);
 	};
 }
 
