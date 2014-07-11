@@ -14,15 +14,28 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+// Use alternate APIs:
+//#define DIRECT3D
+//#define PHYSX
+
 #include <simplicity/API.h>
-#include <simplicity/bullet/API.h>
-//#include <simplicity/direct3d/API.h>
-#include <simplicity/freeglut/API.h>
-#include <simplicity/opengl/API.h>
-//#include <simplicity/physx/API.h>
 #include <simplicity/raknet/API.h>
 #include <simplicity/rocket/API.h>
-//#include <simplicity/winapi/API.h>
+
+#ifdef DIRECT3D
+#include <simplicity/direct3d/API.h>
+#include <simplicity/winapi/API.h>
+#else
+#include <simplicity/freeglut/API.h>
+#include <simplicity/opengl/API.h>
+#endif
+
+#ifdef PHYSX
+#include <simplicity/physx/API.h>
+#else
+#include <simplicity/bullet/API.h>
+#endif
 
 #include <the-island/API.h>
 
@@ -36,68 +49,57 @@
 using namespace bobsisland;
 using namespace bobsisland::client;
 using namespace simplicity;
-using namespace simplicity::bullet;
-//using namespace simplicity::direct3d;
-using namespace simplicity::freeglut;
-using namespace simplicity::opengl;
-//using namespace simplicity::physx;
 using namespace simplicity::raknet;
 using namespace simplicity::rocket;
-//using namespace simplicity::winapi;
 using namespace std;
 using namespace theisland;
 
-//#ifdef SIMPLE_WINDOWS
-//void setupEngine(HINSTANCE instance, int commandShow);
-//#else
+#ifdef DIRECT3D
+using namespace simplicity::direct3d;
+using namespace simplicity::winapi;
+#else
+using namespace simplicity::freeglut;
+using namespace simplicity::opengl;
+#endif
+
+#ifdef PHYSX
+using namespace simplicity::physx;
+#else
+using namespace simplicity::bullet;
+#endif
+
 void setupEngine();
-//#endif
 void setupScene();
+void start();
 void testing123(unsigned int radius);
 
-//#ifdef SIMPLE_WINDOWS
-//int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR /* commandLine */, int commandShow)
-//#else
-int main()
-//#endif
+#ifdef DIRECT3D
+int commandShow = 0;
+HINSTANCE instance = nullptr;
+
+int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR /* commandLine */, int commandShow)
 {
-	// Resources
-	/////////////////////////
-	unique_ptr<DataStore> consoleDataStore(new ConsoleDataStore);
-	Resources::setDataStore(move(consoleDataStore), Category::CONSOLE);
-	unique_ptr<DataStore> fileSystemDataStore(new FileSystemDataStore("."));
-	Resources::setDataStore(move(fileSystemDataStore), Category::ALL_CATEGORIES);
+	::commandShow = commandShow;
+	::instance = instance;
 
-	// Logging
-	/////////////////////////
-	Logs::setResource(Resources::get("out", Category::CONSOLE), Category::ALL_CATEGORIES);
-
-	Logs::log(Category::INFO_LOG, "###########################");
-	Logs::log(Category::INFO_LOG, "### BOB's Island Client ###");
-	Logs::log(Category::INFO_LOG, "###########################");
-
-	setRandomSeed(1234567);
-
-	Logs::log(Category::INFO_LOG, "Setting up engine...");
-	setupEngine();
-	//setupEngine(instance, commandShow);
-	Logs::log(Category::INFO_LOG, "Setting up scene...");
-	setupScene();
-
-	Logs::log(Category::INFO_LOG, "GO!!!");
-	Simplicity::play();
+	start();
 }
+#else
+int main()
+{
+	start();
+}
+#endif
 
-//#ifdef SIMPLE_WINDOWS
-//void setupEngine(HINSTANCE instance, int commandShow)
-//#else
 void setupEngine()
-//#endif
 {
 	// Windowing
 	/////////////////////////
+#ifdef DIRECT3D
+	unique_ptr<WinAPIEngine> windowingEngine(new WinAPIEngine("Bob's Island", instance, commandShow));
+#else
 	unique_ptr<Engine> windowingEngine(new FreeGLUTEngine("Bob's Island"));
-	//unique_ptr<WinAPIEngine> windowingEngine(new WinAPIEngine("Bob's Island", instance, commandShow));
+#endif
 
 	// Messaging
 	/////////////////////////
@@ -133,40 +135,51 @@ void setupEngine()
 
 	// Rendering
 	/////////////////////////
+#ifdef DIRECT3D
+	unique_ptr<RenderingFactory> renderingFactory(new Direct3DRenderingFactory);
+	unique_ptr<RenderingEngine> renderingEngine(new Direct3DRenderingEngine);
+	unique_ptr<Renderer> renderer(new Direct3DRenderer);
+#else
 	unique_ptr<RenderingFactory> renderingFactory(new OpenGLRenderingFactory);
-	//unique_ptr<RenderingFactory> renderingFactory(new Direct3DRenderingFactory);
-	RenderingFactory::setInstance(move(renderingFactory));
-
 	unique_ptr<RenderingEngine> renderingEngine(new OpenGLRenderingEngine);
 	unique_ptr<Renderer> renderer(new OpenGLRenderer);
-	//unique_ptr<RenderingEngine> renderingEngine(new Direct3DRenderingEngine);
-	//unique_ptr<Renderer> renderer(new Direct3DRenderer);
+#endif
+	RenderingFactory::setInstance(move(renderingFactory));
 
 	// Shaders
+#ifdef DIRECT3D
+	Resource* vertexShaderSource = Resources::get("vertexDefault.cso", Category::UNCATEGORIZED, true);
+	Resource* fragmentShaderSource = Resources::get("fragmentDefault.cso", Category::UNCATEGORIZED, true);
+	unique_ptr<Pipeline> pipeline(new Direct3DPipeline(*vertexShaderSource, *fragmentShaderSource));
+#else
 	Resource* vertexShaderSource = Resources::get("src/main/glsl/my.vs", Category::UNCATEGORIZED);
 	Resource* fragmentShaderSource = Resources::get("src/main/glsl/my.fs", Category::UNCATEGORIZED);
 	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
 	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
 	unique_ptr<Pipeline> pipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
-	//Resource* vertexShaderSource = Resources::get("vertexDefault.cso", Category::UNCATEGORIZED, true);
-	//Resource* fragmentShaderSource = Resources::get("fragmentDefault.cso", Category::UNCATEGORIZED, true);
-	//unique_ptr<Pipeline> pipeline(new Direct3DPipeline(*vertexShaderSource, *fragmentShaderSource));
+#endif
 	renderer->setDefaultPipeline(move(pipeline));
 
 	// UI
 	/////////////////////////
+#ifdef DIRECT3D
+	unique_ptr<Renderer> uiRenderer(new Direct3DRenderer);
+#else
 	unique_ptr<Renderer> uiRenderer(new OpenGLRenderer);
-	//unique_ptr<Renderer> uiRenderer(new Direct3DRenderer);
+#endif
 	uiRenderer->setClearColorBuffer(false);
 
+#ifdef DIRECT3D
+	Resource* uiVertexShaderSource = Resources::get("vertexRocket.cso", Category::UNCATEGORIZED, true);
+	Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
+	unique_ptr<Pipeline> uiPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
+#else
 	Resource* uiVertexShaderSource = Resources::get("src/main/glsl/rocket.vs", Category::UNCATEGORIZED);
 	Resource* uiFragmentShaderSource = Resources::get("src/main/glsl/rocket.fs", Category::UNCATEGORIZED);
 	unique_ptr<OpenGLShader> uiVertexShader(new OpenGLShader(Shader::Type::VERTEX, *uiVertexShaderSource));
 	unique_ptr<OpenGLShader> uiFragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *uiFragmentShaderSource));
 	unique_ptr<Pipeline> uiPipeline(new OpenGLPipeline(move(uiVertexShader), move(uiFragmentShader)));
-	//Resource* uiVertexShaderSource = Resources::get("vertexRocket.cso", Category::UNCATEGORIZED, true);
-	//Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
-	//unique_ptr<Pipeline> uiPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
+#endif
 	uiRenderer->setDefaultPipeline(move(uiPipeline));
 
 	unique_ptr<Engine> uiEngine(new RocketEngine(move(uiRenderer), Category::UNCATEGORIZED));
@@ -298,6 +311,34 @@ void setupScene()
 	Simplicity::getScene()->addEntity(move(meshLoader));
 	Simplicity::getScene()->addEntity(move(startingCamera));
 	Simplicity::getScene()->addEntity(move(theSun));
+}
+
+void start()
+{
+	// Resources
+	/////////////////////////
+	unique_ptr<DataStore> consoleDataStore(new ConsoleDataStore);
+	Resources::setDataStore(move(consoleDataStore), Category::CONSOLE);
+	unique_ptr<DataStore> fileSystemDataStore(new FileSystemDataStore("."));
+	Resources::setDataStore(move(fileSystemDataStore), Category::ALL_CATEGORIES);
+
+	// Logging
+	/////////////////////////
+	Logs::setResource(Resources::get("out", Category::CONSOLE), Category::ALL_CATEGORIES);
+
+	Logs::log(Category::INFO_LOG, "###########################");
+	Logs::log(Category::INFO_LOG, "### BOB's Island Client ###");
+	Logs::log(Category::INFO_LOG, "###########################");
+
+	setRandomSeed(1234567);
+
+	Logs::log(Category::INFO_LOG, "Setting up engine...");
+	setupEngine();
+	Logs::log(Category::INFO_LOG, "Setting up scene...");
+	setupScene();
+
+	Logs::log(Category::INFO_LOG, "GO!!!");
+	Simplicity::play();
 }
 
 void testing123(unsigned int radius)
