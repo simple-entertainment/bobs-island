@@ -34,3 +34,12 @@ target_link_libraries(bobs-island-server simplicity-bullet)
 target_link_libraries(bobs-island-server simplicity-raknet)
 target_link_libraries(bobs-island-server simplicity)
 
+IF(WIN32)
+	# RakNet
+	target_link_libraries(bobs-island-server Ws2_32)
+ENDIF(WIN32)
+IF(UNIX)
+	# RakNet
+	target_link_libraries(bobs-island-server pthread)
+ENDIF(UNIX)
+

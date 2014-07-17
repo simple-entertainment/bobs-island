@@ -63,7 +63,7 @@ using namespace simplicity::opengl;
 #endif
 
 #ifdef PHYSX
-using namespace simplicity::physx;
+using namespace simplicity::simphysx;
 #else
 using namespace simplicity::bullet;
 #endif
@@ -114,8 +114,11 @@ void setupEngine()
 
 	// Models
 	/////////////////////////
+#ifdef DIRECT3D
+	unique_ptr<ModelFactory> modelFactory(new Direct3DModelFactory);
+#else
 	unique_ptr<ModelFactory> modelFactory(new OpenGLModelFactory);
-	//unique_ptr<ModelFactory> modelFactory(new Direct3DModelFactory);
+#endif
 	ModelFactory::setInstance(move(modelFactory));
 
 	// Scripting
@@ -124,10 +127,15 @@ void setupEngine()
 
 	// Physics
 	/////////////////////////
+#ifdef PHYSX
+	unique_ptr<PhysXEngine> physicsEngine(new PhysXEngine(Vector3(0.0f, -10.0f, 0.0f)));
+	unique_ptr<PhysXPhysicsFactory> physicsFactory(new PhysXPhysicsFactory(physicsEngine->getPhysics(),
+			physicsEngine->getCooking()));
+#else
 	unique_ptr<PhysicsFactory> physicsFactory(new BulletPhysicsFactory);
-	PhysicsFactory::setInstance(move(physicsFactory));
-
 	unique_ptr<Engine> physicsEngine(new BulletEngine(Vector3(0.0f, -10.0f, 0.0f)));
+#endif
+	PhysicsFactory::setInstance(move(physicsFactory));
 
 	// Client Logic
 	/////////////////////////

@@ -15,6 +15,20 @@ RelWithDebInfo
 *.project
 *.settings
 
+# Make
+#########################
+Makefile
+
+# Misc
+#########################
+*~
+
+# Output
+#########################
+bobs-island-client/bobs-island-client
+bobs-island-server/bobs-island-server
+libbobs-island.a
+
 # Visual Studio
 #########################
 *.filters
