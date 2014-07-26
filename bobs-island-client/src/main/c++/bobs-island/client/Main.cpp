@@ -43,7 +43,6 @@
 #include <bobs-island/BobConstants.h>
 
 #include "ClientEngine.h"
-#include "MeshLoader.h"
 #include "SunMover.h"
 
 using namespace bobsisland;
@@ -230,12 +229,6 @@ void setupEngine()
 
 void setupScene()
 {
-	// Mesh Loader! (TODO review)
-	/////////////////////////
-	unique_ptr<Entity> meshLoader(new Entity);
-	unique_ptr<MeshLoader> meshLoaderComponent(new MeshLoader);
-	meshLoader->addUniqueComponent(move(meshLoaderComponent));
-
 	// Starting Camera
 	/////////////////////////
 	unique_ptr<Entity> startingCamera(new Entity);
@@ -262,11 +255,14 @@ void setupScene()
 	sunLight->setSpecular(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
 	sunLight->setStrength(32.0f);
 
-	unique_ptr<Mesh> sunModel = ModelFactory::getInstance().createSphereMesh(50.0f, 10, Vector4(1.0f, 1.0f, 0.6f));
-	for (unsigned int index = 0; index < sunModel->getVertexCount(); index++)
+	unique_ptr<Mesh> sunModel = ModelFactory::getInstance()->createSphereMesh(50.0f, 10, shared_ptr<MeshBuffer>(),
+			Vector4(1.0f, 1.0f, 0.6f, 1.0f));
+	MeshData& sunModelData = sunModel->getData(false, true);
+	for (unsigned int index = 0; index < sunModelData.vertexCount; index++)
 	{
-		sunModel->getVertices()[index].normal.negate();
+		sunModelData.vertexData[index].normal.negate();
 	}
+	sunModel->releaseData();
 
 	theSun->addUniqueComponent(move(sunLight));
 	theSun->addUniqueComponent(move(sunModel));
@@ -316,7 +312,6 @@ void setupScene()
 
 	// Add everything!
 	/////////////////////////
-	Simplicity::getScene()->addEntity(move(meshLoader));
 	Simplicity::getScene()->addEntity(move(startingCamera));
 	Simplicity::getScene()->addEntity(move(theSun));
 }
@@ -355,27 +350,29 @@ void testing123(unsigned int radius)
 	unique_ptr<Entity> test(new Entity);
 	setPosition(test->getTransform(), Vector3(0.0f, 2.0f, radius - 5.0f));
 
-	unique_ptr<Mesh> cube = ModelFactory::getInstance().createCubeMesh(1.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	unique_ptr<Mesh> cube = ModelFactory::getInstance()->createCubeMesh(1.0f, shared_ptr<MeshBuffer>(),
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	Matrix44 relativeTransform;
 	relativeTransform.setIdentity();
 	setPosition(relativeTransform, Vector3(1.0f, 1.0f, 1.0f));
 	unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
 
-	unique_ptr<Mesh> cylinder = ModelFactory::getInstance().createCylinderMesh(0.3f, 10.0f, 5,
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
+	unique_ptr<Mesh> cylinder = ModelFactory::getInstance()->createCylinderMesh(0.3f, 10.0f, 5,
+			shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
 
-	unique_ptr<Mesh> hemisphere = ModelFactory::getInstance().createHemisphereMesh(1.0f, 10,
+	unique_ptr<Mesh> hemisphere = ModelFactory::getInstance()->createHemisphereMesh(1.0f, 10, shared_ptr<MeshBuffer>(),
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
-	unique_ptr<Mesh> prism = ModelFactory::getInstance().createPrismMesh(Vector3(0.5f, 0.5f, 0.5f),
+	unique_ptr<Mesh> prism = ModelFactory::getInstance()->createPrismMesh(Vector3(0.5f, 0.5f, 0.5f),
+			shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	unique_ptr<Mesh> sphere = ModelFactory::getInstance()->createSphereMesh(1.0f, 10, shared_ptr<MeshBuffer>(),
+			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+
+	unique_ptr<Mesh> triangle = ModelFactory::getInstance()->createTriangleMesh(Vector3(0.0f, 1.0f, 0.0f),
+			Vector3(-1.0f, -2.0f, 0.0f), Vector3(1.0f, -2.0f, 0.0f), shared_ptr<MeshBuffer>(),
 			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	unique_ptr<Mesh> sphere = ModelFactory::getInstance().createSphereMesh(1.0f, 10, Vector4(1.0f, 0.0f, 0.0f, 1.0f),
-			true);
-
-	unique_ptr<Mesh> triangle = ModelFactory::getInstance().createTriangleMesh(Vector3(0.0f, 1.0f, 0.0f),
-			Vector3(-1.0f, -2.0f, 0.0f), Vector3(1.0f, -2.0f, 0.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	setPosition(relativeTransform, Vector3(0.0f, 0.0f, 5.0f));
 	unique_ptr<Model> triangleMinusCylinder = ModelFunctions::subtract(*triangle, *cylinder, relativeTransform);

@@ -80,24 +80,27 @@ namespace bobsisland
 			if (entity->getCategory() == EntityCategories::GROUND)
 			{
 				Mesh* groundMesh = entity->getComponent<Mesh>(Category::RENDER);
-				unsigned int* indices = groundMesh->getIndices();
-				Vertex* vertices = groundMesh->getVertices();
-				for (unsigned int index = 0; index < groundMesh->getIndexCount(); index += 3)
+				const MeshData& groundMeshData = groundMesh->getData(); // TODO ScopedMeshData !!!
+				for (unsigned int index = 0; index < groundMeshData.size(); index += 3)
 				{
-					Vector3 triangle2d0 = vertices[indices[index]].position;
+					Vector3 triangle2d0 = groundMeshData[index].position;
 					triangle2d0.Y() = 0.0f;
-					Vector3 triangle2d1 = vertices[indices[index + 1]].position;
+					Vector3 triangle2d1 = groundMeshData[index + 1].position;
 					triangle2d1.Y() = 0.0f;
-					Vector3 triangle2d2 = vertices[indices[index + 2]].position;
+					Vector3 triangle2d2 = groundMeshData[index + 2].position;
 					triangle2d2.Y() = 0.0f;
 
 					// Determine if Bob is inside the triangle ignoring the Y axis.
 					if (Intersection::contains(Triangle(triangle2d0, triangle2d1, triangle2d2), position2d))
 					{
-						return unique_ptr<Triangle>(new Triangle(vertices[index].position,
-							vertices[index + 1].position, vertices[index + 2].position));
+						unique_ptr<Triangle> groundAtBobsPosition(new Triangle(groundMeshData[index].position,
+								groundMeshData[index + 1].position, groundMeshData[index + 2].position));
+
+						groundMesh->releaseData();
+						return groundAtBobsPosition;
 					}
 				}
+				groundMesh->releaseData();
 			}
 		}
 

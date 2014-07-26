@@ -1,5 +1,5 @@
 /*
-* Copyright © 2014 Simple Entertainment Limited
+* Copyright ï¿½ 2014 Simple Entertainment Limited
 *
 * This file is part of Bob's Island.
 *
@@ -29,14 +29,12 @@ namespace bobsisland
 		{
 			unique_ptr<Entity> bob(new Entity);
 
-			unique_ptr<Mesh> bobBody = ModelFactory::getInstance().createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
-				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-			bobBody->init();
+			unique_ptr<Mesh> bobBody = ModelFactory::getInstance()->createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
+				shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 			bob->addUniqueComponent(move(bobBody));
 
-			unique_ptr<Mesh> bobGunArm = ModelFactory::getInstance().createCylinderMesh(0.05f, 0.75f, 10,
-				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-			bobGunArm->init();
+			unique_ptr<Mesh> bobGunArm = ModelFactory::getInstance()->createCylinderMesh(0.05f, 0.75f, 10,
+					shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 			setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
 			bob->addUniqueComponent(move(bobGunArm));
 

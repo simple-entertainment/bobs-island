@@ -44,11 +44,12 @@ namespace bobsisland
 		bullet->setTransform(entity.getTransform() * entity.getComponents<Mesh>()[1]->getTransform());
 		rotate(bullet->getTransform(), MathConstants::PI * -0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-		unique_ptr<Mesh> mesh = ModelFactory::getInstance().createPyramidMesh(0.1f, 0.5f,
-				Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		mesh->init();
+		unique_ptr<Mesh> mesh = ModelFactory::getInstance()->createPyramidMesh(0.1f, 0.5f,
+				shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-		unique_ptr<Model> bounds = ModelFunctions::getSquareBoundsXZ(mesh->getVertices(), mesh->getVertexCount());
+		const MeshData& meshData = mesh->getData();
+		unique_ptr<Model> bounds = ModelFunctions::getSquareBoundsXZ(meshData.vertexData, meshData.vertexCount);
+		mesh->releaseData();
 
 		unique_ptr<Model> bodyModel(new Box(0.1f, 0.25f, 0.1f));
 
