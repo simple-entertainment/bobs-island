@@ -112,7 +112,7 @@ void setupScene()
 {
 	// The Island!
 	/////////////////////////
-	unsigned int radius = 64;
+	unsigned int radius = 128;
 	vector<float> profile;
 	profile.reserve(radius * 2);
 	float peakHeight = 32.0f;
