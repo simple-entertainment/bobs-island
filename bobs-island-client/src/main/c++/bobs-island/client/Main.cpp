@@ -102,10 +102,10 @@ void setupEngine()
 
 	// Messaging
 	/////////////////////////
-	unique_ptr<MessagingEngine> localMessagingEngine(new SimpleMessagingEngine);
+	/*unique_ptr<MessagingEngine> localMessagingEngine(new SimpleMessagingEngine);
 	Messages::addEngine(localMessagingEngine.get());
 	unique_ptr<MessagingEngine> remoteMessagingEngine(new RakNetMessagingEngine("127.0.0.1", 55501));
-	Messages::addEngine(remoteMessagingEngine.get());
+	Messages::addEngine(remoteMessagingEngine.get());*/
 
 	// Scene Graph
 	/////////////////////////
@@ -211,13 +211,13 @@ void setupEngine()
 	/////////////////////////
 	Simplicity::setCompositeEngine(move(debuggingEngine));
 	Simplicity::addEngine(move(windowingEngine));
-	Simplicity::addEngine(move(localMessagingEngine));
-	Simplicity::addEngine(move(remoteMessagingEngine));
-	Simplicity::addEngine(move(scriptingEngine));
-	Simplicity::addEngine(move(physicsEngine));
-	Simplicity::addEngine(move(clientEngine));
+	//Simplicity::addEngine(move(localMessagingEngine));
+	//Simplicity::addEngine(move(remoteMessagingEngine));
+	//Simplicity::addEngine(move(scriptingEngine));
+	//Simplicity::addEngine(move(physicsEngine));
+	//Simplicity::addEngine(move(clientEngine));
 	Simplicity::addEngine(move(renderingEngine));
-	Simplicity::addEngine(move(uiEngine));
+	//Simplicity::addEngine(move(uiEngine));
 
 	unique_ptr<Scene> theOnlyScene(new Scene);
 	Simplicity::addScene("theOnly", move(theOnlyScene));
