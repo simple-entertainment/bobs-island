@@ -149,7 +149,7 @@ void setupEngine()
 #else
 	unique_ptr<RenderingFactory> renderingFactory(new OpenGLRenderingFactory);
 	unique_ptr<RenderingEngine> renderingEngine(new OpenGLRenderingEngine);
-	unique_ptr<Renderer> renderer(new OpenGLRenderer);
+	unique_ptr<Renderer> renderer(new SimpleOpenGLRenderer);
 #endif
 	RenderingFactory::setInstance(move(renderingFactory));
 
@@ -172,7 +172,7 @@ void setupEngine()
 #ifdef DIRECT3D
 	unique_ptr<Renderer> uiRenderer(new Direct3DRenderer);
 #else
-	unique_ptr<Renderer> uiRenderer(new OpenGLRenderer);
+	unique_ptr<Renderer> uiRenderer(new SimpleOpenGLRenderer);
 #endif
 	uiRenderer->setClearColorBuffer(false);
 
