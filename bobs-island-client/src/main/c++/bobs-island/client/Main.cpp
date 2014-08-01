@@ -19,6 +19,9 @@
 //#define DIRECT3D
 //#define PHYSX
 
+// Use alternate Renderers:
+#define MULTI_DRAW
+
 #include <simplicity/API.h>
 #include <simplicity/raknet/API.h>
 #include <simplicity/rocket/API.h>
@@ -149,7 +152,11 @@ void setupEngine()
 #else
 	unique_ptr<RenderingFactory> renderingFactory(new OpenGLRenderingFactory);
 	unique_ptr<RenderingEngine> renderingEngine(new OpenGLRenderingEngine);
+#  ifdef MULTI_DRAW
+	unique_ptr<Renderer> renderer(new MultiDrawOpenGLRenderer);
+#  else
 	unique_ptr<Renderer> renderer(new SimpleOpenGLRenderer);
+#  endif
 #endif
 	RenderingFactory::setInstance(move(renderingFactory));
 
@@ -159,8 +166,12 @@ void setupEngine()
 	Resource* fragmentShaderSource = Resources::get("fragmentDefault.cso", Category::UNCATEGORIZED, true);
 	unique_ptr<Pipeline> pipeline(new Direct3DPipeline(*vertexShaderSource, *fragmentShaderSource));
 #else
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/my.vs", Category::UNCATEGORIZED);
-	Resource* fragmentShaderSource = Resources::get("src/main/glsl/my.fs", Category::UNCATEGORIZED);
+#  ifdef MULTI_DRAW
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexMultiDraw.glsl", Category::UNCATEGORIZED);
+#  else
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexDefault.glsl", Category::UNCATEGORIZED);
+#  endif
+	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentDefault.glsl", Category::UNCATEGORIZED);
 	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
 	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
 	unique_ptr<Pipeline> pipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
@@ -181,8 +192,8 @@ void setupEngine()
 	Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
 	unique_ptr<Pipeline> uiPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
 #else
-	Resource* uiVertexShaderSource = Resources::get("src/main/glsl/rocket.vs", Category::UNCATEGORIZED);
-	Resource* uiFragmentShaderSource = Resources::get("src/main/glsl/rocket.fs", Category::UNCATEGORIZED);
+	Resource* uiVertexShaderSource = Resources::get("src/main/glsl/vertexRocket.glsl", Category::UNCATEGORIZED);
+	Resource* uiFragmentShaderSource = Resources::get("src/main/glsl/fragmentRocket.glsl", Category::UNCATEGORIZED);
 	unique_ptr<OpenGLShader> uiVertexShader(new OpenGLShader(Shader::Type::VERTEX, *uiVertexShaderSource));
 	unique_ptr<OpenGLShader> uiFragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *uiFragmentShaderSource));
 	unique_ptr<Pipeline> uiPipeline(new OpenGLPipeline(move(uiVertexShader), move(uiFragmentShader)));
@@ -257,12 +268,21 @@ void setupScene()
 
 	unique_ptr<Mesh> sunModel = ModelFactory::getInstance()->createSphereMesh(50.0f, 10, shared_ptr<MeshBuffer>(),
 			Vector4(1.0f, 1.0f, 0.6f, 1.0f));
-	MeshData& sunModelData = sunModel->getData(false, true);
+	MeshData& sunModelData = sunModel->getData(false);
 	for (unsigned int index = 0; index < sunModelData.vertexCount; index++)
 	{
 		sunModelData.vertexData[index].normal.negate();
 	}
 	sunModel->releaseData();
+
+	// Initially up in the sky directly above!
+	Vector3 position(sin(0.0f), cos(0.0f), 0.0f);
+	Vector3 direction = position;
+	direction.negate();
+	position *= 1000.0f;
+
+	setPosition(theSun->getTransform(), position);
+	sunLight->setDirection(direction);
 
 	theSun->addUniqueComponent(move(sunLight));
 	theSun->addUniqueComponent(move(sunModel));
