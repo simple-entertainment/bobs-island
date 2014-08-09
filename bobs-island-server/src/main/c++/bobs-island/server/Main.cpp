@@ -14,10 +14,18 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+// Use alternate APIs:
+//#define PHYSX
+
 #include <simplicity/API.h>
-#include <simplicity/bullet/API.h>
-//#include <simplicity/physx/API.h>
 #include <simplicity/raknet/API.h>
+
+#ifdef PHYSX
+#include <simplicity/physx/API.h>
+#else
+#include <simplicity/bullet/API.h>
+#endif
 
 #include <the-island/API.h>
 
@@ -25,11 +33,15 @@
 
 using namespace bobsisland::server;
 using namespace simplicity;
-using namespace simplicity::bullet;
-//using namespace simplicity::physx;
 using namespace simplicity::raknet;
 using namespace std;
 using namespace theisland;
+
+#ifdef PHYSX
+using namespace simplicity::physx;
+#else
+using namespace simplicity::bullet;
+#endif
 
 void setupEngine();
 void setupScene();
@@ -59,11 +71,17 @@ int main()
 	setupScene();
 
 	Logs::log(Category::INFO_LOG, "GO!!!");
+	Simplicity::setMaxFrameRate(60);
 	Simplicity::play();
 }
 
 void setupEngine()
 {
+	// Debugging
+	/////////////////////////
+	unique_ptr<DebugSerialCompositeEngine> debuggingEngine(new DebugSerialCompositeEngine);
+	Simplicity::setCompositeEngine(move(debuggingEngine));
+
 	// Messaging
 	/////////////////////////
 	unique_ptr<MessagingEngine> localMessagingEngine(new SimpleMessagingEngine);
@@ -86,10 +104,15 @@ void setupEngine()
 
 	// Physics
 	/////////////////////////
+#ifdef PHYSX
+	unique_ptr<PhysXEngine> physicsEngine(new PhysXEngine(Vector3(0.0f, -10.0f, 0.0f)));
+	unique_ptr<PhysXPhysicsFactory> physicsFactory(new PhysXPhysicsFactory(physicsEngine->getPhysics(),
+			physicsEngine->getCooking()));
+#else
 	unique_ptr<PhysicsFactory> physicsFactory(new BulletPhysicsFactory);
-	PhysicsFactory::setInstance(move(physicsFactory));
-
 	unique_ptr<Engine> physicsEngine(new BulletEngine(Vector3(0.0f, -10.0f, 0.0f)));
+#endif
+	PhysicsFactory::setInstance(move(physicsFactory));
 	Simplicity::addEngine(move(physicsEngine));
 
 	// Server Logic
@@ -112,7 +135,7 @@ void setupScene()
 {
 	// The Island!
 	/////////////////////////
-	unsigned int radius = 128;
+	unsigned int radius = 64;
 	vector<float> profile;
 	profile.reserve(radius * 2);
 	float peakHeight = 32.0f;

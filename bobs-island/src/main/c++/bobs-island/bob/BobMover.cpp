@@ -39,6 +39,12 @@ namespace bobsisland
 
 	void BobMover::execute(Entity& entity)
 	{
+		if (!directions.empty())
+		{
+			Logs::log(Category::DEBUG_LOG, "Moving at %f, with delta %f", Simplicity::getTotalTime(),
+					Simplicity::getDeltaTime());
+		}
+
 		for (Direction direction : directions)
 		{
 			if (direction == Direction::BACKWARD)
