@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License along with Bob's Island. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include <the-island/TerrainStreamer.h>
+#include <simplicity/terrain/API.h>
 
 #include "bob/BobFactory.h"
 #include "ServerEngine.h"
 
 using namespace simplicity;
+using namespace simplicity::terrain;
 using namespace std;
-using namespace theisland;
 
 namespace bobsisland
 {
@@ -37,22 +37,21 @@ namespace bobsisland
 
 		bool ServerEngine::onClientConnected(const Message& message)
 		{
+			float unitLength = 1.0f;
+
 			unique_ptr<Entity> bob = BobFactory::createBob(message.senderSystemId);
 			//rotate(bob->getTransform(), MathConstants::PI * 0.5f, Vector3(0.0f, 1.0f, 0.0f));
-			setPosition(bob->getTransform(), Vector3(0.0f, 0.0f, 0.0f));
+			setPosition(bob->getTransform(), Vector3(9.0f * unitLength, 0.0f, 295.0f * unitLength));
 
 			unique_ptr<Entity> terrain(new Entity(111));
-
-			shared_ptr<MeshBuffer> terrainBuffer = ModelFactory::getInstance()->createMeshBuffer(CHUNK_EDGE_LENGTH * CHUNK_EDGE_LENGTH * 4, CHUNK_EDGE_LENGTH * CHUNK_EDGE_LENGTH * 6, Buffer::AccessHint::READ_WRITE);
-			unique_ptr<Mesh> terrainMesh(new Mesh(terrainBuffer));
-			//Resource* grassImage = Resources::get("src/main/resources/images/grass2.jpg", Category::UNCATEGORIZED);
-			//unique_ptr<Texture> grassTexture = RenderingFactory::getInstance()->createTexture(*grassImage, PixelFormat::BGR);
-			//terrainMesh->setTexture(grassTexture.release()); // TODO WTF? Memory leak!
-			terrain->addUniqueComponent(move(terrainMesh));
-
-			Resource* heightMapFile = Resources::get("island.terrain", Category::UNCATEGORIZED, true);
-			vector<unsigned int> sampleFrequencies { 1 };
-			unique_ptr<Component> terrainStreamer(new TerrainStreamer(*heightMapFile, *bob, 1024, 1024, sampleFrequencies));
+			Resource* terrainFile = Resources::get("island.terrain", Category::UNCATEGORIZED, true);
+			//unique_ptr<TerrainStreamer> terrainStreamer(
+			//		new TerrainStreamer(*terrainFile, Vector2ui(1024, 1024), Vector2ui(100, 200), unitLength));
+			unique_ptr<LODTerrainStreamer> terrainStreamer(
+					new LODTerrainStreamer(*terrainFile, Vector2ui(1024, 1024),
+										   { Vector2ui(64, 64), Vector2ui(256, 256), Vector2ui(1024, 1024) },
+										   { 1, 4, 16 }));
+			terrainStreamer->setTrackedEntity(*bob);
 			terrain->addUniqueComponent(move(terrainStreamer));
 			Simplicity::getScene()->addEntity(move(terrain));
 

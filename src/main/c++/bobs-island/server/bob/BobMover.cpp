@@ -16,15 +16,13 @@
  */
 #include <functional>
 
-#include <the-island/API.h>
+#include <simplicity/terrain/API.h>
 
 #include "BobMover.h"
 
-#include <the-island/TerrainStreamer.h>
-
 using namespace simplicity;
+using namespace simplicity::terrain;
 using namespace std;
-using namespace theisland;
 
 namespace bobsisland
 {
@@ -79,7 +77,7 @@ namespace bobsisland
 		Simplicity::getScene()->updateGraphs(entity);
 	}
 
-	unique_ptr<Triangle> BobMover::getGroundAtBobsPosition(Entity& entity)
+	/*unique_ptr<Triangle> BobMover::getGroundAtBobsPosition(Entity& entity)
 	{
 		Vector3 position = getPosition3(entity.getTransform());
 		Vector3 position2d = position;
@@ -116,7 +114,7 @@ namespace bobsisland
 		}
 
 		return unique_ptr<Triangle>();
-	}
+	}*/
 
 	float BobMover::getYAtBobsPosition(Entity& entity, const Triangle& ground)
 	{
@@ -225,7 +223,7 @@ namespace bobsisland
 				falling = true;
 			}
 		}*/
-		float groundY = Simplicity::getScene()->getEntities(111)[0]->getComponent<TerrainStreamer>()->getHeight(getPosition3(entity.getTransform()));
+		float groundY = Simplicity::getScene()->getEntities(111)[0]->getComponent<LODTerrainStreamer>()->getHeight(getPosition3(entity.getTransform()));
 		groundY += 1.0f;
 
 		Vector3 position = getPosition3(entity.getTransform());

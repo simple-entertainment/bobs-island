@@ -29,6 +29,7 @@
 #include <simplicity/live555/API.h>
 #include <simplicity/raknet/API.h>
 #include <simplicity/rocket/API.h>
+#include <simplicity/terrain/API.h>
 
 #ifdef DIRECT3D
 #include <simplicity/direct3d/API.h>
@@ -44,8 +45,6 @@
 #include <simplicity/bullet/API.h>
 #endif
 
-#include <the-island/API.h>
-
 #include "bob/BobFactory.h"
 #include "ServerEngine.h"
 #include "SunMover.h"
@@ -58,8 +57,8 @@ using namespace simplicity::editor;
 using namespace simplicity::live555;
 using namespace simplicity::raknet;
 using namespace simplicity::rocket;
+using namespace simplicity::terrain;
 using namespace std;
-using namespace theisland;
 
 #ifdef DIRECT3D
 using namespace simplicity::direct3d;
@@ -75,10 +74,19 @@ using namespace simplicity::simphysx;
 using namespace simplicity::bullet;
 #endif
 
+float getHeight(int x, int y);
 void setupEngine();
 void setupScene();
 void start();
 void testing123(unsigned int radius);
+
+// Island generation
+Perlin perlinNoise;
+int mapSize = 1024;
+int halfMapSize = mapSize / 2;
+float peakHeight = 100.0f;
+float peakAmplitude = 50.0f;
+int perlinFrequency = 128;
 
 #ifdef DIRECT3D
 int commandShow = 0;
@@ -92,6 +100,19 @@ int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR
 	start();
 }
 #else
+
+float getHeight(int x, int y)
+{
+	float height = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / perlinFrequency, 0.5,
+														   static_cast<double>(y) / perlinFrequency)) + 1.0f;
+
+	height /= 2.0f;
+	float distanceFromOrigin = static_cast<float>(Vector2i(x - halfMapSize, y - halfMapSize).getMagnitude());
+	float fractionFromOrigin = (1.0f - distanceFromOrigin / static_cast<float>(halfMapSize));
+	height *= fractionFromOrigin * peakAmplitude;
+	height += fractionFromOrigin * peakHeight - peakAmplitude;
+	return height;
+}
 
 int main()
 {
@@ -289,98 +310,8 @@ void setupScene()
 
 	// The Island!
 	/////////////////////////
-	unsigned int radius = 64;
-	float peakHeight = 32.0f;
-	/*vector<float> profile;
-	profile.reserve(radius * 2);
-
-	for (unsigned int index = 0; index < radius * 2; index++)
-	{
-		// Drop below sea level outside of the radius.
-		if (index > radius)
-		{
-			profile.push_back((float) radius - index);
-			continue;
-		}
-
-		// The cone.
-		//profile.push_back(peakHeight - index * (peakHeight / radius));
-
-		// The bagel.
-		//profile.push_back(peakHeight * ((sinf(index / 5.5f) + 1.0f) / 4.0f));
-
-		// Mountains and beaches.
-		profile.push_back(peakHeight * static_cast<float>(pow(radius - index, 3) / pow(radius, 3)));
-	}
-
-	IslandFactory::createIsland(radius, profile);*/
-
-	unsigned int edgeLength = radius * 2 + 1;
-	Perlin perlinNoise;
-
-	/*vector<vector<float>> heightMap;
-	heightMap.reserve(edgeLength);
-	for (unsigned int x = 0; x < edgeLength; x++)
-	{
-		heightMap.push_back(vector<float>());
-		heightMap[x].reserve(edgeLength);
-
-		for (unsigned int z = 0; z < edgeLength; z++)
-		{
-			float height = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / edgeLength, 0.5, static_cast<double>(z) / edgeLength)) * peakHeight;
-			heightMap[x].push_back(height);
-		}
-	}*/
-
-	/*Resource* heightMapFile = Resources::create("island.terrain", Category::UNCATEGORIZED, true);
-	unsigned int mapSize = 1024;
-	unsigned int perlinFrequency = 128;
-
-	// Heights
-	for (unsigned int sampleFrequency = 1; sampleFrequency <= 1; sampleFrequency *= 2)
-	{
-		for (unsigned int x = 0; x < mapSize; x += sampleFrequency)
-		{
-			for (unsigned int z = 0; z < mapSize; z += sampleFrequency)
-			{
-				float height = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / perlinFrequency, 0.5,
-																	   static_cast<double>(z) / perlinFrequency)) * peakHeight;
-				heightMapFile->appendData(reinterpret_cast<char*>(&height), sizeof(float));
-			}
-		}
-	}
-
-	// Normals
-	for (unsigned int sampleFrequency = 1; sampleFrequency <= 1; sampleFrequency *= 2)
-	{
-		for (unsigned int x = 0; x < mapSize; x += sampleFrequency)
-		{
-			for (unsigned int z = 0; z < mapSize; z += sampleFrequency)
-			{
-				float height = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / perlinFrequency, 0.5,
-																	   static_cast<double>(z) / perlinFrequency)) * peakHeight;
-				float heightA = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x + sampleFrequency) / perlinFrequency, 0.5,
-																	   static_cast<double>(z) / perlinFrequency)) * peakHeight;
-				float heightB = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / perlinFrequency, 0.5,
-																	   static_cast<double>(z + sampleFrequency) / perlinFrequency)) * peakHeight;
-
-				Vector3 point(0.0f, height, 0.0f);
-				Vector3 pointA(1.0f, heightA, 0.0f);
-				Vector3 pointB(0.0f, heightB, 1.0f);
-
-				Vector3 edge0 = pointA - point;
-				Vector3 edge1 = pointB - point;
-				Vector3 normal = crossProduct(edge1, edge0);
-				normal.normalize();
-
-				// TODO Normals could be better if we take them from the two opposite triangles and average them.
-
-				heightMapFile->appendData(reinterpret_cast<char*>(normal.getData()), sizeof(float) * 3);
-			}
-		}
-	}*/
-
-	//IslandFactory::createIsland(heightMap, edgeLength);
+	//Resource* terrainFile = Resources::create("island.terrain", Category::UNCATEGORIZED, true);
+	//TerrainFactory::createFlatTerrain(*terrainFile, Vector2ui(mapSize, mapSize), getHeight, { 1, 4, 16 });
 
 	// Assemble the Sun!
 	/////////////////////////
@@ -409,20 +340,20 @@ void setupScene()
 
 void start()
 {
-	Logs::log(Category::INFO_LOG, "###########################");
-	Logs::log(Category::INFO_LOG, "### BOB's Island Server ###");
-	Logs::log(Category::INFO_LOG, "###########################");
+	Logs::info("bobs-island-server", "###########################");
+	Logs::info("bobs-island-server", "### BOB's Island Server ###");
+	Logs::info("bobs-island-server", "###########################");
 
 	setRandomSeed(1234567);
 
 	Editor::setup();
 
-	Logs::log(Category::INFO_LOG, "Setting up engine...");
+	Logs::info("bobs-island-server", "Setting up engine...");
 	setupEngine();
-	Logs::log(Category::INFO_LOG, "Setting up scene...");
+	Logs::info("bobs-island-server", "Setting up scene...");
 	setupScene();
 
-	Logs::log(Category::INFO_LOG, "GO!!!");
+	Logs::info("bobs-island-server", "GO!!!");
 #ifdef DIRECT3D
 	unique_ptr<Renderer> editorRenderer(new Direct3DRenderer);
 #else
