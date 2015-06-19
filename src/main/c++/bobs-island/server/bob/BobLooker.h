@@ -33,11 +33,11 @@ namespace bobsisland
 			void onRemoveEntity(simplicity::Entity& entity) override;
 
 		private:
-			simplicity::Vector<int, 2> delta;
+			simplicity::Vector2i delta;
 
-			simplicity::Vector<int, 2> mousePosition;
+			simplicity::Vector2i mousePosition;
 
-			simplicity::Vector<int, 2> newMousePosition;
+			simplicity::Vector2i newMousePosition;
 
 			unsigned long systemId;
 

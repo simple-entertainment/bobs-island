@@ -30,11 +30,11 @@ using namespace std;
 
 int main()
 {
-	Logs::log(Category::INFO_LOG, "###########################");
-	Logs::log(Category::INFO_LOG, "### BOB's Island Client ###");
-	Logs::log(Category::INFO_LOG, "###########################");
+	Logs::info("bobs-island-client", "###########################");
+	Logs::info("bobs-island-client", "### BOB's Island Client ###");
+	Logs::info("bobs-island-client", "###########################");
 
-	Logs::log(Category::INFO_LOG, "Setting up engine...");
+	Logs::info("bobs-island-client", "Setting up engine...");
 
 	// Windowing
 	/////////////////////////
@@ -102,7 +102,7 @@ int main()
 
 	// GO!!!
 	/////////////////////////
-	Logs::log(Category::INFO_LOG, "GO!!!");
+	Logs::info("bobs-island-client", "GO!!!");
 
 	//Simplicity::setMaxFrameRate(30);
 	Simplicity::play();

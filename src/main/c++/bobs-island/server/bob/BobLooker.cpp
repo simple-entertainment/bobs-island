@@ -32,10 +32,10 @@ namespace bobsisland
 
 	void BobLooker::execute(Entity& entity)
 	{
-		Vector<int, 2> delta = newMousePosition - mousePosition;
+		Vector2i delta = newMousePosition - mousePosition;
 		mousePosition = newMousePosition;
 
-		if (delta == Vector<int, 2>(0, 0))
+		if (delta == Vector2i(0, 0))
 		{
 			return;
 		}
@@ -55,7 +55,7 @@ namespace bobsisland
 
 		Simplicity::getScene()->updateGraphs(entity);
 
-		delta = Vector<int, 2>(0, 0);
+		delta = Vector2i(0, 0);
 	}
 
 	void BobLooker::onAddEntity(Entity& /* entity */)
