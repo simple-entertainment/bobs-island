@@ -75,6 +75,7 @@ using namespace simplicity::bullet;
 #endif
 
 float getHeight(int x, int y);
+void setupEditor();
 void setupEngine();
 void setupScene();
 void start();
@@ -100,20 +101,6 @@ int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR
 	start();
 }
 #else
-
-float getHeight(int x, int y)
-{
-	float height = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / perlinFrequency, 0.5,
-														   static_cast<double>(y) / perlinFrequency)) + 1.0f;
-
-	height /= 2.0f;
-	float distanceFromOrigin = static_cast<float>(Vector2i(x - halfMapSize, y - halfMapSize).getMagnitude());
-	float fractionFromOrigin = (1.0f - distanceFromOrigin / static_cast<float>(halfMapSize));
-	height *= fractionFromOrigin * peakAmplitude;
-	height += fractionFromOrigin * peakHeight - peakAmplitude;
-	return height;
-}
-
 int main()
 {
 	start();
@@ -129,6 +116,44 @@ int main()
 	}*/
 }
 #endif
+
+float getHeight(int x, int y)
+{
+	float height = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / perlinFrequency, 0.5,
+														   static_cast<double>(y) / perlinFrequency)) + 1.0f;
+
+	height /= 2.0f;
+	float distanceFromOrigin = static_cast<float>(Vector2i(x - halfMapSize, y - halfMapSize).getMagnitude());
+	float fractionFromOrigin = (1.0f - distanceFromOrigin / static_cast<float>(halfMapSize));
+	height *= fractionFromOrigin * peakAmplitude;
+	height += fractionFromOrigin * peakHeight - peakAmplitude;
+	return height;
+}
+
+void setupEditor()
+{
+#ifdef DIRECT3D
+	unique_ptr<Renderer> editorRenderer(new Direct3DRenderer);
+#else
+	unique_ptr<Renderer> editorRenderer(new SimpleOpenGLRenderer);
+#endif
+	editorRenderer->setClearColorBuffer(false);
+
+#ifdef DIRECT3D
+	Resource* uiVertexShaderSource = Resources::get("vertexRocket.cso", Category::UNCATEGORIZED, true);
+	Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
+	unique_ptr<Pipeline> editorPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
+#  else
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexRocket.glsl", Category::UNCATEGORIZED);
+	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentRocket.glsl", Category::UNCATEGORIZED);
+	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
+	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
+	unique_ptr<Pipeline> editorPipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
+#endif
+	editorRenderer->setDefaultPipeline(move(editorPipeline));
+
+	Editor::setup(move(editorRenderer));
+}
 
 void setupEngine()
 {
@@ -346,7 +371,8 @@ void start()
 
 	setRandomSeed(1234567);
 
-	Editor::setup();
+	Logs::info("bobs-island-server", "Setting up editor...");
+	setupEditor();
 
 	Logs::info("bobs-island-server", "Setting up engine...");
 	setupEngine();
@@ -354,27 +380,8 @@ void start()
 	setupScene();
 
 	Logs::info("bobs-island-server", "GO!!!");
-#ifdef DIRECT3D
-	unique_ptr<Renderer> editorRenderer(new Direct3DRenderer);
-#else
-	unique_ptr<Renderer> editorRenderer(new SimpleOpenGLRenderer);
-#endif
-	editorRenderer->setClearColorBuffer(false);
 
-#ifdef DIRECT3D
-	Resource* uiVertexShaderSource = Resources::get("vertexRocket.cso", Category::UNCATEGORIZED, true);
-	Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
-	unique_ptr<Pipeline> editorPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
-#  else
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexRocket.glsl", Category::UNCATEGORIZED);
-	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentRocket.glsl", Category::UNCATEGORIZED);
-	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
-	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
-	unique_ptr<Pipeline> editorPipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
-#endif
-	editorRenderer->setDefaultPipeline(move(editorPipeline));
-
-	Editor::run(move(editorRenderer));
+	Editor::run();
 }
 
 void testing123(unsigned int radius)
