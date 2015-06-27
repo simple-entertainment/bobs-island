@@ -31,7 +31,6 @@ Makefile
 #########################
 bobs-island-client/bobs-island-client
 bobs-island-server/bobs-island-server
-libbobs-island.a
 
 # Visual Studio
 #########################
