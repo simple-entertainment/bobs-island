@@ -335,7 +335,7 @@ void setupScene()
 
 	// The Island!
 	/////////////////////////
-	//Resource* terrainFile = Resources::create("island.terrain", Category::UNCATEGORIZED, true);
+	//Resource* terrainFile = Resources::create("assets/island.terrain", Category::UNCATEGORIZED, true);
 	//TerrainFactory::createFlatTerrain(*terrainFile, Vector2ui(mapSize, mapSize), getHeight, { 1, 4, 16 });
 
 	// Assemble the Sun!

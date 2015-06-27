@@ -44,7 +44,7 @@ namespace bobsisland
 			setPosition(bob->getTransform(), Vector3(9.0f * unitLength, 0.0f, 295.0f * unitLength));
 
 			unique_ptr<Entity> terrain(new Entity(111));
-			Resource* terrainFile = Resources::get("island.terrain", Category::UNCATEGORIZED, true);
+			Resource* terrainFile = Resources::get("assets/island.terrain", Category::UNCATEGORIZED, true);
 			//unique_ptr<TerrainStreamer> terrainStreamer(
 			//		new TerrainStreamer(*terrainFile, Vector2ui(1024, 1024), Vector2ui(100, 200), unitLength));
 			unique_ptr<LODTerrainStreamer> terrainStreamer(
