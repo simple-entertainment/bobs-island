@@ -19,12 +19,10 @@
 //#define DIRECT3D
 //#define PHYSX
 
-// Use alternate Renderers:
-//#define MULTI_DRAW
-
 #include <libnoise/noise.h>
 
 #include <simplicity/API.h>
+#include <simplicity/cef/API.h>
 #include <simplicity/editor/API.h>
 #include <simplicity/live555/API.h>
 #include <simplicity/raknet/API.h>
@@ -35,8 +33,8 @@
 #include <simplicity/direct3d/API.h>
 #include <simplicity/winapi/API.h>
 #else
-#include <simplicity/freeglut/API.h>
 #include <simplicity/opengl/API.h>
+#include <simplicity/glfw/API.h>
 #endif
 
 #ifdef PHYSX
@@ -57,6 +55,7 @@ using namespace simplicity::editor;
 using namespace simplicity::live555;
 using namespace simplicity::raknet;
 using namespace simplicity::rocket;
+using namespace simplicity::simcef;
 using namespace simplicity::terrain;
 using namespace std;
 
@@ -64,7 +63,7 @@ using namespace std;
 using namespace simplicity::direct3d;
 using namespace simplicity::winapi;
 #else
-using namespace simplicity::freeglut;
+using namespace simplicity::glfw;
 using namespace simplicity::opengl;
 #endif
 
@@ -104,16 +103,6 @@ int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR
 int main()
 {
 	start();
-
-	/*unique_ptr<MessagingEngine> remoteMessagingEngine(new RakNetMessagingEngine(55501, 16));
-	Messages::addEngine(remoteMessagingEngine.get());
-	remoteMessagingEngine->onPlay();
-
-	while (true)
-	{
-		remoteMessagingEngine->advance();
-		this_thread::sleep_for(chrono::milliseconds(100));
-	}*/
 }
 #endif
 
@@ -144,8 +133,8 @@ void setupEditor()
 	Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
 	unique_ptr<Pipeline> editorPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
 #  else
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexRocket.glsl", Category::UNCATEGORIZED);
-	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentRocket.glsl", Category::UNCATEGORIZED);
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexRocket.glsl");
+	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentRocket.glsl");
 	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
 	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
 	unique_ptr<Pipeline> editorPipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
@@ -162,7 +151,7 @@ void setupEngine()
 #ifdef DIRECT3D
 	unique_ptr<WinAPIEngine> windowingEngine(new WinAPIEngine("Bob's Island", instance, commandShow));
 #else
-	unique_ptr<Engine> windowingEngine(new FreeGLUTEngine("Bob's Island"));
+	unique_ptr<Engine> windowingEngine(new GLFWEngine("Bob's Island"));
 #endif
 	Simplicity::addEngine(move(windowingEngine));
 
@@ -224,11 +213,6 @@ void setupEngine()
 #else
 	unique_ptr<RenderingFactory> renderingFactory(new OpenGLRenderingFactory);
 	unique_ptr<OpenGLRenderingEngine> renderingEngine(new OpenGLRenderingEngine);
-#  ifdef MULTI_DRAW
-	unique_ptr<Renderer> renderer(new MultiDrawOpenGLRenderer);
-#  else
-	unique_ptr<Renderer> renderer(new SimpleOpenGLRenderer);
-#  endif
 #endif
 	RenderingFactory::setInstance(move(renderingFactory));
 
@@ -247,16 +231,16 @@ void setupEngine()
 	unique_ptr<Pipeline> pipeline(new Direct3DPipeline(*vertexShaderSource, *fragmentShaderSource));
 #else
 #  ifdef MULTI_DRAW
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexMultiDraw.glsl", Category::UNCATEGORIZED);
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexMultiDraw.glsl");
 #  else
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexDefault.glsl", Category::UNCATEGORIZED);
+	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexDefault.glsl");
 #  endif
-	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentDefault.glsl", Category::UNCATEGORIZED);
+	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentDefault.glsl");
 	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
 	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
 	unique_ptr<Pipeline> pipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
 #endif
-	renderer->setDefaultPipeline(move(pipeline));
+	renderingEngine->setDefaultPipeline(move(pipeline));
 
 #ifndef BOB_AS_CLIENT
 	// Sreaming
@@ -275,8 +259,23 @@ void setupEngine()
 
 	// Assemble the rendering engine.
 	/////////////////////////
-	renderingEngine->addRenderer(move(renderer));
 	Simplicity::addEngine(move(renderingEngine));
+
+	// UI
+	unique_ptr<Entity> uiEntity(new Entity);
+	unique_ptr<Mesh> uiQuad = ModelFactory::getInstance()->createSquareMesh(1.0f);
+	unique_ptr<OpenGLShader> vertexShaderUI(new OpenGLShader(Shader::Type::VERTEX, *Resources::get("src/main/glsl/vertexUI.glsl")));
+	unique_ptr<OpenGLShader> fragmentShaderUI(new OpenGLShader(Shader::Type::FRAGMENT, *Resources::get("src/main/glsl/fragmentUI.glsl")));
+	shared_ptr<Pipeline> pipelineUI(new OpenGLPipeline(move(vertexShaderUI), move(fragmentShaderUI)));
+	uiQuad->getBuffer()->setPipeline(pipelineUI);
+	shared_ptr<Texture> uiTexture =
+			RenderingFactory::getInstance()->createTexture(nullptr, 800, 600, PixelFormat::BGRA);
+	uiQuad->setTexture(uiTexture);
+	uiEntity->addUniqueComponent(move(uiQuad));
+	Simplicity::getScene()->addEntity(move(uiEntity));
+
+	unique_ptr<Engine> uiEngine(new CEFEngine(*Resources::get("src/main/html/ui.html"), *uiTexture));
+	Simplicity::addEngine(move(uiEngine));
 }
 
 void setupScene()
@@ -368,8 +367,6 @@ void start()
 	Logs::info("bobs-island-server", "###########################");
 	Logs::info("bobs-island-server", "### BOB's Island Server ###");
 	Logs::info("bobs-island-server", "###########################");
-
-	setRandomSeed(1234567);
 
 	Logs::info("bobs-island-server", "Setting up editor...");
 	setupEditor();

@@ -22,8 +22,6 @@ layout (location = 1) in vec3 normal;
 layout (location = 2) in vec3 position;
 layout (location = 3) in vec2 texCoord;
 
-uniform vec2 translation;
-
 out Point point;
 
 // /////////////////////////
@@ -32,12 +30,7 @@ out Point point;
 
 void main()
 {
-	vec4 clipPosition = vec4(position, 1.0);
-	clipPosition.x += translation.x;
-	clipPosition.y += translation.y;
-
-	point.color = color;
 	point.texCoord = texCoord;
 
-	gl_Position = clipPosition;
+	gl_Position = vec4(position, 1.0);
 }

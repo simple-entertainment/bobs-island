@@ -150,7 +150,8 @@ void main()
 
 	if (samplerEnabled == 1)
 	{
-		point2.color = texture2D(sampler, point2.texCoord);
+		color = texture2D(sampler, point2.texCoord);
+		return;
 	}
 
 	Light theSunLight1 = theSunLight;

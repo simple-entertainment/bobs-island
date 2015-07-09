@@ -17,6 +17,9 @@ cd ../simplicity-editor
 echo -e "${lightBlue}simplicity-freeglut${noColor}"
 cd ../simplicity-freeglut
 "$@"
+echo -e "${lightBlue}simplicity-glfw${noColor}"
+cd ../simplicity-glfw
+"$@"
 echo -e "${lightBlue}simplicity-live555${noColor}"
 cd ../simplicity-live555
 "$@"

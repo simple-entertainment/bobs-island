@@ -1,0 +1,74 @@
+body
+{
+	color: white;
+	font-family: Ubuntu, sans-serif;
+	margin: 0;
+}
+
+button
+{
+	background: none;
+	border: solid transparent 0.2em;
+	color: white;
+	font-size: 1em;
+	font-weight: bold;
+	height: 2em;
+	padding: 0em;
+	width: 2em;
+}
+
+button img
+{
+	height: 1.5em;
+}
+
+button:active
+{
+	background-color: #666;
+}
+
+button:hover,
+button.selected
+{
+	border: solid white 0.2em;
+}
+
+span
+{
+	background-color: #333;
+}
+
+#footer
+{
+	bottom: 0;
+	position: absolute;
+}
+
+#fps
+{
+	font-size: 2.5em;
+	padding: 0.1em;
+}
+
+#header
+{
+	position: absolute;
+	top: 0;
+}
+
+#header > *
+{
+	vertical-align: top;
+}
+
+#header-background
+{
+	background-color: #333;
+	height: 2em;
+}
+
+#logo
+{
+	height: 1.5em;
+	padding: 0.25em;
+}

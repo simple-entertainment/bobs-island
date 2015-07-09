@@ -13,6 +13,9 @@
 [submodule "simplicity-freeglut"]
 	path = lib/simplicity-freeglut
 	url = git@github.com:simple-entertainment/simplicity-freeglut.git
+[submodule "lib/simplicity-glfw"]
+	path = lib/simplicity-glfw
+	url = git@github.com:simple-entertainment/simplicity-glfw.git
 [submodule "simplicity-live555"]
 	path = lib/simplicity-live555
 	url = git@github.com:simple-entertainment/simplicity-live555.git
