@@ -74,7 +74,6 @@ using namespace simplicity::bullet;
 #endif
 
 float getHeight(int x, int y);
-void setupEditor();
 void setupEngine();
 void setupScene();
 void start();
@@ -117,31 +116,6 @@ float getHeight(int x, int y)
 	height *= fractionFromOrigin * peakAmplitude;
 	height += fractionFromOrigin * peakHeight - peakAmplitude;
 	return height;
-}
-
-void setupEditor()
-{
-#ifdef DIRECT3D
-	unique_ptr<Renderer> editorRenderer(new Direct3DRenderer);
-#else
-	unique_ptr<Renderer> editorRenderer(new SimpleOpenGLRenderer);
-#endif
-	editorRenderer->setClearColorBuffer(false);
-
-#ifdef DIRECT3D
-	Resource* uiVertexShaderSource = Resources::get("vertexRocket.cso", Category::UNCATEGORIZED, true);
-	Resource* uiFragmentShaderSource = Resources::get("fragmentRocket.cso", Category::UNCATEGORIZED, true);
-	unique_ptr<Pipeline> editorPipeline(new Direct3DPipeline(*uiVertexShaderSource, *uiFragmentShaderSource));
-#  else
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexRocket.glsl");
-	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentRocket.glsl");
-	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
-	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
-	unique_ptr<Pipeline> editorPipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
-#endif
-	editorRenderer->setDefaultPipeline(move(editorPipeline));
-
-	Editor::setup(move(editorRenderer));
 }
 
 void setupEngine()
@@ -226,24 +200,22 @@ void setupEngine()
 
 	// Shaders
 #ifdef DIRECT3D
-	Resource* vertexShaderSource = Resources::get("vertexDefault.cso", Category::UNCATEGORIZED, true);
-	Resource* fragmentShaderSource = Resources::get("fragmentDefault.cso", Category::UNCATEGORIZED, true);
-	unique_ptr<Pipeline> pipeline(new Direct3DPipeline(*vertexShaderSource, *fragmentShaderSource));
+	Resource* vertexShaderResource = Resources::get("vertexDefault.cso", Category::UNCATEGORIZED, true);
+	Resource* fragmentShaderResource = Resources::get("fragmentDefault.cso", Category::UNCATEGORIZED, true);
 #else
-#  ifdef MULTI_DRAW
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexMultiDraw.glsl");
-#  else
-	Resource* vertexShaderSource = Resources::get("src/main/glsl/vertexDefault.glsl");
-#  endif
-	Resource* fragmentShaderSource = Resources::get("src/main/glsl/fragmentDefault.glsl");
-	unique_ptr<OpenGLShader> vertexShader(new OpenGLShader(Shader::Type::VERTEX, *vertexShaderSource));
-	unique_ptr<OpenGLShader> fragmentShader(new OpenGLShader(Shader::Type::FRAGMENT, *fragmentShaderSource));
-	unique_ptr<Pipeline> pipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
+	Resource* vertexShaderResource = Resources::get("src/main/glsl/vertexDefault.glsl");
+	Resource* fragmentShaderResource = Resources::get("src/main/glsl/fragmentDefault.glsl");
 #endif
-	renderingEngine->setDefaultPipeline(move(pipeline));
+	unique_ptr<Shader> vertexShader =
+			RenderingFactory::getInstance()->createShader(Shader::Type::VERTEX, *vertexShaderResource);
+	unique_ptr<Shader> fragmentShader =
+			RenderingFactory::getInstance()->createShader(Shader::Type::FRAGMENT, *fragmentShaderResource);
+	shared_ptr<Pipeline> pipeline =
+			RenderingFactory::getInstance()->createPipeline(move(vertexShader), nullptr, move(fragmentShader));
+	renderingEngine->setDefaultPipeline(pipeline);
 
 #ifndef BOB_AS_CLIENT
-	// Sreaming
+	// Streaming
 	/////////////////////////
 	unique_ptr<Live555ServerEngine> streamingEngine(new Live555ServerEngine);
 	unique_ptr<Source> textureSource(new TextureSource(*rawRenderTexture));
@@ -260,22 +232,6 @@ void setupEngine()
 	// Assemble the rendering engine.
 	/////////////////////////
 	Simplicity::addEngine(move(renderingEngine));
-
-	// UI
-	unique_ptr<Entity> uiEntity(new Entity);
-	unique_ptr<Mesh> uiQuad = ModelFactory::getInstance()->createSquareMesh(1.0f);
-	unique_ptr<OpenGLShader> vertexShaderUI(new OpenGLShader(Shader::Type::VERTEX, *Resources::get("src/main/glsl/vertexUI.glsl")));
-	unique_ptr<OpenGLShader> fragmentShaderUI(new OpenGLShader(Shader::Type::FRAGMENT, *Resources::get("src/main/glsl/fragmentUI.glsl")));
-	shared_ptr<Pipeline> pipelineUI(new OpenGLPipeline(move(vertexShaderUI), move(fragmentShaderUI)));
-	uiQuad->getBuffer()->setPipeline(pipelineUI);
-	shared_ptr<Texture> uiTexture =
-			RenderingFactory::getInstance()->createTexture(nullptr, 800, 600, PixelFormat::BGRA);
-	uiQuad->setTexture(uiTexture);
-	uiEntity->addUniqueComponent(move(uiQuad));
-	Simplicity::getScene()->addEntity(move(uiEntity));
-
-	unique_ptr<Engine> uiEngine(new CEFEngine(*Resources::get("src/main/html/ui.html"), *uiTexture));
-	Simplicity::addEngine(move(uiEngine));
 }
 
 void setupScene()
@@ -369,7 +325,7 @@ void start()
 	Logs::info("bobs-island-server", "###########################");
 
 	Logs::info("bobs-island-server", "Setting up editor...");
-	setupEditor();
+	Editor::setup();
 
 	Logs::info("bobs-island-server", "Setting up engine...");
 	setupEngine();
