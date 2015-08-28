@@ -1,3 +1,7 @@
+/***************************************************
+ * Global
+ **************************************************/
+
 body
 {
 	color: white;
@@ -33,42 +37,81 @@ button.selected
 	border: solid white 0.2em;
 }
 
-span
+div
 {
 	background-color: #333;
 }
 
-#footer
+span
+{
+	display: inline-block;
+}
+
+/***************************************************
+ * Sections
+ **************************************************/
+
+.background
+{
+	z-index: -1;
+}
+
+.bottom
 {
 	bottom: 0;
 	position: absolute;
+	width: 100%;
 }
+
+.section
+{
+	display: none;
+}
+
+.top
+{
+	top: 0;
+	position: absolute;
+	width: 100%;
+}
+
+/***************************************************
+ * Toolbar
+ **************************************************/
 
 #fps
 {
+	background-color: #333;
 	font-size: 2.5em;
 	padding: 0.1em;
-}
-
-#header
-{
-	position: absolute;
-	top: 0;
-}
-
-#header > *
-{
-	vertical-align: top;
-}
-
-#header-background
-{
-	background-color: #333;
-	height: 2em;
 }
 
 #logo
 {
 	height: 1.5em;
 	padding: 0.25em;
+}
+
+#toolbar
+{
+	background-color: transparent;
+}
+
+#toolbar > *
+{
+	vertical-align: top;
+}
+
+#toolbar-background
+{
+	height: 2em;
+}
+
+/***************************************************
+ * Timers
+ **************************************************/
+
+#timerGraph
+{
+	padding: 5px;
 }

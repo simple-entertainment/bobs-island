@@ -300,7 +300,7 @@ void setupScene()
 
 	// Testing 123
 	/////////////////////////
-	//unique_ptr<GodCameraController> flyingCameraEngine(new GodCameraController(*bob.get()));
+	//unique_ptr<CameraController> flyingCameraEngine(new CameraController(*bob.get()));
 	//Simplicity::addEngine(move(flyingCameraEngine));
 	//testing123(radius);
 

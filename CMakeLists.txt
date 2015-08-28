@@ -74,4 +74,5 @@ add_custom_command(TARGET bobs-island-server PRE_BUILD
 				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/src/main/css ${PROJECT_BINARY_DIR}/src/main/css
 				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/src/main/glsl ${PROJECT_BINARY_DIR}/src/main/glsl
 				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/src/main/html ${PROJECT_BINARY_DIR}/src/main/html
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/src/main/js ${PROJECT_BINARY_DIR}/src/main/js
 				   COMMENT "bobs-island-server || Copying source")
