@@ -19,11 +19,7 @@
 //#define DIRECT3D
 //#define PHYSX
 
-#include <libnoise/noise.h>
-
 #include <simplicity/API.h>
-#include <simplicity/cef/API.h>
-#include <simplicity/editor/API.h>
 #include <simplicity/live555/API.h>
 #include <simplicity/raknet/API.h>
 #include <simplicity/rocket/API.h>
@@ -49,13 +45,10 @@
 
 using namespace bobsisland;
 using namespace bobsisland::server;
-using namespace noise::module;
 using namespace simplicity;
-using namespace simplicity::editor;
 using namespace simplicity::live555;
 using namespace simplicity::raknet;
 using namespace simplicity::rocket;
-using namespace simplicity::simcef;
 using namespace simplicity::terrain;
 using namespace std;
 
@@ -73,52 +66,7 @@ using namespace simplicity::simphysx;
 using namespace simplicity::bullet;
 #endif
 
-float getHeight(int x, int y);
-void setupEngine();
-void setupScene();
-void start();
-void testing123(unsigned int radius);
-
-// Island generation
-Perlin perlinNoise;
-int mapSize = 1024;
-int halfMapSize = mapSize / 2;
-float peakHeight = 100.0f;
-float peakAmplitude = 50.0f;
-int perlinFrequency = 128;
-
-#ifdef DIRECT3D
-int commandShow = 0;
-HINSTANCE instance = nullptr;
-
-int CALLBACK WinMain(HINSTANCE instance, HINSTANCE /* previousInstance */, LPSTR /* commandLine */, int commandShow)
-{
-	::commandShow = commandShow;
-	::instance = instance;
-
-	start();
-}
-#else
-int main()
-{
-	start();
-}
-#endif
-
-float getHeight(int x, int y)
-{
-	float height = static_cast<float>(perlinNoise.GetValue(static_cast<double>(x) / perlinFrequency, 0.5,
-														   static_cast<double>(y) / perlinFrequency)) + 1.0f;
-
-	height /= 2.0f;
-	float distanceFromOrigin = static_cast<float>(Vector2i(x - halfMapSize, y - halfMapSize).getMagnitude());
-	float fractionFromOrigin = (1.0f - distanceFromOrigin / static_cast<float>(halfMapSize));
-	height *= fractionFromOrigin * peakAmplitude;
-	height += fractionFromOrigin * peakHeight - peakAmplitude;
-	return height;
-}
-
-void setupEngine()
+extern "C" void setupEngine()
 {
 	// Windowing
 	/////////////////////////
@@ -234,7 +182,7 @@ void setupEngine()
 	Simplicity::addEngine(move(renderingEngine));
 }
 
-void setupScene()
+extern "C" void setupScene()
 {
 	// Starting Camera
 	/////////////////////////
@@ -288,101 +236,13 @@ void setupScene()
 	renderingEngine->addLight(*theSun);
 	renderingEngine->setCamera(startingCamera.get());
 
-	// The Island!
-	/////////////////////////
-	//Resource* terrainFile = Resources::create("assets/island.terrain", Category::UNCATEGORIZED, true);
-	//TerrainFactory::createFlatTerrain(*terrainFile, Vector2ui(mapSize, mapSize), getHeight, { 1, 4, 16 });
-
 	// Assemble the Sun!
 	/////////////////////////
 	unique_ptr<Script> sunMover(new SunMover);
 	theSun->addUniqueComponent(move(sunMover));
 
-	// Testing 123
-	/////////////////////////
-	//unique_ptr<CameraController> flyingCameraEngine(new CameraController(*bob.get()));
-	//Simplicity::addEngine(move(flyingCameraEngine));
-	//testing123(radius);
-
 	// Add everything!
 	/////////////////////////
 	Simplicity::getScene()->addEntity(move(startingCamera));
 	Simplicity::getScene()->addEntity(move(theSun));
-
-	// AK!!!
-	/////////////////////////
-	/*unique_ptr<Entity> ak47(new Entity);
-	setPosition(ak47->getTransform(), Vector3(0.0f, 2.0f, 62.0f));
-	ak47->addUniqueComponent(ModelFactory::getInstance()->loadObj(*Resources::get("res/ak47.obj",
-			Category::UNCATEGORIZED)));
-	Simplicity::getScene()->addEntity(move(ak47));*/
-}
-
-void start()
-{
-	Logs::info("bobs-island-server", "###########################");
-	Logs::info("bobs-island-server", "### BOB's Island Server ###");
-	Logs::info("bobs-island-server", "###########################");
-
-	Logs::info("bobs-island-server", "Setting up editor...");
-	Editor::setup();
-
-	Logs::info("bobs-island-server", "Setting up engine...");
-	setupEngine();
-	Logs::info("bobs-island-server", "Setting up scene...");
-	setupScene();
-
-	Logs::info("bobs-island-server", "GO!!!");
-
-	Editor::run();
-}
-
-void testing123(unsigned int radius)
-{
-
-	unique_ptr<Entity> test(new Entity);
-	setPosition(test->getTransform(), Vector3(0.0f, 2.0f, radius - 5.0f));
-
-	unique_ptr<Mesh> cube = ModelFactory::getInstance()->createCubeMesh(1.0f, shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	Matrix44 relativeTransform;
-	relativeTransform.setIdentity();
-	setPosition(relativeTransform, Vector3(1.0f, 1.0f, 1.0f));
-	unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
-
-	unique_ptr<Mesh> cylinder = ModelFactory::getInstance()->createCylinderMesh(0.3f, 10.0f, 5,
-			shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
-
-	unique_ptr<Mesh> hemisphere = ModelFactory::getInstance()->createHemisphereMesh(1.0f, 10, shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
-
-	unique_ptr<Mesh> prism = ModelFactory::getInstance()->createPrismMesh(Vector3(0.5f, 0.5f, 0.5f),
-			shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	unique_ptr<Mesh> sphere = ModelFactory::getInstance()->createSphereMesh(1.0f, 10, shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
-
-	unique_ptr<Mesh> triangle = ModelFactory::getInstance()->createTriangleMesh(Vector3(0.0f, 1.0f, 0.0f),
-			Vector3(-1.0f, -2.0f, 0.0f), Vector3(1.0f, -2.0f, 0.0f), shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	setPosition(relativeTransform, Vector3(0.0f, 0.0f, 5.0f));
-	unique_ptr<Model> triangleMinusCylinder = ModelFunctions::subtract(*triangle, *cylinder, relativeTransform);
-	unique_ptr<Model> prismMinusCylinder = ModelFunctions::subtract(*prism, *cylinder, relativeTransform);
-
-	unique_ptr<Model> bounds(new Square(1.0f));
-	bounds->setCategory(Category::BOUNDS);
-
-	//test->addUniqueComponent(move(cube));
-	test->addUniqueComponent(move(cubeMinusCube));
-	//test->addUniqueComponent(move(cylinder));
-	//test->addUniqueComponent(move(hemisphere));
-	//test->addUniqueComponent(move(prism));
-	//test->addUniqueComponent(move(sphere));
-	//test->addUniqueComponent(move(triangle));
-	//test->addUniqueComponent(move(triangleMinusCylinder));
-	//test->addUniqueComponent(move(prismMinusCylinder));
-	test->addUniqueComponent(move(bounds));
-	Simplicity::getScene()->addEntity(move(test));
 }

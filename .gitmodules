@@ -4,12 +4,6 @@
 [submodule "simplicity-bullet"]
 	path = lib/simplicity-bullet
 	url = git@github.com:simple-entertainment/simplicity-bullet.git
-[submodule "simplicity-cef"]
-	path = lib/simplicity-cef
-	url = git@github.com:simple-entertainment/simplicity-cef.git
-[submodule "simplicity-editor"]
-	path = lib/simplicity-editor
-	url = git@github.com:simple-entertainment/simplicity-editor.git
 [submodule "simplicity-freeglut"]
 	path = lib/simplicity-freeglut
 	url = git@github.com:simple-entertainment/simplicity-freeglut.git

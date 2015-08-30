@@ -54,8 +54,6 @@ namespace bobsisland
 		rotate(entity.getComponents<Mesh>()[1]->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
 
 		Simplicity::getScene()->updateGraphs(entity);
-
-		delta = Vector2i(0, 0);
 	}
 
 	void BobLooker::onAddEntity(Entity& /* entity */)

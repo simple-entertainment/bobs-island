@@ -8,12 +8,6 @@ cd lib/simplicity
 echo -e "${lightBlue}simplicity-bullet${noColor}"
 cd ../simplicity-bullet
 "$@"
-echo -e "${lightBlue}simplicity-cef${noColor}"
-cd ../simplicity-cef
-"$@"
-echo -e "${lightBlue}simplicity-editor${noColor}"
-cd ../simplicity-editor
-"$@"
 echo -e "${lightBlue}simplicity-freeglut${noColor}"
 cd ../simplicity-freeglut
 "$@"
