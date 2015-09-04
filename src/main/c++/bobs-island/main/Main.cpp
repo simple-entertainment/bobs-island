@@ -12,13 +12,17 @@
 #include <simplicity/Simplicity.h>
 
 #include "../common/Setup.h"
+#include "simplicity-generated.h"
 
 using namespace simplicity;
 
 int main()
 {
-	setupEngine();
-	setupScene();
+	simplicity_generated_setupEngine();
+	simplicity_setupEngine();
+
+	simplicity_setupScene();
+
 	Simplicity::play();
 
 	return 0;

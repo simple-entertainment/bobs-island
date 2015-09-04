@@ -21,12 +21,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 # Source
 #########################
-file(GLOB_RECURSE MODULE_SRC_FILES src/main/c++/bobs-island/common/*.cpp src/main/c++/bobs-island/common/*.h)
-file(GLOB_RECURSE SRC_FILES src/main/c++/bobs-island/common/*.cpp src/main/c++/bobs-island/common/*.h src/main/c++/bobs-island/main/Main.cpp)
+file(GLOB_RECURSE SRC_FILES src/main/c++/bobs-island/common/*.cpp src/generated/*.cpp)
 
 # Standalone Target
 #########################
-add_executable(bobs-island ${SRC_FILES})
+add_executable(bobs-island ${SRC_FILES} src/main/c++/bobs-island/main/Main.cpp)
+target_include_directories(bobs-island PUBLIC src/generated)
 
 # Standalone Target Dependencies
 #########################
@@ -48,7 +48,7 @@ add_custom_command(TARGET bobs-island PRE_BUILD
 
 # Module Target
 #########################
-add_library(bobs-island-module MODULE ${MODULE_SRC_FILES})
+add_library(bobs-island-module MODULE ${SRC_FILES})
 
 # Module Target Dependencies
 #########################

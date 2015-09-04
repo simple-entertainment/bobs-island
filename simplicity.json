@@ -1,0 +1,34 @@
+{
+	"engines":
+	{
+		"simplicity::glfw::GLFWEngine":
+		{
+			"name": "GLFW",
+			"header": "simplicity/glfw/API.h",
+			"properties":
+			{
+				"title": "Bob's Island"
+			},
+			"initFunction": "show"
+		},
+		"simplicity::ScriptingEngine":
+		{
+			"name": "Scripts",
+			"header": "simplicity/API.h"
+		},
+		"simplicity::bullet::BulletEngine":
+		{
+			"name": "Bullet Physics",
+			"header": "simplicity/bullet/API.h",
+			"properties":
+			{
+				"gravity": [0, -10, 0]
+			}
+		},
+		"simplicity::opengl::OpenGLRenderingEngine":
+		{
+			"name": "OpenGL",
+			"headers": ["--simplicity-opengl-glew.h", "simplicity/opengl/API.h"]
+		}
+	}
+}

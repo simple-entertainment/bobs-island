@@ -14,9 +14,9 @@
 
 extern "C"
 {
-	void setupEngine();
+	void simplicity_setupEngine();
 
-	void setupScene();
+	void simplicity_setupScene();
 }
 
 #endif //BOBS_ISLAND_SERVER_H
