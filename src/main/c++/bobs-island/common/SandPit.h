@@ -12,10 +12,12 @@
 #ifndef BOBS_ISLAND_SANDPIT_H
 #define BOBS_ISLAND_SANDPIT_H
 
+#include <simplicity/math/Vector.h>
+
 void createAK47();
 
 void createIslandTerrainFile();
 
-void runModelMathTests(const Vector3& position);
+void runModelMathTests(const simplicity::Vector3& position);
 
 #endif //BOBS_ISLAND_SANDPIT_H

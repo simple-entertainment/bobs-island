@@ -11,7 +11,7 @@
  */
 #include <simplicity/Simplicity.h>
 
-#include "../server/Server.h"
+#include "../common/Setup.h"
 
 using namespace simplicity;
 

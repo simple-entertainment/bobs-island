@@ -50,14 +50,13 @@ void createAK47()
 {
 	unique_ptr<Entity> ak47(new Entity);
 	setPosition(ak47->getTransform(), Vector3(0.0f, 2.0f, 62.0f));
-	ak47->addUniqueComponent(ModelFactory::getInstance()->loadObj(*Resources::get("res/ak47.obj",
-			Category::UNCATEGORIZED)));
+	ak47->addUniqueComponent(ModelFactory::getInstance()->loadObj(*Resources::get("models/ak47.obj")));
 	Simplicity::getScene()->addEntity(move(ak47));
 }
 
 void createIslandTerrainFile()
 {
-	Resource* terrainFile = Resources::create("assets/island.terrain", Category::UNCATEGORIZED, true);
+	Resource* terrainFile = Resources::create("island.terrain", true);
 	TerrainFactory::createFlatTerrain(*terrainFile, Vector2ui(mapSize, mapSize), getHeight, { 1, 4, 16 });
 
 	// Testing 123

@@ -10,93 +10,60 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/lib)
 
+set(SIMPLE_LINK_TYPE SHARED)
 add_subdirectory(lib/simplicity)
 add_subdirectory(lib/simplicity-bullet)
-add_subdirectory(lib/simplicity-freeglut)
 add_subdirectory(lib/simplicity-glfw)
-add_subdirectory(lib/simplicity-live555)
 add_subdirectory(lib/simplicity-opengl)
-add_subdirectory(lib/simplicity-raknet)
-add_subdirectory(lib/simplicity-rocket)
 add_subdirectory(lib/simplicity-terrain)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 # Source
 #########################
-file(GLOB_RECURSE CLIENT_SRC_FILES src/main/c++/bobs-island/client/*.cpp src/main/c++/bobs-island/client/*.h)
-file(GLOB_RECURSE SERVER_SRC_FILES src/main/c++/bobs-island/server/*.cpp src/main/c++/bobs-island/server/*.h src/main/c++/bobs-island/server-main/Main.cpp)
-file(GLOB_RECURSE SERVER_EDITOR_SRC_FILES src/main/c++/bobs-island/server/*.cpp src/main/c++/bobs-island/server/*.h)
+file(GLOB_RECURSE MODULE_SRC_FILES src/main/c++/bobs-island/common/*.cpp src/main/c++/bobs-island/common/*.h)
+file(GLOB_RECURSE SRC_FILES src/main/c++/bobs-island/common/*.cpp src/main/c++/bobs-island/common/*.h src/main/c++/bobs-island/main/Main.cpp)
 
-# Client Target
+# Standalone Target
 #########################
-add_executable(bobs-island-client ${CLIENT_SRC_FILES})
+add_executable(bobs-island ${SRC_FILES})
 
-# Client Target Dependencies
-#########################
-
-# Simplicity
-target_link_libraries(bobs-island-client simplicity-freeglut)
-target_link_libraries(bobs-island-client simplicity-live555)
-target_link_libraries(bobs-island-client simplicity-opengl)
-target_link_libraries(bobs-island-client simplicity-raknet)
-target_link_libraries(bobs-island-client simplicity)
-
-# Server Target
-#########################
-add_executable(bobs-island-server ${SERVER_SRC_FILES})
-
-# Server Target Dependencies
+# Standalone Target Dependencies
 #########################
 
 # libnoise
-target_link_libraries(bobs-island-server noise)
+target_link_libraries(bobs-island noise)
 
 # Simplicity
-target_link_libraries(bobs-island-server simplicity-bullet)
-target_link_libraries(bobs-island-server simplicity-glfw)
-target_link_libraries(bobs-island-server simplicity-live555)
-target_link_libraries(bobs-island-server simplicity-opengl)
-target_link_libraries(bobs-island-server simplicity-raknet)
-target_link_libraries(bobs-island-server simplicity-rocket)
-target_link_libraries(bobs-island-server simplicity-terrain)
-target_link_libraries(bobs-island-server simplicity)
+target_link_libraries(bobs-island simplicity-bullet)
+target_link_libraries(bobs-island simplicity-glfw)
+target_link_libraries(bobs-island simplicity-opengl)
+target_link_libraries(bobs-island simplicity-terrain)
+target_link_libraries(bobs-island simplicity)
 
-# Server Target Resources
+# Standalone Target Resources
 #########################
-add_custom_command(TARGET bobs-island-server PRE_BUILD
-				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/assets ${PROJECT_SOURCE_DIR}/build/assets
-				   COMMENT "bobs-island-server || Copying assets")
-add_custom_command(TARGET bobs-island-server PRE_BUILD
-				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/src/main/glsl ${PROJECT_SOURCE_DIR}/build/src/main/glsl
-				   COMMENT "bobs-island-server || Copying source")
+add_custom_command(TARGET bobs-island PRE_BUILD
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/assets ${PROJECT_SOURCE_DIR}/build/assets)
 
-# Server (in Editor) Target
+# Module Target
 #########################
-add_library(bobs-island-server-for-editor SHARED ${SERVER_SRC_FILES})
-target_compile_options(bobs-island-server-for-editor PUBLIC -rdynamic)
+add_library(bobs-island-module MODULE ${MODULE_SRC_FILES})
 
-# Server (in Editor) Target Dependencies
+# Module Target Dependencies
 #########################
 
 # libnoise
-target_link_libraries(bobs-island-server-for-editor noise)
+target_link_libraries(bobs-island-module noise)
 
 # Simplicity
-target_link_libraries(bobs-island-server-for-editor simplicity-bullet)
-target_link_libraries(bobs-island-server-for-editor simplicity-glfw)
-target_link_libraries(bobs-island-server-for-editor simplicity-live555)
-target_link_libraries(bobs-island-server-for-editor simplicity-opengl)
-target_link_libraries(bobs-island-server-for-editor simplicity-raknet)
-target_link_libraries(bobs-island-server-for-editor simplicity-rocket)
-target_link_libraries(bobs-island-server-for-editor simplicity-terrain)
-target_link_libraries(bobs-island-server-for-editor simplicity)
+target_link_libraries(bobs-island-module simplicity-bullet)
+target_link_libraries(bobs-island-module simplicity-glfw)
+target_link_libraries(bobs-island-module simplicity-opengl)
+target_link_libraries(bobs-island-module simplicity-terrain)
+target_link_libraries(bobs-island-module simplicity)
 
-# Server (in Editor) Target Resources
+# Module Target Resources
 #########################
-add_custom_command(TARGET bobs-island-server-for-editor PRE_BUILD
-				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/assets ${PROJECT_SOURCE_DIR}/build/assets
-				   COMMENT "bobs-island-server-for-editor || Copying assets")
-add_custom_command(TARGET bobs-island-server-for-editor PRE_BUILD
-				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/src/main/glsl ${PROJECT_SOURCE_DIR}/build/src/main/glsl
-				   COMMENT "bobs-island-server-for-editor || Copying source")
+add_custom_command(TARGET bobs-island-module PRE_BUILD
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/assets ${PROJECT_SOURCE_DIR}/build/assets)
