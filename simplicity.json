@@ -28,7 +28,8 @@
 		"simplicity::opengl::OpenGLRenderingEngine":
 		{
 			"name": "OpenGL",
-			"headers": ["--simplicity-opengl-glew.h", "simplicity/opengl/API.h"]
+			"headers": ["--simplicity-opengl-glew.h", "simplicity/opengl/API.h"],
+			"initFunction": "glewInit"
 		}
 	}
 }
