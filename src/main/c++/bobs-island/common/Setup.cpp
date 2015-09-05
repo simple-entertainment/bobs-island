@@ -16,8 +16,6 @@
  */
 
 #include <simplicity/API.h>
-#include <simplicity/bullet/API.h>
-#include <simplicity/opengl/API.h>
 #include <simplicity/terrain/API.h>
 
 #include "bob/BobFactory.h"
@@ -25,8 +23,6 @@
 
 using namespace bobsisland;
 using namespace simplicity;
-using namespace simplicity::bullet;
-using namespace simplicity::opengl;
 using namespace simplicity::terrain;
 using namespace std;
 
@@ -34,21 +30,6 @@ extern "C"
 {
 	void simplicity_setupEngine()
 	{
-		// Models
-		/////////////////////////
-		unique_ptr<ModelFactory> modelFactory(new OpenGLModelFactory);
-		ModelFactory::setInstance(move(modelFactory));
-
-		// Physics
-		/////////////////////////
-		unique_ptr<PhysicsFactory> physicsFactory(new BulletPhysicsFactory);
-		PhysicsFactory::setInstance(move(physicsFactory));
-
-		// Rendering
-		/////////////////////////
-		unique_ptr<RenderingFactory> renderingFactory(new OpenGLRenderingFactory);
-		RenderingFactory::setInstance(move(renderingFactory));
-
 		Resource* vertexShaderResource = Resources::get("glsl/vertexDefault.glsl");
 		Resource* fragmentShaderResource = Resources::get("glsl/fragmentDefault.glsl");
 		unique_ptr<Shader> vertexShader =

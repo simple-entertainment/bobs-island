@@ -31,5 +31,26 @@
 			"headers": ["--simplicity-opengl-glew.h", "simplicity/opengl/API.h"],
 			"initFunction": "glewInit"
 		}
+	},
+	"factories":
+	{
+		"simplicity::bullet::BulletPhysicsFactory":
+		{
+			"name": "Bullet Physics Factory",
+			"type": "PhysicsFactory",
+			"header": "simplicity/bullet/API.h"
+		},
+		"simplicity::opengl::OpenGLModelFactory":
+		{
+			"name": "OpenGL Model Factory",
+			"type": "ModelFactory",
+			"header": "simplicity/opengl/API.h"
+		},
+		"simplicity::opengl::OpenGLRenderingFactory":
+		{
+			"name": "OpenGL Rendering Factory",
+			"type": "RenderingFactory",
+			"header": "simplicity/opengl/API.h"
+		}
 	}
 }
