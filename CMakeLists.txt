@@ -26,6 +26,8 @@ file(GLOB_RECURSE SRC_FILES src/main/c++/bobs-island/common/*.cpp src/generated/
 # Standalone Target
 #########################
 add_executable(bobs-island ${SRC_FILES} src/main/c++/bobs-island/main/Main.cpp)
+set_target_properties(bobs-island PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+set_target_properties(bobs-island PROPERTIES INSTALL_RPATH "./lib")
 target_include_directories(bobs-island PUBLIC src/generated)
 target_include_directories(bobs-island PUBLIC src/main/c++)
 
@@ -50,6 +52,7 @@ add_custom_command(TARGET bobs-island PRE_BUILD
 # Module Target
 #########################
 add_library(bobs-island-module MODULE ${SRC_FILES})
+set_target_properties(bobs-island-module PROPERTIES SKIP_BUILD_RPATH TRUE)
 target_include_directories(bobs-island-module PUBLIC src/main/c++)
 
 # Module Target Dependencies

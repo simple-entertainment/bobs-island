@@ -24,7 +24,7 @@ namespace bobsisland
 	class BobLooker : public simplicity::Script
 	{
 		public:
-			BobLooker(unsigned long systemId);
+			BobLooker();
 
 			void execute(simplicity::Entity& entity) override;
 
@@ -38,8 +38,6 @@ namespace bobsisland
 			simplicity::Vector2i mousePosition;
 
 			simplicity::Vector2i newMousePosition;
-
-			unsigned long systemId;
 
 			bool onMouseMove(const simplicity::Message& message);
 	};

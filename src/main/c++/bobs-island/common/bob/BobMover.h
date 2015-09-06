@@ -24,7 +24,7 @@ namespace bobsisland
 	class BobMover : public simplicity::Script
 	{
 		public:
-			BobMover(unsigned long systemId, const simplicity::Graph& world);
+			BobMover();
 
 			void execute(simplicity::Entity& entity) override;
 
@@ -42,14 +42,6 @@ namespace bobsisland
 			float jumpTime;
 
 			std::map<simplicity::Keyboard::Button, simplicity::Button::State> keyboardButtonStates;
-
-			unsigned long systemId;
-
-			const simplicity::Graph& world;
-
-			//std::unique_ptr<simplicity::Triangle> getGroundAtBobsPosition(simplicity::Entity& entity);
-
-			float getYAtBobsPosition(simplicity::Entity& entity, const simplicity::Triangle& ground);
 
 			float getYForBob(float bobY, float groundY);
 

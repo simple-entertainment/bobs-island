@@ -28,14 +28,12 @@ namespace bobsisland
 {
 	bool test = false;
 
-	BobMover::BobMover(unsigned long systemId, const Graph& world) :
+	BobMover::BobMover() :
 		falling(false),
 		fallTime(0.0f),
 		jumping(false),
 		jumpTime(0.0f),
-		keyboardButtonStates(),
-		systemId(systemId),
-		world(world)
+		keyboardButtonStates()
 	{
 	}
 
@@ -75,61 +73,6 @@ namespace bobsisland
 		updateY(entity);
 
 		Simplicity::getScene()->updateGraphs(entity);
-	}
-
-	/*unique_ptr<Triangle> BobMover::getGroundAtBobsPosition(Entity& entity)
-	{
-		Vector3 position = getPosition3(entity.getTransform());
-		Vector3 position2d = position;
-		position2d.Y() = 0.0f;
-
-		vector<Entity*> entities = world.getEntitiesWithinBounds(Square(0.25f), position);
-		for (Entity* entity : entities)
-		{
-			if (entity->getCategory() == EntityCategories::GROUND)
-			{
-				Mesh* groundMesh = entity->getComponent<Mesh>(Category::RENDER);
-				const MeshData& groundMeshData = groundMesh->getData(); // TODO ScopedMeshData !!!
-				for (unsigned int index = 0; index < groundMeshData.size(); index += 3)
-				{
-					Vector3 triangle2d0 = groundMeshData[index].position;
-					triangle2d0.Y() = 0.0f;
-					Vector3 triangle2d1 = groundMeshData[index + 1].position;
-					triangle2d1.Y() = 0.0f;
-					Vector3 triangle2d2 = groundMeshData[index + 2].position;
-					triangle2d2.Y() = 0.0f;
-
-					// Determine if Bob is inside the triangle ignoring the Y axis.
-					if (Intersection::contains(Triangle(triangle2d0, triangle2d1, triangle2d2), position2d))
-					{
-						unique_ptr<Triangle> groundAtBobsPosition(new Triangle(groundMeshData[index].position,
-								groundMeshData[index + 1].position, groundMeshData[index + 2].position));
-
-						groundMesh->releaseData();
-						return groundAtBobsPosition;
-					}
-				}
-				groundMesh->releaseData();
-			}
-		}
-
-		return unique_ptr<Triangle>();
-	}*/
-
-	float BobMover::getYAtBobsPosition(Entity& entity, const Triangle& ground)
-	{
-		Vector3 position2d = getPosition3(entity.getTransform());
-		position2d.Y() = 0.0f;
-
-		Vector3 edge0 = ground.getPointB() - ground.getPointA();
-		Vector3 edge1 = ground.getPointC() - ground.getPointA();
-		Vector3 normal = crossProduct(edge0, edge1);
-
-		// Solve the equation for the plane (ax + by + cz + d = 0) to find y.
-		float d = dotProduct(normal, ground.getPointA()) * -1.0f;
-		float y = ((normal.X() * position2d.X() + normal.Z() * position2d.Z() + d) / normal.Y()) * -1.0f;
-
-		return y + 1.0f; // Add the half extent of Bob's body.
 	}
 
 	float BobMover::getYForBob(float bobY, float groundY)
@@ -185,15 +128,12 @@ namespace bobsisland
 
 	bool BobMover::onKeyboardButton(const Message& message)
 	{
-		if (message.senderSystemId == systemId)
-		{
-			const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message.body);
-			keyboardButtonStates[event->button] = event->buttonState;
+		const KeyboardButtonEvent* event = static_cast<const KeyboardButtonEvent*>(message.body);
+		keyboardButtonStates[event->button] = event->buttonState;
 
-			if (event->button == Keyboard::Button::SPACE && event->buttonState == Button::State::UP)
-			{
-				test = true;
-			}
+		if (event->button == Keyboard::Button::SPACE && event->buttonState == Button::State::UP)
+		{
+			test = true;
 		}
 
 		return false;
@@ -207,22 +147,6 @@ namespace bobsisland
 
 	void BobMover::updateY(Entity& entity)
 	{
-		/*unique_ptr<Triangle> ground = getGroundAtBobsPosition(entity);
-
-		float groundY = 0.0f;
-		if (ground.get() != nullptr)
-		{
-			groundY = getYAtBobsPosition(entity, *ground);
-		}
-		else
-		{
-			groundY = -100.0f;
-
-			if (!jumping)
-			{
-				falling = true;
-			}
-		}*/
 		float groundY = Simplicity::getScene()->getEntities(111)[0]->getComponent<LODTerrainStreamer>()->getHeight(getPosition3(entity.getTransform()));
 		groundY += 1.0f;
 

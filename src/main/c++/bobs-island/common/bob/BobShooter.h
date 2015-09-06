@@ -24,7 +24,7 @@ namespace bobsisland
 	class BobShooter : public simplicity::Script
 	{
 		public:
-			BobShooter(unsigned long systemId);
+			BobShooter();
 
 			void execute(simplicity::Entity& entity) override;
 
@@ -34,8 +34,6 @@ namespace bobsisland
 
 		private:
 			bool firing;
-
-			unsigned long systemId;
 
 			void fireGun(simplicity::Entity& entity);
 

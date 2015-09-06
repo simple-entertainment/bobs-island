@@ -18,9 +18,6 @@
 #include <simplicity/API.h>
 #include <simplicity/terrain/API.h>
 
-#include "bob/BobFactory.h"
-
-using namespace bobsisland;
 using namespace simplicity;
 using namespace simplicity::terrain;
 using namespace std;
@@ -29,6 +26,7 @@ extern "C"
 {
 	void simplicity_setupEngine()
 	{
+		// Pipeline
 		unique_ptr<Shader> vertexShader =
 				RenderingFactory::createShader(Shader::Type::VERTEX, *Resources::get("glsl/vertexDefault.glsl"));
 		unique_ptr<Shader> fragmentShader =
@@ -41,19 +39,36 @@ extern "C"
 	void simplicity_setupScene()
 	{
 		// Scene Graph
-		/////////////////////////
 		unique_ptr<Graph> sceneGraph(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
 		Simplicity::getEngine<RenderingEngine>()->setGraph(sceneGraph.get());
 		Simplicity::getScene()->addGraph(move(sceneGraph));
 
 		// Bob
-		/////////////////////////
-		unique_ptr<Entity> bob = BobFactory::createBob(0);
-		//rotate(bob->getTransform(), MathConstants::PI * 0.5f, Vector3(0.0f, 1.0f, 0.0f));
-		setPosition(bob->getTransform(), Vector3(9.0f, 0.0f, 295.0f));
+		Entity* bob = Simplicity::getScene()->getEntity("Bob");
+		// Setup the camera
+		Camera* camera = bob->getComponent<Camera>();
+		camera->setPerspective(60.0f, 4.0f / 3.0f);
+		// Yes, this is odd... Bob's bounds are used as the camera bounds... for now...
+		unique_ptr<Model> cameraBounds(new Square(32.0f));
+		setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
+		cameraBounds->setCategory(Category::BOUNDS);
+		bob->addUniqueComponent(move(cameraBounds));
+		// Switch to Bob's camera
+		Simplicity::getEngine<RenderingEngine>()->setCamera(bob);
 
-		// The Terrain
-		/////////////////////////
+		// Sun
+		Entity* sun = Simplicity::getScene()->getEntity("Sun");
+		// Invert normals so that light from the center of the sun illuminates it.
+		Mesh* sunModel = sun->getComponent<Mesh>();
+		MeshData& sunModelData = sunModel->getData(false);
+		for (unsigned int index = 0; index < sunModelData.vertexCount; index++)
+		{
+			sunModelData.vertexData[index].normal.negate();
+		}
+		sunModel->releaseData();
+		Simplicity::getEngine<RenderingEngine>()->addLight(*sun);
+
+		// Terrain
 		unique_ptr<Entity> terrain(new Entity(111));
 		Resource* terrainFile = Resources::get("island.terrain", Resource::Type::ASSET, true);
 		//unique_ptr<TerrainStreamer> terrainStreamer(
@@ -64,22 +79,6 @@ extern "C"
 									   {1, 4, 16}));
 		terrainStreamer->setTrackedEntity(*bob);
 		terrain->addUniqueComponent(move(terrainStreamer));
-
-		// The Sun
-		/////////////////////////
-		Entity* sun = Simplicity::getScene()->getEntity("Sun");
-		Mesh* sunModel = sun->getComponent<Mesh>();
-		MeshData& sunModelData = sunModel->getData(false);
-		for (unsigned int index = 0; index < sunModelData.vertexCount; index++)
-		{
-			sunModelData.vertexData[index].normal.negate();
-		}
-		sunModel->releaseData();
-		Simplicity::getEngine<RenderingEngine>()->addLight(*sun);
-
-		// Add everything!
-		/////////////////////////
-		Simplicity::getScene()->addEntity(move(bob));
 		Simplicity::getScene()->addEntity(move(terrain));
 	}
 }

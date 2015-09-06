@@ -23,10 +23,9 @@ using namespace std;
 
 namespace bobsisland
 {
-	BobLooker::BobLooker(unsigned long systemId) :
+	BobLooker::BobLooker() :
 		mousePosition(0, 0),
-		newMousePosition(0, 0),
-		systemId(systemId)
+		newMousePosition(0, 0)
 	{
 	}
 
@@ -63,13 +62,10 @@ namespace bobsisland
 
 	bool BobLooker::onMouseMove(const Message& message)
 	{
-		if (message.senderSystemId == systemId)
-		{
-			const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message.body);
+		const MouseMoveEvent* event = static_cast<const MouseMoveEvent*>(message.body);
 
-			newMousePosition.X() = event->x;
-			newMousePosition.Y() = event->y;
-		}
+		newMousePosition.X() = event->x;
+		newMousePosition.Y() = event->y;
 
 		return false;
 	}

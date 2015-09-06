@@ -2,6 +2,57 @@
 	"entities":
 	[
 		{
+			"name": "Bob",
+			"position": [9, 0, 295],
+			"components":
+			[
+				{
+					"name": "Body",
+					"type": "simplicity::Box",
+					"properties":
+					{
+						"color": [1, 0, 0, 1],
+						"dimensions": [0.5, 2, 0.2]
+					}
+				},
+				{
+					"name": "Camera",
+					"type": "simplicity::Camera",
+					"position": [0, 1.11, -0.21],
+					"properties":
+					{
+						"farClippingDistance": 2000
+					}
+				},
+				{
+					"name": "Gun Arm",
+					"type": "simplicity::Cylinder",
+					"position": [0.25, 0.95, 0],
+					"properties":
+					{
+						"color": [1, 0, 0, 1],
+						"length": 0.75,
+						"radius": 0.05
+					}
+				},
+				{
+					"name": "Looker",
+					"type": "bobsisland::BobLooker",
+					"header": "bobs-island/common/bob/BobLooker.h"
+				},
+				{
+					"name": "Mover",
+					"type": "bobsisland::BobMover",
+					"header": "bobs-island/common/bob/BobMover.h"
+				},
+				{
+					"name": "Shooter",
+					"type": "bobsisland::BobShooter",
+					"header": "bobs-island/common/bob/BobShooter.h"
+				}
+			]
+		},
+		{
 			"name": "Ocean",
 			"rotation": [-90, 0, 0],
 			"components":

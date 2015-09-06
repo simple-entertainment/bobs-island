@@ -24,7 +24,7 @@ namespace bobsisland
 	{
 		float toPosition = 2.0f * MathConstants::PI * Simplicity::getTotalTime() / 60.0f;
 		toPosition -= 0.75f * MathConstants::PI;
-		//toPosition = 0.0f;
+		toPosition = 0.1f;
 		Vector3 position(sin(toPosition), cos(toPosition), 0.0f);
 		Vector3 direction = position;
 		direction.negate();

@@ -23,9 +23,8 @@ using namespace std;
 
 namespace bobsisland
 {
-	BobShooter::BobShooter(unsigned long systemId) :
-		firing(false),
-		systemId(systemId)
+	BobShooter::BobShooter() :
+		firing(false)
 	{
 	}
 
@@ -83,13 +82,10 @@ namespace bobsisland
 
 	bool BobShooter::onMouseButton(const Message& message)
 	{
-		if (message.senderSystemId == systemId)
+		const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message.body);
+		if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
 		{
-			const MouseButtonEvent* event = static_cast<const MouseButtonEvent*>(message.body);
-			if (event->button == Mouse::Button::LEFT && event->buttonState == Button::State::UP)
-			{
-				firing = true;
-			}
+			firing = true;
 		}
 
 		return false;
