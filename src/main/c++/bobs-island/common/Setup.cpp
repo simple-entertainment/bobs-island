@@ -29,14 +29,12 @@ extern "C"
 {
 	void simplicity_setupEngine()
 	{
-		Resource* vertexShaderResource = Resources::get("glsl/vertexDefault.glsl");
-		Resource* fragmentShaderResource = Resources::get("glsl/fragmentDefault.glsl");
 		unique_ptr<Shader> vertexShader =
-				RenderingFactory::getInstance()->createShader(Shader::Type::VERTEX, *vertexShaderResource);
+				RenderingFactory::createShader(Shader::Type::VERTEX, *Resources::get("glsl/vertexDefault.glsl"));
 		unique_ptr<Shader> fragmentShader =
-				RenderingFactory::getInstance()->createShader(Shader::Type::FRAGMENT, *fragmentShaderResource);
+				RenderingFactory::createShader(Shader::Type::FRAGMENT, *Resources::get("glsl/fragmentDefault.glsl"));
 		shared_ptr<Pipeline> pipeline =
-				RenderingFactory::getInstance()->createPipeline(move(vertexShader), nullptr, move(fragmentShader));
+				RenderingFactory::createPipeline(move(vertexShader), nullptr, move(fragmentShader));
 		Simplicity::getEngine<RenderingEngine>()->setDefaultPipeline(pipeline);
 	}
 
