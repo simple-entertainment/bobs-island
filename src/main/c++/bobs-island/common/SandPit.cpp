@@ -50,7 +50,7 @@ void createAK47()
 {
 	unique_ptr<Entity> ak47(new Entity);
 	setPosition(ak47->getTransform(), Vector3(0.0f, 2.0f, 62.0f));
-	ak47->addUniqueComponent(ModelFactory::getInstance()->loadObj(*Resources::get("models/ak47.obj")));
+	ak47->addUniqueComponent(ModelFactory::loadObj(*Resources::get("models/ak47.obj")));
 	Simplicity::getScene()->addEntity(move(ak47));
 }
 
@@ -58,12 +58,6 @@ void createIslandTerrainFile()
 {
 	Resource* terrainFile = Resources::create("island.terrain", true);
 	TerrainFactory::createFlatTerrain(*terrainFile, Vector2ui(mapSize, mapSize), getHeight, { 1, 4, 16 });
-
-	// Testing 123
-	/////////////////////////
-	//unique_ptr<CameraController> flyingCameraEngine(new CameraController(*bob.get()));
-	//Simplicity::addEngine(move(flyingCameraEngine));
-	//testing123(radius);
 }
 
 void runModelMathTests(const Vector3& position)
@@ -72,29 +66,47 @@ void runModelMathTests(const Vector3& position)
 	unique_ptr<Entity> test(new Entity);
 	setPosition(test->getTransform(), position);
 
-	unique_ptr<Mesh> cube = ModelFactory::getInstance()->createCubeMesh(1.0f, shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	ModelFactory::Recipe cubeRecipe;
+	cubeRecipe.shape = ModelFactory::Recipe::Shape::BOX;
+	cubeRecipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	cubeRecipe.dimensions = Vector3(2.0f, 2.0f, 2.0f);
+	unique_ptr<Mesh> cube = ModelFactory::cookMesh(cubeRecipe);
 
 	Matrix44 relativeTransform;
 	relativeTransform.setIdentity();
 	setPosition(relativeTransform, Vector3(1.0f, 1.0f, 1.0f));
 	unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
 
-	unique_ptr<Mesh> cylinder = ModelFactory::getInstance()->createCylinderMesh(0.3f, 10.0f, 5,
-			shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
+	ModelFactory::Recipe cylinderRecipe;
+	cylinderRecipe.shape = ModelFactory::Recipe::Shape::CYLINDER;
+	cylinderRecipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	cylinderRecipe.dimensions = Vector3(0.6f, 10.0f, 0.0f);
+	cylinderRecipe.divisions = 5;
+	unique_ptr<Mesh> cylinder = ModelFactory::cookMesh(cylinderRecipe);
 
-	unique_ptr<Mesh> hemisphere = ModelFactory::getInstance()->createHemisphereMesh(1.0f, 10, shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+	ModelFactory::Recipe hemisphereRecipe;
+	hemisphereRecipe.shape = ModelFactory::Recipe::Shape::HEMISPHERE;
+	hemisphereRecipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	hemisphereRecipe.dimensions = Vector3(2.0f, 0.0f, 0.0f);
+	unique_ptr<Mesh> hemisphere = ModelFactory::cookMesh(hemisphereRecipe);
 
-	unique_ptr<Mesh> prism = ModelFactory::getInstance()->createPrismMesh(Vector3(0.5f, 0.5f, 0.5f),
-			shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	ModelFactory::Recipe prismRecipe;
+	prismRecipe.shape = ModelFactory::Recipe::Shape::PRISM;
+	prismRecipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	prismRecipe.dimensions = Vector3(1.0f, 1.0f, 1.0f);
+	unique_ptr<Mesh> prism = ModelFactory::cookMesh(prismRecipe);
 
-	unique_ptr<Mesh> sphere = ModelFactory::getInstance()->createSphereMesh(1.0f, 10, shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+	ModelFactory::Recipe sphereRecipe;
+	sphereRecipe.shape = ModelFactory::Recipe::Shape::SPHERE;
+	sphereRecipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	sphereRecipe.dimensions = Vector3(2.0f, 0.0f, 0.0f);
+	unique_ptr<Mesh> sphere = ModelFactory::cookMesh(sphereRecipe);
 
-	unique_ptr<Mesh> triangle = ModelFactory::getInstance()->createTriangleMesh(Vector3(0.0f, 1.0f, 0.0f),
-			Vector3(-1.0f, -2.0f, 0.0f), Vector3(1.0f, -2.0f, 0.0f), shared_ptr<MeshBuffer>(),
-			Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	unique_ptr<Mesh> triangle = ModelFactory::createTriangleMesh(Vector3(0.0f, 1.0f, 0.0f),
+																 Vector3(-1.0f, -2.0f, 0.0f),
+																 Vector3(1.0f, -2.0f, 0.0f),
+																 shared_ptr<MeshBuffer>(),
+																 Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	setPosition(relativeTransform, Vector3(0.0f, 0.0f, 5.0f));
 	unique_ptr<Model> triangleMinusCylinder = ModelFunctions::subtract(*triangle, *cylinder, relativeTransform);

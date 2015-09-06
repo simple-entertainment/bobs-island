@@ -32,12 +32,18 @@ namespace bobsisland
 		{
 			unique_ptr<Entity> bob(new Entity);
 
-			unique_ptr<Mesh> bobBody = ModelFactory::getInstance()->createBoxMesh(Vector3(0.25f, 1.0f, 0.1f),
-				shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			ModelFactory::Recipe bodyRecipe;
+			bodyRecipe.shape = ModelFactory::Recipe::Shape::BOX;
+			bodyRecipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+			bodyRecipe.dimensions = Vector3(0.5f, 2.0f, 0.2f);
+			unique_ptr<Mesh> bobBody = ModelFactory::cookMesh(bodyRecipe);
 			bob->addUniqueComponent(move(bobBody));
 
-			unique_ptr<Mesh> bobGunArm = ModelFactory::getInstance()->createCylinderMesh(0.05f, 0.75f, 10,
-					shared_ptr<MeshBuffer>(), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+			ModelFactory::Recipe gunArmRecipe;
+			gunArmRecipe.shape = ModelFactory::Recipe::Shape::CYLINDER;
+			gunArmRecipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+			gunArmRecipe.dimensions = Vector3(1.0f, 0.75f, 0.0f);
+			unique_ptr<Mesh> bobGunArm = ModelFactory::cookMesh(gunArmRecipe);
 			setPosition(bobGunArm->getTransform(), Vector3(0.25f, 0.95f, 0.0f));
 			bob->addUniqueComponent(move(bobGunArm));
 

@@ -19,7 +19,6 @@
 #include <simplicity/terrain/API.h>
 
 #include "bob/BobFactory.h"
-#include "SunMover.h"
 
 using namespace bobsisland;
 using namespace simplicity;
@@ -43,12 +42,10 @@ extern "C"
 
 	void simplicity_setupScene()
 	{
-		RenderingEngine* renderingEngine = Simplicity::getEngine<RenderingEngine>();
-
 		// Scene Graph
 		/////////////////////////
 		unique_ptr<Graph> sceneGraph(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
-		renderingEngine->setGraph(sceneGraph.get());
+		Simplicity::getEngine<RenderingEngine>()->setGraph(sceneGraph.get());
 		Simplicity::getScene()->addGraph(move(sceneGraph));
 
 		// Bob
@@ -70,71 +67,21 @@ extern "C"
 		terrainStreamer->setTrackedEntity(*bob);
 		terrain->addUniqueComponent(move(terrainStreamer));
 
-		// The Sky
-		/////////////////////////
-		unique_ptr<Entity> sky(new Entity);
-		rotate(sky->getTransform(), MathConstants::PI * -0.5f, Vector3(1.0f, 0.0f, 0.0f));
-
-		unique_ptr<Mesh> skyMesh = ModelFactory::getInstance()->createHemisphereMesh(1100.0f, 20,
-																					 shared_ptr<MeshBuffer>(),
-																					 Vector4(0.0f, 0.5f, 0.75f, 1.0f),
-																					 true);
-
-		sky->addUniqueComponent(move(skyMesh));
-		Simplicity::getScene()->addEntity(move(sky));
-
 		// The Sun
 		/////////////////////////
-		unique_ptr<Entity> theSun(new Entity);
-
-		unique_ptr<Light> sunLight(new Light("theSun"));
-		sunLight->setAmbient(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-		sunLight->setDiffuse(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-		sunLight->setRange(1000.0f);
-		sunLight->setSpecular(Vector4(0.7f, 0.7f, 0.7f, 1.0f));
-		sunLight->setStrength(32.0f);
-
-		// Initially up in the sky directly above!
-		Vector3 position(sin(0.0f), cos(0.0f), 0.0f);
-		Vector3 direction = position;
-		direction.negate();
-		position *= 1000.0f;
-
-		setPosition(theSun->getTransform(), position);
-		sunLight->setDirection(direction);
-
-		theSun->addUniqueComponent(move(sunLight));
-
-		unique_ptr<Mesh> sunModel = ModelFactory::getInstance()->createSphereMesh(50.0f, 10, shared_ptr<MeshBuffer>(),
-																				  Vector4(1.0f, 1.0f, 0.6f, 1.0f));
+		Entity* sun = Simplicity::getScene()->getEntity("Sun");
+		Mesh* sunModel = sun->getComponent<Mesh>();
 		MeshData& sunModelData = sunModel->getData(false);
 		for (unsigned int index = 0; index < sunModelData.vertexCount; index++)
 		{
 			sunModelData.vertexData[index].normal.negate();
 		}
 		sunModel->releaseData();
-		theSun->addUniqueComponent(move(sunModel));
-
-		unique_ptr<Script> sunMover(new SunMover);
-		theSun->addUniqueComponent(move(sunMover));
-
-		renderingEngine->addLight(*theSun);
-
-		// The Ocean
-		/////////////////////////
-		unique_ptr<Entity> ocean(new Entity);
-		rotate(ocean->getTransform(), MathConstants::PI * -0.5f, Vector3(1.0f, 0.0f, 0.0f));
-
-		unique_ptr<Mesh> oceanMesh =
-				ModelFactory::getInstance()->createCylinderMesh(1200.0f, 500.0f, 20, shared_ptr<MeshBuffer>(),
-																Vector4(0.0f, 0.4f, 0.6f, 1.0f), true);
-		ocean->addUniqueComponent(move(oceanMesh));
+		Simplicity::getEngine<RenderingEngine>()->addLight(*sun);
 
 		// Add everything!
 		/////////////////////////
 		Simplicity::getScene()->addEntity(move(bob));
-		Simplicity::getScene()->addEntity(move(ocean));
 		Simplicity::getScene()->addEntity(move(terrain));
-		Simplicity::getScene()->addEntity(move(theSun));
 	}
 }

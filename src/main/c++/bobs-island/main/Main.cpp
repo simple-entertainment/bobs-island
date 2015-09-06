@@ -21,6 +21,7 @@ int main()
 	simplicity_generated_setupEngine();
 	simplicity_setupEngine();
 
+	simplicity_generated_setupScene();
 	simplicity_setupScene();
 
 	Simplicity::play();

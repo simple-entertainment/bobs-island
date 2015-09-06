@@ -1,0 +1,78 @@
+{
+	"entities":
+	[
+		{
+			"name": "Ocean",
+			"rotation": [-90, 0, 0],
+			"components":
+			[
+				{
+					"name": "Cylinder",
+					"type": "simplicity::Cylinder",
+					"properties":
+					{
+						"color": [0, 0.4, 0.6, 1],
+						"divisions": 20,
+						"doubleSided": true,
+						"radius": 1200
+					}
+				}
+			]
+		},
+		{
+			"name": "Sky",
+			"rotation": [-90, 0, 0],
+			"components":
+			[
+				{
+					"name": "Hemisphere",
+					"type": "simplicity::Hemisphere",
+					"properties":
+					{
+						"color": [0, 0.5, 0.75, 1],
+						"divisions": 20,
+						"doubleSided": true,
+						"radius": 1100
+					}
+				}
+			]
+		},
+		{
+			"name": "Sun",
+			"rotation": [-90, 0, 0],
+			"components":
+			[
+				{
+					"name": "Light",
+					"type": "simplicity::Light",
+					"properties":
+					{
+						"ambient": [0.7, 0.7, 0.7, 1],
+						"diffuse": [0.7, 0.7, 0.7, 1],
+						"direction": [0, -1, 0],
+						"name": "theSun",
+						"range": 1000,
+						"specular": [0.7, 0.7, 0.7, 1],
+						"strength": 32
+					}
+				},
+				{
+					"name": "Mover",
+					"type": "bobsisland::SunMover",
+					"header": "bobs-island/common/SunMover.h"
+				},
+				{
+					"name": "Sphere",
+					"type": "simplicity::Sphere",
+					"properties":
+					{
+						"color": [1, 1, 0.6, 1],
+						"divisions": 10,
+						"radius": 50,
+						"smooth": true
+					}
+				}
+			]
+		}
+	]
+}

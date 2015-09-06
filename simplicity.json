@@ -1,9 +1,9 @@
 {
 	"engines":
-	{
-		"simplicity::glfw::GLFWEngine":
+	[
 		{
 			"name": "GLFW",
+			"type": "simplicity::glfw::GLFWEngine",
 			"header": "simplicity/glfw/API.h",
 			"properties":
 			{
@@ -11,46 +11,41 @@
 			},
 			"initFunction": "show"
 		},
-		"simplicity::ScriptingEngine":
 		{
 			"name": "Scripts",
+			"type": "simplicity::ScriptingEngine",
 			"header": "simplicity/API.h"
 		},
-		"simplicity::bullet::BulletEngine":
 		{
 			"name": "Bullet Physics",
-			"header": "simplicity/bullet/API.h",
-			"properties":
-			{
-				"gravity": [0, -10, 0]
-			}
-		},
-		"simplicity::opengl::OpenGLRenderingEngine":
-		{
-			"name": "OpenGL",
-			"headers": ["--simplicity-opengl-glew.h", "simplicity/opengl/API.h"],
-			"initFunction": "glewInit"
-		}
-	},
-	"factories":
-	{
-		"simplicity::bullet::BulletPhysicsFactory":
-		{
-			"name": "Bullet Physics Factory",
-			"type": "PhysicsFactory",
+			"type": "simplicity::bullet::BulletEngine",
 			"header": "simplicity/bullet/API.h"
 		},
-		"simplicity::opengl::OpenGLModelFactory":
+		{
+			"name": "OpenGL",
+			"type": "simplicity::opengl::OpenGLRenderingEngine",
+			"headers": ["--simplicity-opengl-glew.h", "simplicity/opengl/API.h"]
+		}
+	],
+	"factories":
+	[
+		{
+			"name": "Bullet Physics Factory",
+			"type": "simplicity::bullet::BulletPhysicsFactory",
+			"interface": "PhysicsFactory",
+			"header": "simplicity/bullet/API.h"
+		},
 		{
 			"name": "OpenGL Model Factory",
-			"type": "ModelFactory",
+			"type": "simplicity::opengl::OpenGLModelFactory",
+			"interface": "ModelFactory",
 			"header": "simplicity/opengl/API.h"
 		},
-		"simplicity::opengl::OpenGLRenderingFactory":
 		{
 			"name": "OpenGL Rendering Factory",
-			"type": "RenderingFactory",
+			"type": "simplicity::opengl::OpenGLRenderingFactory",
+			"interface": "RenderingFactory",
 			"header": "simplicity/opengl/API.h"
 		}
-	}
+	]
 }
