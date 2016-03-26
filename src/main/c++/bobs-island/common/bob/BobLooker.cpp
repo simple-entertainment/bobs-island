@@ -29,7 +29,7 @@ namespace bobsisland
 	{
 	}
 
-	void BobLooker::execute(Entity& entity)
+	void BobLooker::execute()
 	{
 		Vector2i delta = newMousePosition - mousePosition;
 		mousePosition = newMousePosition;
@@ -42,20 +42,18 @@ namespace bobsisland
 		Vector2 lookDelta(static_cast<float>(delta.X()), static_cast<float>(delta.Y()));
 		lookDelta *= -Simplicity::getDeltaTime() * 0.1f;
 
-		rotate(entity.getTransform(), lookDelta.X(), Vector3(0.0f, 1.0f, 0.0f));
+		getEntity()->rotate(lookDelta.X(), Vector3(0.0f, 1.0f, 0.0f));
 
-		Camera* camera = entity.getComponent<Camera>();
+		Camera* camera = getEntity()->getComponent<Camera>();
 		if (camera != nullptr)
 		{
 			rotate(camera->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
 		}
 
-		rotate(entity.getComponents<Mesh>()[1]->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
-
-		Simplicity::getScene()->updateGraphs(entity);
+		rotate(getEntity()->getComponents<Mesh>()[1]->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
 	}
 
-	void BobLooker::onAddEntity(Entity& /* entity */)
+	void BobLooker::onAddEntity()
 	{
 		Messages::registerRecipient(Subject::MOUSE_MOVE, bind(&BobLooker::onMouseMove, this, placeholders::_1));
 	}
@@ -70,7 +68,7 @@ namespace bobsisland
 		return false;
 	}
 
-	void BobLooker::onRemoveEntity(Entity& /* entity */)
+	void BobLooker::onRemoveEntity()
 	{
 		Messages::deregisterRecipient(Subject::MOUSE_MOVE, bind(&BobLooker::onMouseMove, this, placeholders::_1));
 	}

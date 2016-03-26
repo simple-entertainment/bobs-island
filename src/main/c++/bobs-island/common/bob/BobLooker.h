@@ -26,11 +26,11 @@ namespace bobsisland
 		public:
 			BobLooker();
 
-			void execute(simplicity::Entity& entity) override;
+			void execute() override;
 
-			void onAddEntity(simplicity::Entity& entity) override;
+			void onAddEntity() override;
 
-			void onRemoveEntity(simplicity::Entity& entity) override;
+			void onRemoveEntity() override;
 
 		private:
 			simplicity::Vector2i delta;

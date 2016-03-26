@@ -39,9 +39,9 @@ extern "C"
 	void simplicity_setupScene()
 	{
 		// Scene Graph
-		unique_ptr<Graph> sceneGraph(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
+		unique_ptr<SceneGraph> sceneGraph(new QuadTree(1, Square(128.0f), QuadTree::Plane::XZ));
 		Simplicity::getEngine<RenderingEngine>()->setGraph(sceneGraph.get());
-		Simplicity::getScene()->addGraph(move(sceneGraph));
+		Simplicity::getScene()->addState(move(sceneGraph));
 
 		// Bob
 		Entity* bob = Simplicity::getScene()->getEntity("Bob");
@@ -52,7 +52,7 @@ extern "C"
 		unique_ptr<Model> cameraBounds(new Square(32.0f));
 		setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
 		cameraBounds->setCategory(Category::BOUNDS);
-		bob->addUniqueComponent(move(cameraBounds));
+		bob->addComponent(move(cameraBounds));
 		// Switch to Bob's camera
 		Simplicity::getEngine<RenderingEngine>()->setCamera(bob);
 

@@ -37,7 +37,7 @@ namespace bobsisland
 	{
 	}
 
-	void BobMover::execute(Entity& entity)
+	void BobMover::execute()
 	{
 		if (keyboardButtonStates[Keyboard::Button::SPACE] == Button::State::DOWN)
 		{
@@ -46,33 +46,31 @@ namespace bobsisland
 
 		if (keyboardButtonStates[Keyboard::Button::W] == Button::State::DOWN)
 		{
-			translate(entity.getTransform(), Vector4(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			getEntity()->translate(Vector3(0.0f, 0.0f, -Simplicity::getDeltaTime() * 5.0f));
 		}
 
 		if (keyboardButtonStates[Keyboard::Button::A] == Button::State::DOWN)
 		{
-			translate(entity.getTransform(), Vector4(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			getEntity()->translate(Vector3(-Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f));
 		}
 
 		if (keyboardButtonStates[Keyboard::Button::S] == Button::State::DOWN)
 		{
-			translate(entity.getTransform(), Vector4(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f, 1.0f));
+			getEntity()->translate(Vector3(0.0f, 0.0f, Simplicity::getDeltaTime() * 5.0f));
 		}
 
 		if (keyboardButtonStates[Keyboard::Button::D] == Button::State::DOWN)
 		{
-			translate(entity.getTransform(), Vector4(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f, 1.0f));
+			getEntity()->translate(Vector3(Simplicity::getDeltaTime() * 5.0f, 0.0f, 0.0f));
 		}
 
 		if (test)
 		{
-			translate(entity.getTransform(), Vector4(1.0f, 0.0f, -1.0f, 1.0f));
+			getEntity()->translate(Vector3(1.0f, 0.0f, -1.0f));
 			test = false;
 		}
 
-		updateY(entity);
-
-		Simplicity::getScene()->updateGraphs(entity);
+		updateY();
 	}
 
 	float BobMover::getYForBob(float bobY, float groundY)
@@ -114,7 +112,7 @@ namespace bobsisland
 		return newBobY;
 	}
 
-	void BobMover::onAddEntity(Entity& /* entity */)
+	void BobMover::onAddEntity()
 	{
 		keyboardButtonStates[Keyboard::Button::W] = Button::State::UP;
 		keyboardButtonStates[Keyboard::Button::A] = Button::State::UP;
@@ -139,20 +137,20 @@ namespace bobsisland
 		return false;
 	}
 
-	void BobMover::onRemoveEntity(Entity& /* entity */)
+	void BobMover::onRemoveEntity()
 	{
 		Messages::deregisterRecipient(Subject::KEYBOARD_BUTTON, bind(&BobMover::onKeyboardButton, this,
 				placeholders::_1));
 	}
 
-	void BobMover::updateY(Entity& entity)
+	void BobMover::updateY()
 	{
-		float groundY = Simplicity::getScene()->getEntities(111)[0]->getComponent<LODTerrainStreamer>()->getHeight(getPosition3(entity.getTransform()));
+		float groundY = 75.0f;//Simplicity::getScene()->getEntities(111)[0]->getComponent<TerrainStreamer>()->getHeight(getPosition3(getEntity()->getTransform()));
 		groundY += 1.0f;
 
-		Vector3 position = getPosition3(entity.getTransform());
+		Vector3 position = getPosition3(getEntity()->getTransform());
 		position.Y() = getYForBob(position.Y(), groundY);
 
-		setPosition(entity.getTransform(), position);
+		setPosition(getEntity()->getTransform(), position);
 	}
 }

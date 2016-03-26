@@ -26,16 +26,16 @@ namespace bobsisland
 		public:
 			BobShooter();
 
-			void execute(simplicity::Entity& entity) override;
+			void execute() override;
 
-			void onAddEntity(simplicity::Entity& entity) override;
+			void onAddEntity() override;
 
-			void onRemoveEntity(simplicity::Entity& entity) override;
+			void onRemoveEntity() override;
 
 		private:
 			bool firing;
 
-			void fireGun(simplicity::Entity& entity);
+			void fireGun();
 
 			bool onMouseButton(const simplicity::Message& message);
 	};

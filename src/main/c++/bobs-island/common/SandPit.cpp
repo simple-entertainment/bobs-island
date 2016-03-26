@@ -50,7 +50,7 @@ void createAK47()
 {
 	unique_ptr<Entity> ak47(new Entity);
 	setPosition(ak47->getTransform(), Vector3(0.0f, 2.0f, 62.0f));
-	ak47->addUniqueComponent(ModelFactory::loadObj(*Resources::get("models/ak47.obj")));
+	ak47->addComponent(ModelFactory::loadObj(*Resources::get("models/ak47.obj")));
 	Simplicity::getScene()->addEntity(move(ak47));
 }
 
@@ -115,15 +115,15 @@ void runModelMathTests(const Vector3& position)
 	unique_ptr<Model> bounds(new Square(1.0f));
 	bounds->setCategory(Category::BOUNDS);
 
-	//test->addUniqueComponent(move(cube));
-	test->addUniqueComponent(move(cubeMinusCube));
-	//test->addUniqueComponent(move(cylinder));
-	//test->addUniqueComponent(move(hemisphere));
-	//test->addUniqueComponent(move(prism));
-	//test->addUniqueComponent(move(sphere));
-	//test->addUniqueComponent(move(triangle));
-	//test->addUniqueComponent(move(triangleMinusCylinder));
-	//test->addUniqueComponent(move(prismMinusCylinder));
-	test->addUniqueComponent(move(bounds));
+	//test->addComponent(move(cube));
+	test->addComponent(move(cubeMinusCube));
+	//test->addComponent(move(cylinder));
+	//test->addComponent(move(hemisphere));
+	//test->addComponent(move(prism));
+	//test->addComponent(move(sphere));
+	//test->addComponent(move(triangle));
+	//test->addComponent(move(triangleMinusCylinder));
+	//test->addComponent(move(prismMinusCylinder));
+	test->addComponent(move(bounds));
 	Simplicity::getScene()->addEntity(move(test));
 }

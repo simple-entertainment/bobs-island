@@ -28,18 +28,18 @@ namespace bobsisland
 	{
 	}
 
-	void BobShooter::execute(Entity& entity)
+	void BobShooter::execute()
 	{
 		if (firing)
 		{
-			fireGun(entity);
+			fireGun();
 		}
 	}
 
-	void BobShooter::fireGun(Entity& entity)
+	void BobShooter::fireGun()
 	{
 		unique_ptr<Entity> bullet(new Entity);
-		bullet->setTransform(entity.getTransform() * entity.getComponents<Mesh>()[1]->getTransform());
+		bullet->setTransform(getEntity()->getTransform() * getEntity()->getComponents<Mesh>()[1]->getTransform());
 		rotate(bullet->getTransform(), MathConstants::PI * -0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 		ModelFactory::Recipe recipe;
@@ -65,17 +65,17 @@ namespace bobsisland
 		trajectory *= 50.0f;
 		body->applyForce(trajectory, Vector3(0.0f, 0.0f, 0.0f));
 
-		bullet->addUniqueComponent(move(mesh));
-		bullet->addUniqueComponent(move(bounds));
-		bullet->addUniqueComponent(move(body));
-		bullet->addUniqueComponent(move(bodyModel));
+		bullet->addComponent(move(mesh));
+		bullet->addComponent(move(bounds));
+		bullet->addComponent(move(body));
+		bullet->addComponent(move(bodyModel));
 
 		Simplicity::getScene()->addEntity(move(bullet));
 
 		firing = false;
 	}
 
-	void BobShooter::onAddEntity(Entity& /* entity */)
+	void BobShooter::onAddEntity()
 	{
 		Messages::registerRecipient(Subject::MOUSE_BUTTON, bind(&BobShooter::onMouseButton, this, placeholders::_1));
 	}
@@ -91,7 +91,7 @@ namespace bobsisland
 		return false;
 	}
 
-	void BobShooter::onRemoveEntity(Entity& /* entity */)
+	void BobShooter::onRemoveEntity()
 	{
 		Messages::deregisterRecipient(Subject::MOUSE_BUTTON, bind(&BobShooter::onMouseButton, this, placeholders::_1));
 	}

@@ -26,11 +26,11 @@ namespace bobsisland
 		public:
 			BobMover();
 
-			void execute(simplicity::Entity& entity) override;
+			void execute() override;
 
-			void onAddEntity(simplicity::Entity& entity) override;
+			void onAddEntity() override;
 
-			void onRemoveEntity(simplicity::Entity& entity) override;
+			void onRemoveEntity() override;
 
 		private:
 			bool falling;
@@ -47,7 +47,7 @@ namespace bobsisland
 
 			bool onKeyboardButton(const simplicity::Message& message);
 
-			void updateY(simplicity::Entity& entity);
+			void updateY();
 	};
 }
 

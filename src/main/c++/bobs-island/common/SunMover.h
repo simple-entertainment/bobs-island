@@ -24,9 +24,9 @@ namespace bobsisland
 	class SunMover : public simplicity::Script
 	{
 		public:
-			void execute(simplicity::Entity& entity);
+			void execute() override;
 
-			void onAddEntity(simplicity::Entity& entity);
+			void onAddEntity() override;
 	};
 }
 

@@ -20,7 +20,7 @@ using namespace simplicity;
 
 namespace bobsisland
 {
-	void SunMover::execute(Entity& entity)
+	void SunMover::execute()
 	{
 		float toPosition = 2.0f * MathConstants::PI * Simplicity::getTotalTime() / 60.0f;
 		toPosition -= 0.75f * MathConstants::PI;
@@ -30,12 +30,12 @@ namespace bobsisland
 		direction.negate();
 		position *= 1000.0f;
 
-		setPosition(entity.getTransform(), position);
-		entity.getComponent<Light>()->setDirection(direction);
+		getEntity()->setPosition(position);
+		getEntity()->getComponent<Light>()->setDirection(direction);
 	}
 
-	void SunMover::onAddEntity(Entity& entity)
+	void SunMover::onAddEntity()
 	{
-		execute(entity);
+		execute();
 	}
 }
