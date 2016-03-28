@@ -71,14 +71,33 @@ extern "C"
 		// Terrain
 		unique_ptr<Entity> terrain(new Entity(111));
 		Resource* terrainFile = Resources::get("island.terrain", Resource::Type::ASSET, true);
-		//unique_ptr<TerrainStreamer> terrainStreamer(
-		//		new TerrainStreamer(*terrainFile, Vector2ui(1024, 1024), Vector2ui(100, 200), unitLength));
-		unique_ptr<LODTerrainStreamer> terrainStreamer(
-				new LODTerrainStreamer(*terrainFile, Vector2ui(1024, 1024),
-									   {Vector2ui(64, 64), Vector2ui(256, 256), Vector2ui(1024, 1024)},
-									   {1, 4, 16}));
-		terrainStreamer->setTrackedEntity(*bob);
-		terrain->addUniqueComponent(move(terrainStreamer));
+
+		unique_ptr<vector<TerrainStreamer::LevelOfDetail>> levelsOfDetail(new vector<TerrainStreamer::LevelOfDetail>(3));
+
+		levelsOfDetail->at(0).layerCount = 2;
+		levelsOfDetail->at(0).source =
+				unique_ptr<TerrainSource>(new ResourceTerrainSource(Vector2ui(1024, 1024), *terrainFile));
+		levelsOfDetail->at(0).sampleFrequency = 1;
+
+		unsigned int stride = 4;
+		unsigned int resourceOffset = 1025 * 1025 * stride * sizeof(float);
+		levelsOfDetail->at(1).layerCount = 2;
+		levelsOfDetail->at(1).source =
+				unique_ptr<TerrainSource>(new ResourceTerrainSource(Vector2ui(256, 256), *terrainFile, resourceOffset));
+		levelsOfDetail->at(1).sampleFrequency = 4;
+
+		resourceOffset += 257 * 257 * stride * sizeof(float);
+		levelsOfDetail->at(2).layerCount = 2;
+		levelsOfDetail->at(2).source =
+			unique_ptr<TerrainSource>(new ResourceTerrainSource(Vector2ui(64, 64), *terrainFile, resourceOffset));
+		levelsOfDetail->at(2).sampleFrequency = 16;
+
+		unique_ptr<TerrainStreamer> terrainStreamer(
+				new TerrainStreamer(move(levelsOfDetail), Vector2ui(1024, 1024), 64));
+
+		terrainStreamer->setTarget(*bob);
+		terrain->addComponent(move(terrainStreamer));
+
 		Simplicity::getScene()->addEntity(move(terrain));
 	}
 }
