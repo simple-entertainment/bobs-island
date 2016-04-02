@@ -145,7 +145,8 @@ namespace bobsisland
 
 	void BobMover::updateY()
 	{
-		float groundY = 75.0f;//Simplicity::getScene()->getEntities(111)[0]->getComponent<TerrainStreamer>()->getHeight(getPosition3(getEntity()->getTransform()));
+		Entity* terrain = Simplicity::getScene()->getEntities(111)[0];
+		float groundY = terrain->getComponent<TerrainStreamer>()->getHeight(getEntity()->getPosition());
 		groundY += 1.0f;
 
 		Vector3 position = getPosition3(getEntity()->getTransform());
