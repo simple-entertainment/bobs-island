@@ -39,36 +39,39 @@ namespace bobsisland
 	void BobShooter::fireGun()
 	{
 		unique_ptr<Entity> bullet(new Entity);
-		bullet->setTransform(getEntity()->getTransform() * getEntity()->getComponents<Mesh>()[1]->getTransform());
+		bullet->setTransform(getEntity()->getTransform() * getEntity()->getComponents<Model>()[1]->getTransform());
 		rotate(bullet->getTransform(), MathConstants::PI * -0.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 		ModelFactory::Recipe recipe;
 		recipe.shape = ModelFactory::Recipe::Shape::PYRAMID;
 		recipe.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 		recipe.dimensions = Vector3(0.2f, 0.5f, 0.0f);
-		unique_ptr<Mesh> mesh = ModelFactory::cookMesh(recipe);
+		shared_ptr<Mesh> mesh = ModelFactory::cookMesh(recipe);
 
 		const MeshData& meshData = mesh->getData();
-		unique_ptr<Model> bounds = ModelFunctions::getSquareBoundsXZ(meshData.vertexData, meshData.vertexCount);
+		unique_ptr<Shape> bounds = ModelFunctions::getSquareBoundsXZ(meshData.vertexData, meshData.vertexCount);
 		mesh->releaseData();
-
-		unique_ptr<Model> bodyModel(new Box(0.1f, 0.25f, 0.1f));
 
 		Body::Material material;
 		material.mass = 0.2f;
 		material.friction = 0.5f;
 		material.restitution = 0.1f;
-		unique_ptr<Body> body = PhysicsFactory::createBody(material, bodyModel.get(), bullet->getTransform());
+
+		Box bodyBounds(0.1f, 0.25f, 0.1f);
+
+		unique_ptr<Body> body = PhysicsFactory::createBody(material, *mesh, bodyBounds, bullet->getTransform());
 
 		Vector3 trajectory = getUp3(bullet->getTransform());
 		trajectory.normalize();
 		trajectory *= 50.0f;
 		body->applyForce(trajectory, Vector3(0.0f, 0.0f, 0.0f));
 
-		bullet->addComponent(move(mesh));
-		bullet->addComponent(move(bounds));
+		unique_ptr<Model> model(new Model);
+		model->setBounds(move(bounds));
+		model->setMesh(move(mesh));
+
+		bullet->addComponent(move(model));
 		bullet->addComponent(move(body));
-		bullet->addComponent(move(bodyModel));
 
 		Simplicity::getScene()->addEntity(move(bullet));
 

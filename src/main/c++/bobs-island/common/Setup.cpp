@@ -48,24 +48,21 @@ extern "C"
 		// Setup the camera
 		Camera* camera = bob->getComponent<Camera>();
 		camera->setPerspective(60.0f, 4.0f / 3.0f);
-		// Yes, this is odd... Bob's bounds are used as the camera bounds... for now...
-		unique_ptr<Model> cameraBounds(new Square(32.0f));
-		setPosition(cameraBounds->getTransform(), Vector3(0.0f, 0.0f, -32.0f));
-		cameraBounds->setCategory(Category::BOUNDS);
-		bob->addComponent(move(cameraBounds));
+		unique_ptr<Shape> cameraBounds(new Square(32.0f));
+		camera->setBounds(move(cameraBounds));
 		// Switch to Bob's camera
 		Simplicity::getEngine<RenderingEngine>()->setCamera(bob);
 
 		// Sun
 		Entity* sun = Simplicity::getScene()->getEntity("Sun");
 		// Invert normals so that light from the center of the sun illuminates it.
-		Mesh* sunModel = sun->getComponent<Mesh>();
-		MeshData& sunModelData = sunModel->getData(false);
+		Model* sunModel = sun->getComponent<Model>();
+		MeshData& sunModelData = sunModel->getMesh()->getData(false);
 		for (unsigned int index = 0; index < sunModelData.vertexCount; index++)
 		{
 			sunModelData.vertexData[index].normal.negate();
 		}
-		sunModel->releaseData();
+		sunModel->getMesh()->releaseData();
 		Simplicity::getEngine<RenderingEngine>()->addLight(*sun);
 
 		// Terrain

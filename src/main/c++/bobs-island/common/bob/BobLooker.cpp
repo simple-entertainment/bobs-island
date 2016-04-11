@@ -50,7 +50,7 @@ namespace bobsisland
 			rotate(camera->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
 		}
 
-		rotate(getEntity()->getComponents<Mesh>()[1]->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
+		rotate(getEntity()->getComponents<Model>()[1]->getTransform(), lookDelta.Y(), Vector3(1.0f, 0.0f, 0.0f));
 	}
 
 	void BobLooker::onAddEntity()

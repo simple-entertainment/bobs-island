@@ -50,7 +50,10 @@ void createAK47()
 {
 	unique_ptr<Entity> ak47(new Entity);
 	setPosition(ak47->getTransform(), Vector3(0.0f, 2.0f, 62.0f));
-	ak47->addComponent(ModelFactory::loadObj(*Resources::get("models/ak47.obj")));
+	shared_ptr<Mesh> mesh(ModelFactory::loadObj(*Resources::get("models/ak47.obj")));
+	unique_ptr<Model> model(new sim::Model);
+	model->setMesh(mesh);
+	ak47->addComponent(move(model));
 	Simplicity::getScene()->addEntity(move(ak47));
 }
 
@@ -75,7 +78,7 @@ void runModelMathTests(const Vector3& position)
 	Matrix44 relativeTransform;
 	relativeTransform.setIdentity();
 	setPosition(relativeTransform, Vector3(1.0f, 1.0f, 1.0f));
-	unique_ptr<Model> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
+	unique_ptr<Mesh> cubeMinusCube = ModelFunctions::subtract(*cube, *cube, relativeTransform);
 
 	ModelFactory::Recipe cylinderRecipe;
 	cylinderRecipe.shape = ModelFactory::Recipe::Shape::CYLINDER;
@@ -109,21 +112,23 @@ void runModelMathTests(const Vector3& position)
 																 Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	setPosition(relativeTransform, Vector3(0.0f, 0.0f, 5.0f));
-	unique_ptr<Model> triangleMinusCylinder = ModelFunctions::subtract(*triangle, *cylinder, relativeTransform);
-	unique_ptr<Model> prismMinusCylinder = ModelFunctions::subtract(*prism, *cylinder, relativeTransform);
+	unique_ptr<Mesh> triangleMinusCylinder = ModelFunctions::subtract(*triangle, *cylinder, relativeTransform);
+	unique_ptr<Mesh> prismMinusCylinder = ModelFunctions::subtract(*prism, *cylinder, relativeTransform);
 
-	unique_ptr<Model> bounds(new Square(1.0f));
-	bounds->setCategory(Category::BOUNDS);
+	unique_ptr<Model> model(new Model);
+	//model->setMesh(move(cube));
+	model->setMesh(move(cubeMinusCube));
+	//model->setMesh(move(cylinder));
+	//model->setMesh(move(hemisphere));
+	//model->setMesh(move(prism));
+	//model->setMesh(move(sphere));
+	//model->setMesh(move(triangle));
+	//model->setMesh(move(triangleMinusCylinder));
+	//model->setMesh(move(prismMinusCylinder));
 
-	//test->addComponent(move(cube));
-	test->addComponent(move(cubeMinusCube));
-	//test->addComponent(move(cylinder));
-	//test->addComponent(move(hemisphere));
-	//test->addComponent(move(prism));
-	//test->addComponent(move(sphere));
-	//test->addComponent(move(triangle));
-	//test->addComponent(move(triangleMinusCylinder));
-	//test->addComponent(move(prismMinusCylinder));
-	test->addComponent(move(bounds));
+	unique_ptr<Shape> bounds(new Square(1.0f));
+	model->setBounds(move(bounds));
+
+	test->addComponent(move(model));
 	Simplicity::getScene()->addEntity(move(test));
 }
