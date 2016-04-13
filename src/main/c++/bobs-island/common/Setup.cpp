@@ -65,6 +65,81 @@ extern "C"
 		sunModel->getMesh()->releaseData();
 		Simplicity::getEngine<RenderingEngine>()->addLight(*sun);
 
+		// Sky
+		unique_ptr<Entity> sky(new Entity(Category::UNCATEGORIZED, "Sky"));
+		//sim::setPosition(sky->getTransform(), sim::Vector3(9.0f, 2.0f, 295.0f));
+		// Hemisphere
+		ModelFactory::Recipe skyRecipe;
+		skyRecipe.shape = ModelFactory::Recipe::Shape::CUBE;
+		skyRecipe.inwardFaces = true;
+		skyRecipe.outwardFaces = false;
+		skyRecipe.dimensions[0] = 2000.0f;
+		std::shared_ptr<Mesh> skyMesh(ModelFactory::cookMesh(skyRecipe));
+		MeshData& meshData = skyMesh->getData(false);
+
+		meshData.vertexData[0].texCoord.X() = 0.2501f;//1.0f / 4.0f;
+		meshData.vertexData[0].texCoord.Y() = 0.9999f;//1.0f;
+		meshData.vertexData[1].texCoord.X() = 0.2501f;//1.0f / 4.0f;
+		meshData.vertexData[1].texCoord.Y() = 0.6667f;//2.0f / 3.0f;
+		meshData.vertexData[2].texCoord.X() = 0.4999f;//2.0f / 4.0f;
+		meshData.vertexData[2].texCoord.Y() = 0.6667f;//2.0f / 3.0f;
+		meshData.vertexData[3].texCoord.X() = 0.4999f;//2.0f / 4.0f;
+		meshData.vertexData[3].texCoord.Y() = 0.9999f;//1.0f;
+
+		meshData.vertexData[4].texCoord.X() = 0.2501f;//1.0f / 4.0f;
+		meshData.vertexData[4].texCoord.Y() = 0.3332f;//1.0f / 3.0f;
+		meshData.vertexData[5].texCoord.X() = 0.2501f;//1.0f / 4.0f;
+		meshData.vertexData[5].texCoord.Y() = 0.0001f;//0.0f;
+		meshData.vertexData[6].texCoord.X() = 0.4999f;//2.0f / 4.0f;
+		meshData.vertexData[6].texCoord.Y() = 0.0001f;//0.0f;
+		meshData.vertexData[7].texCoord.X() = 0.4999f;//2.0f / 4.0f;
+		meshData.vertexData[7].texCoord.Y() = 0.3332f;//1.0f / 3.0f;
+
+		meshData.vertexData[8].texCoord.X() = 0.7501f;//3.0f / 4.0f;
+		meshData.vertexData[8].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+		meshData.vertexData[9].texCoord.X() = 0.7501f;//3.0f / 4.0f;
+		meshData.vertexData[9].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[10].texCoord.X() = 0.9999f;//1.0f;
+		meshData.vertexData[10].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[11].texCoord.X() = 0.9999f;//1.0f;
+		meshData.vertexData[11].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+
+		meshData.vertexData[12].texCoord.X() = 0.5001f;//2.0f / 4.0f;
+		meshData.vertexData[12].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+		meshData.vertexData[13].texCoord.X() = 0.5001f;//2.0f / 4.0f;
+		meshData.vertexData[13].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[14].texCoord.X() = 0.7499f;//3.0f / 4.0f;
+		meshData.vertexData[14].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[15].texCoord.X() = 0.7499f;//3.0f / 4.0f;
+		meshData.vertexData[15].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+
+		meshData.vertexData[16].texCoord.X() = 0.2501f;//1.0f / 4.0f;
+		meshData.vertexData[16].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+		meshData.vertexData[17].texCoord.X() = 0.2501f;//1.0f / 4.0f;
+		meshData.vertexData[17].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[18].texCoord.X() = 0.4999f;//2.0f / 4.0f;
+		meshData.vertexData[18].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[19].texCoord.X() = 0.4999f;//2.0f / 4.0f;
+		meshData.vertexData[19].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+
+		meshData.vertexData[20].texCoord.X() = 0.0001f;//0.0f;
+		meshData.vertexData[20].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+		meshData.vertexData[21].texCoord.X() = 0.0001f;//0.0f;
+		meshData.vertexData[21].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[22].texCoord.X() = 0.2499f;//1.0f / 4.0f;
+		meshData.vertexData[22].texCoord.Y() = 0.3334f;//1.0f / 3.0f;
+		meshData.vertexData[23].texCoord.X() = 0.2499f;//1.0f / 4.0f;
+		meshData.vertexData[23].texCoord.Y() = 0.6665f;//2.0f / 3.0f;
+
+		skyMesh->releaseData();
+		skyMesh->getBuffer()->setPipeline(RenderingFactory::createPipeline("simple"));
+		std::unique_ptr<Model> skyModel(new Model);
+		skyModel->setMesh(skyMesh);
+		skyModel->setTexture(RenderingFactory::createTexture(*Resources::get("images/skybox.jpg"),
+															 PixelFormat::BGR));
+		sky->addComponent(std::move(skyModel));
+		Simplicity::getScene()->addEntity(std::move(sky));
+
 		// Terrain
 		unique_ptr<Entity> terrain(new Entity(111));
 		Resource* terrainFile = Resources::get("island.terrain", Resource::Type::ASSET, true);
