@@ -16,9 +16,11 @@
  */
 
 #include <simplicity/API.h>
+#include <simplicity/opengl/API.h>
 #include <simplicity/terrain/API.h>
 
 using namespace simplicity;
+using namespace simplicity::opengl;
 using namespace simplicity::terrain;
 using namespace std;
 
@@ -27,13 +29,22 @@ extern "C"
 	void simplicity_setupEngine()
 	{
 		// Pipeline
-		unique_ptr<Shader> vertexShader =
-				RenderingFactory::createShader(Shader::Type::VERTEX, *Resources::get("glsl/vertexDefault.glsl"));
-		unique_ptr<Shader> fragmentShader =
-				RenderingFactory::createShader(Shader::Type::FRAGMENT, *Resources::get("glsl/fragmentDefault.glsl"));
-		shared_ptr<Pipeline> pipeline =
-				RenderingFactory::createPipeline(move(vertexShader), nullptr, move(fragmentShader));
-		Simplicity::getEngine<RenderingEngine>()->setDefaultPipeline(pipeline);
+		Simplicity::getEngine<RenderingEngine>()->setDefaultPipeline(RenderingFactory::createPipeline(
+				RenderingFactory::createShader(Shader::Type::VERTEX, *Resources::get("glsl/vertexDefault.glsl")),
+				nullptr,
+				RenderingFactory::createShader(Shader::Type::FRAGMENT, *Resources::get("glsl/fragmentDefault.glsl"))
+		));
+
+		Simplicity::getEngine<OpenGLRenderingEngine>()->setFrameBuffer(RenderingFactory::createFrameBuffer(
+				{
+						RenderingFactory::createTexture(nullptr, 800, 600, PixelFormat::RGB_HDR),
+						RenderingFactory::createTexture(nullptr, 800, 600, PixelFormat::RGB_HDR)
+				},
+				true
+		));
+
+		unique_ptr<PostProcessor> postProcessor(new BloomPostProcessor);
+		Simplicity::getEngine<OpenGLRenderingEngine>()->setPostProcessor(move(postProcessor));
 	}
 
 	void simplicity_setupScene()
@@ -55,8 +66,13 @@ extern "C"
 
 		// Sun
 		Entity* sun = Simplicity::getScene()->getEntity("Sun");
-		// Invert normals so that light from the center of the sun illuminates it.
 		Model* sunModel = sun->getComponent<Model>();
+		sunModel->getMesh()->getBuffer()->setPipeline(RenderingFactory::createPipeline(
+				RenderingFactory::createShader(Shader::Type::VERTEX, *Resources::get("glsl/vertexDefault.glsl")),
+				nullptr,
+				RenderingFactory::createShader(Shader::Type::FRAGMENT, *Resources::get("glsl/fragmentSun.glsl"))
+		));
+		// Invert normals so that light from the center of the sun illuminates it.
 		MeshData& sunModelData = sunModel->getMesh()->getData(false);
 		for (unsigned int index = 0; index < sunModelData.vertexCount; index++)
 		{
@@ -67,13 +83,13 @@ extern "C"
 
 		// Sky
 		unique_ptr<Entity> sky(new Entity(Category::UNCATEGORIZED, "Sky"));
-		//sim::setPosition(sky->getTransform(), sim::Vector3(9.0f, 2.0f, 295.0f));
-		// Hemisphere
 		ModelFactory::Recipe skyRecipe;
-		skyRecipe.shape = ModelFactory::Recipe::Shape::CUBE;
+		skyRecipe.shape = ModelFactory::Recipe::Shape::BOX;
 		skyRecipe.inwardFaces = true;
 		skyRecipe.outwardFaces = false;
 		skyRecipe.dimensions[0] = 2000.0f;
+		skyRecipe.dimensions[1] = 2000.0f;
+		skyRecipe.dimensions[2] = 2000.0f;
 		std::shared_ptr<Mesh> skyMesh(ModelFactory::cookMesh(skyRecipe));
 		MeshData& meshData = skyMesh->getData(false);
 
