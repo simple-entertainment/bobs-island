@@ -158,30 +158,19 @@ extern "C"
 
 		// Terrain
 		unique_ptr<Entity> terrain(new Entity(111));
+
+		Vector2ui mapSize(1024, 1024);
 		Resource* terrainFile = Resources::get("island.terrain", Resource::Type::ASSET, true);
+		vector<LevelOfDetail> levelsOfDetail(3);
+		levelsOfDetail[0].layerCount = 2;
+		levelsOfDetail[0].sampleFrequency = 1;
+		levelsOfDetail[1].layerCount = 2;
+		levelsOfDetail[1].sampleFrequency = 4;
+		levelsOfDetail[2].layerCount = 2;
+		levelsOfDetail[2].sampleFrequency = 16;
 
-		unique_ptr<vector<TerrainStreamer::LevelOfDetail>> levelsOfDetail(new vector<TerrainStreamer::LevelOfDetail>(3));
-
-		levelsOfDetail->at(0).layerCount = 2;
-		levelsOfDetail->at(0).source =
-				unique_ptr<TerrainSource>(new ResourceTerrainSource(Vector2ui(1024, 1024), *terrainFile));
-		levelsOfDetail->at(0).sampleFrequency = 1;
-
-		unsigned int stride = 4;
-		unsigned int resourceOffset = 1025 * 1025 * stride * sizeof(float);
-		levelsOfDetail->at(1).layerCount = 2;
-		levelsOfDetail->at(1).source =
-				unique_ptr<TerrainSource>(new ResourceTerrainSource(Vector2ui(256, 256), *terrainFile, resourceOffset));
-		levelsOfDetail->at(1).sampleFrequency = 4;
-
-		resourceOffset += 257 * 257 * stride * sizeof(float);
-		levelsOfDetail->at(2).layerCount = 2;
-		levelsOfDetail->at(2).source =
-			unique_ptr<TerrainSource>(new ResourceTerrainSource(Vector2ui(64, 64), *terrainFile, resourceOffset));
-		levelsOfDetail->at(2).sampleFrequency = 16;
-
-		unique_ptr<TerrainStreamer> terrainStreamer(
-				new TerrainStreamer(move(levelsOfDetail), Vector2ui(1024, 1024), 64));
+		unique_ptr<TerrainSource> terrainSource(new ResourceTerrainSource(mapSize, *terrainFile, levelsOfDetail));
+		unique_ptr<TerrainStreamer> terrainStreamer(new TerrainStreamer(move(terrainSource), mapSize, 64, levelsOfDetail));
 
 		terrainStreamer->setTarget(*bob);
 		terrain->addComponent(move(terrainStreamer));
