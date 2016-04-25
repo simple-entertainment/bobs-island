@@ -42,14 +42,14 @@ vec4 applyDirectionalLight(Point point, Light light, vec3 cameraPosition)
 
 		// Add the specular term.
 		vec3 toCamera = normalize(cameraPosition - point.worldPosition);
-        vec3 lightReflect = normalize(reflect(light.direction, point.normal));
-        float specularFactor = dot(toCamera, lightReflect);
+		vec3 lightReflect = normalize(reflect(light.direction, point.normal));
+		float specularFactor = dot(toCamera, lightReflect);
 
-        specularFactor = pow(specularFactor, light.strength);
-        if (specularFactor > 0.0f)
-        {
-            color += specularFactor * light.specular;
-        }
+		specularFactor = pow(specularFactor, light.strength);
+		if (specularFactor > 0.0f)
+		{
+			color += specularFactor * light.specular;
+		}
 	}
 
 	return color;
@@ -78,14 +78,14 @@ vec4 applyPointLight(Point point, Light light, vec3 cameraPosition)
 
 		// Add the specular term.
 		vec3 toCamera = normalize(cameraPosition - point.worldPosition);
-        vec3 lightReflect = normalize(reflect(-toLight, point.normal));
-        float specularFactor = dot(toCamera, lightReflect);
+		vec3 lightReflect = normalize(reflect(-toLight, point.normal));
+		float specularFactor = dot(toCamera, lightReflect);
 
-        specularFactor = pow(specularFactor, light.strength);
-        if (specularFactor > 0.0f)
-        {
-            color += specularFactor * light.specular;
-        }
+		specularFactor = pow(specularFactor, light.strength);
+		if (specularFactor > 0.0f)
+		{
+			color += specularFactor * light.specular;
+		}
 	}
 
 	// Attenuate
@@ -130,7 +130,7 @@ void main()
 	}
 
 	color = applyDirectionalLight(point, theSunLight, cameraPosition);
-	color += applyPointLight(point, flashLight, cameraPosition);
+	//color += applyPointLight(point, flashLight, cameraPosition);
 	color.a = 1.0;
 
 	color2 = vec4(0.0, 0.0, 0.0, 1.0);

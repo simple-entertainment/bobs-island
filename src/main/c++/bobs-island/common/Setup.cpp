@@ -19,6 +19,8 @@
 #include <simplicity/opengl/API.h>
 #include <simplicity/terrain/API.h>
 
+#include "WaterAnimator.h"
+
 using namespace simplicity;
 using namespace simplicity::opengl;
 using namespace simplicity::terrain;
@@ -176,5 +178,18 @@ extern "C"
 		terrain->addComponent(move(terrainStreamer));
 
 		Simplicity::getScene()->addEntity(move(terrain));
+
+		// Ocean
+		Entity* ocean = Simplicity::getScene()->getEntity("Ocean");
+		Model* oceanModel = ocean->getComponent<Model>();
+
+		oceanModel->getMesh()->getBuffer()->setPipeline(RenderingFactory::createPipeline(
+				RenderingFactory::createShader(Shader::Type::VERTEX, *Resources::get("glsl/vertexWater.glsl")),
+				nullptr,
+				RenderingFactory::createShader(Shader::Type::FRAGMENT, *Resources::get("glsl/fragmentWater.glsl"))
+		));
+
+		unique_ptr<Component> oceanAnimator(new bobsisland::WaterAnimator);
+		ocean->addComponent(move(oceanAnimator));
 	}
 }
